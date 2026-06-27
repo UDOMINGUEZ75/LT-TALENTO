@@ -1,6 +1,8 @@
 "use client";
-// MARCA ERRO
+
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const runtime = "nodejs";
 
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -88,7 +90,7 @@ export default function CandidatePage() {
       <div className="w-full max-w-3xl bg-white rounded-2xl shadow-xl p-10 space-y-10">
 
         <h1 className="text-3xl font-bold text-[#1A4B84]">
-            Completa tu perfil profesional!
+          Completa tu perfil profesional!
         </h1>
 
         <p className="text-sm text-gray-500">User ID: {userId}</p>
@@ -217,11 +219,9 @@ export default function CandidatePage() {
             className="bg-[#1A4B84] text-white px-6 py-3 rounded-lg"
           >
             {saving ? "Guardando..." : "Guardar y salir"}
-            // rebuild fix
           </button>
         </div>
       </div>
     </div>
   );
-  // rebuild fix
 }
