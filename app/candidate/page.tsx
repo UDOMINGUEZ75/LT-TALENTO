@@ -223,5 +223,5 @@ export default function CandidatePage() {
         </div>
       </div>
     </div>
-  );
+  ); 
 }
