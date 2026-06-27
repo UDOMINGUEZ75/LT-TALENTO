@@ -91,7 +91,6 @@ export default function CandidatePage() {
 
         <p className="text-sm text-gray-500">User ID: {userId}</p>
 
-        {/* Perfil profesional */}
         <section className="space-y-4">
           <h2 className="text-xl font-semibold text-[#1A4B84]">Perfil profesional</h2>
 
@@ -125,7 +124,6 @@ export default function CandidatePage() {
           </div>
         </section>
 
-        {/* Contacto */}
         <section className="space-y-4">
           <h2 className="text-xl font-semibold text-[#1A4B84]">Contacto y ubicación</h2>
 
@@ -144,7 +142,6 @@ export default function CandidatePage() {
           />
         </section>
 
-        {/* Skills */}
         <section className="space-y-4">
           <h2 className="text-xl font-semibold text-[#1A4B84]">Skills e idiomas</h2>
 
@@ -163,7 +160,6 @@ export default function CandidatePage() {
           />
         </section>
 
-        {/* Experiencia */}
         <section className="space-y-4">
           <h2 className="text-xl font-semibold text-[#1A4B84]">Experiencia</h2>
 
@@ -175,7 +171,6 @@ export default function CandidatePage() {
           />
         </section>
 
-        {/* Educación */}
         <section className="space-y-4">
           <h2 className="text-xl font-semibold text-[#1A4B84]">Educación</h2>
 
@@ -187,7 +182,6 @@ export default function CandidatePage() {
           />
         </section>
 
-        {/* Preferencias */}
         <section className="space-y-4">
           <h2 className="text-xl font-semibold text-[#1A4B84]">Preferencias laborales</h2>
 
@@ -199,7 +193,6 @@ export default function CandidatePage() {
           />
         </section>
 
-        {/* Botones */}
         <div className="flex gap-4">
           <button
             onClick={handleAIHelp}
@@ -215,10 +208,9 @@ export default function CandidatePage() {
             className="bg-[#1A4B84] text-white px-6 py-3 rounded-lg"
           >
             {saving ? "Guardando..." : "Guardar y salir"}
-            //uLISES
           </button>
         </div>
       </div>
     </div>
-  ); 
+  );
 }
