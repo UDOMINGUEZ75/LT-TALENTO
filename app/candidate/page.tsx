@@ -1,9 +1,5 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-export const runtime = "nodejs";
-
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
