@@ -219,6 +219,7 @@ export default function CandidatePage() {
             className="bg-[#1A4B84] text-white px-6 py-3 rounded-lg"
           >
             {saving ? "Guardando..." : "Guardar y salir"}
+            //uLISES
           </button>
         </div>
       </div>
