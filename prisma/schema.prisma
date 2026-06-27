@@ -1,0 +1,268 @@
+// ------------------------------------------------------
+//  GENERATOR & DATASOURCE
+// ------------------------------------------------------
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------------------------------
+//  USER
+// ------------------------------------------------------
+model User {
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
+  name      String?
+  role      UserRole   @default(CANDIDATE)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  candidate Candidate?
+  recruiter Recruiter?
+}
+
+// ------------------------------------------------------
+//  RECRUITER
+// ------------------------------------------------------
+model Recruiter {
+  id          Int          @id @default(autoincrement())
+  userId      Int          @unique
+  position    String?
+  phone       String?
+  companyId   Int?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  evaluations Evaluation[]
+  jobs        Job[]
+  company     Company?     @relation(fields: [companyId], references: [id])
+  user        User         @relation(fields: [userId], references: [id])
+}
+
+// ------------------------------------------------------
+//  COMPANY
+// ------------------------------------------------------
+model Company {
+  id         Int         @id @default(autoincrement())
+  name       String
+  industry   String?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  jobs       Job[]
+  recruiters Recruiter[]
+}
+
+// ------------------------------------------------------
+//  JOB
+// ------------------------------------------------------
+model Job {
+  id           Int           @id @default(autoincrement())
+  title        String
+  description  String?
+  recruiterId  Int?
+  companyId    Int?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  applications Application[]
+  company      Company?      @relation(fields: [companyId], references: [id])
+  recruiter    Recruiter?    @relation(fields: [recruiterId], references: [id])
+}
+
+// ------------------------------------------------------
+//  CANDIDATE (CON CAMPOS DEL FORMULARIO)
+// ------------------------------------------------------
+model Candidate {
+  id           Int           @id @default(autoincrement())
+  userId       Int           @unique
+
+  // Perfil
+  headline     String
+  summary      String
+
+  // Skills e idiomas
+  skills       String[]
+  languages    String?
+
+  // Experiencia y educación (JSON)
+  experience   Json?
+  education    Json?
+
+  // Campos nuevos del formulario
+  yearsExp     Int?
+  seniority    String?
+  location     String?
+  phone        String?
+  preferences  String?
+
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  aiProfile    AIProfile?
+  applications Application[]
+  user         User          @relation(fields: [userId], references: [id])
+  talentMap    TalentMap?
+}
+
+// ------------------------------------------------------
+//  APPLICATION
+// ------------------------------------------------------
+model Application {
+  id             Int               @id @default(autoincrement())
+  candidateId    Int
+  jobId          Int
+  status         ApplicationStatus @default(PENDING)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  candidate      Candidate         @relation(fields: [candidateId], references: [id])
+  job            Job               @relation(fields: [jobId], references: [id])
+
+  evaluations    Evaluation[]
+  insight        Insight?
+  interviewGuide InterviewGuide?
+  score          Score?
+
+  @@unique([candidateId, jobId])
+}
+
+// ------------------------------------------------------
+//  EVALUATION
+// ------------------------------------------------------
+model Evaluation {
+  id            Int            @id @default(autoincrement())
+  applicationId Int
+  evaluatorId   Int?
+  type          EvaluationType @default(HUMAN)
+  score         Int?
+  strengths     String?
+  weaknesses    String?
+  notes         String?
+  data          Json?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  application   Application    @relation(fields: [applicationId], references: [id])
+  evaluator     Recruiter?     @relation(fields: [evaluatorId], references: [id])
+}
+
+// ------------------------------------------------------
+//  SCORE
+// ------------------------------------------------------
+model Score {
+  id            Int         @id @default(autoincrement())
+  applicationId Int         @unique
+  overall       Int?
+  dimensions    Json?
+  strengths     String?
+  risks         String?
+  insights      String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  application   Application @relation(fields: [applicationId], references: [id])
+}
+
+// ------------------------------------------------------
+//  INSIGHT
+// ------------------------------------------------------
+model Insight {
+  id              Int         @id @default(autoincrement())
+  applicationId   Int         @unique
+  summary         String?
+  strengths       String?
+  risks           String?
+  recommendations String?
+  aiNarrative     String?
+  matchScore      Int?
+  data            Json?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  application     Application @relation(fields: [applicationId], references: [id])
+}
+
+// ------------------------------------------------------
+//  AI PROFILE
+// ------------------------------------------------------
+model AIProfile {
+  id                 Int       @id @default(autoincrement())
+  candidateId        Int       @unique
+  summary            String?
+  personality        Json?
+  motivations        Json?
+  values             Json?
+  communicationStyle String?
+  strengths          String?
+  risks              String?
+  aiNarrative        String?
+  vector             Json?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  candidate          Candidate @relation(fields: [candidateId], references: [id])
+}
+
+// ------------------------------------------------------
+//  TALENT MAP
+// ------------------------------------------------------
+model TalentMap {
+  id            Int       @id @default(autoincrement())
+  candidateId   Int       @unique
+  skillsMatrix  Json?
+  potential     Int?
+  seniority     String?
+  growthAreas   Json?
+  clusters      Json?
+  projection    String?
+  visualization Json?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  candidate     Candidate @relation(fields: [candidateId], references: [id])
+}
+
+// ------------------------------------------------------
+//  INTERVIEW GUIDE
+// ------------------------------------------------------
+model InterviewGuide {
+  id            Int         @id @default(autoincrement())
+  applicationId Int         @unique
+  general       Json?
+  technical     Json?
+  behavioral    Json?
+  riskAreas     Json?
+  deepDive      Json?
+  aiNarrative   String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  application   Application @relation(fields: [applicationId], references: [id])
+}
+
+// ------------------------------------------------------
+//  ENUMS
+// ------------------------------------------------------
+enum UserRole {
+  ADMIN
+  RECRUITER
+  CANDIDATE
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWING
+  INTERVIEW
+  OFFER
+  REJECTED
+}
+
+enum EvaluationType {
+  HUMAN
+  AI
+}
