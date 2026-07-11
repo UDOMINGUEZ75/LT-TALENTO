@@ -1,117 +1,86 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { PrismaClient, UserRole } from "@prisma/client";
 
-// Regex para validar email
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-// Regex para validar contraseña (cuando la agregues)
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
-    const data = await req.json();
+    const body = await req.json();
 
-    const { email, name, role, password } = data;
+    const email = String(body.email || "").trim();
+    const name = String(body.name || "").trim();
+    const role = String(body.role || "").trim() as UserRole;
 
-    // Validación: email obligatorio
-    if (!email) {
+    // Validaciones básicas
+    if (!email || !role) {
       return NextResponse.json(
-        { error: "El correo es obligatorio." },
+        { error: "Email y rol son obligatorios" },
         { status: 400 }
       );
     }
 
-    // Validación: formato de email
+    // Validación de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
-        { error: "El formato del correo no es válido." },
+        { error: "Correo inválido" },
         { status: 400 }
       );
     }
 
-    // Normalizar email
-    const normalizedEmail = email.toLowerCase();
-
-    // Validación: duplicado
+    // Verificar si ya existe
     const existing = await prisma.user.findUnique({
-      where: { email: normalizedEmail },
+      where: { email },
     });
 
     if (existing) {
       return NextResponse.json(
-        { error: "Este correo ya está registrado." },
+        { error: "El usuario ya existe" },
         { status: 400 }
       );
     }
 
-    // Validación de contraseña (cuando la actives)
-    if (password && !passwordRegex.test(password)) {
-      return NextResponse.json(
-        {
-          error:
-            "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula y un número.",
-        },
-        { status: 400 }
-      );
-    }
-
-    // Crear usuario
+    // Crear usuario base
     const user = await prisma.user.create({
       data: {
-        email: normalizedEmail,
-        name: name ?? null,
-        role: role ?? "CANDIDATE",
+        email,
+        name: name || null,
+        role,
       },
     });
 
-    // Crear Candidate
-    if (role === "CANDIDATE") {
+    // Crear entidades según rol
+    if (role === UserRole.CANDIDATE) {
       await prisma.candidate.create({
         data: {
           userId: user.id,
-          skills: data.skills ?? [],
-          headline: data.headline ?? "",
-          summary: data.summary ?? "",
-          experience: data.experience ?? null,
-          education: data.education ?? null,
+          headline: "",
+          summary: "",
+          skills: [],
+          languages: "",
         },
       });
     }
 
-    // Crear Recruiter
-    if (role === "RECRUITER") {
+    if (role === UserRole.RECRUITER) {
       await prisma.recruiter.create({
         data: {
           userId: user.id,
-          position: data.position ?? null,
-          phone: data.phone ?? null,
-          companyId: data.companyId ?? null,
+          position: "",
+          phone: "",
         },
       });
     }
 
-    return NextResponse.json({
-      message: "Usuario creado correctamente",
-      user,
-    });
+    return NextResponse.json(
+      { message: "Usuario creado", user },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error creando usuario:", error);
-
-    if (String(error).includes("Unique constraint")) {
-      return NextResponse.json(
-        { error: "Este correo ya está registrado." },
-        { status: 400 }
-      );
-    }
-
     return NextResponse.json(
-      { error: "Error creando usuario" },
+      { error: "Error interno del servidor" },
       { status: 500 }
     );
   }
-}
-
-export async function GET() {
-  const users = await prisma.user.findMany();
-  return NextResponse.json(users);
 }

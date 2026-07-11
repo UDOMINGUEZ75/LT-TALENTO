@@ -1,9 +1,9 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+
+export const dynamic = "force-dynamic";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -30,10 +30,11 @@ export default function RegisterPage() {
 
     const form = new FormData(e.currentTarget);
 
+    // 🔵 CORREGIDO: convertir todo a string para evitar null
     const data = {
-      email: form.get("email"),
-      name: form.get("name"),
-      role: form.get("role"),
+      email: String(form.get("email") || ""),
+      name: String(form.get("name") || ""),
+      role: String(form.get("role") || ""),
     };
 
     const res = await fetch("/api/user", {
