@@ -90,9 +90,6 @@ export async function POST(req: Request) {
       });
     }
 
-    // Estructura lista para verificación por correo
-    // Aquí después agregamos: enviar token, guardar token, etc.
-
     return NextResponse.json({
       message: "Usuario creado correctamente",
       user,
@@ -112,4 +109,9 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
+}
+
+export async function GET() {
+  const users = await prisma.user.findMany();
+  return NextResponse.json(users);
 }
