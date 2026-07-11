@@ -4,16 +4,29 @@ export const dynamic = "force-dynamic";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Proceso from "../components/Proceso";
 
 export default function RegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState("");
+
+  // Regex de email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function validateEmail(value: string) {
+    if (!emailRegex.test(value)) {
+      setEmailError("Formato de correo inválido");
+    } else {
+      setEmailError("");
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
     const form = new FormData(e.currentTarget);
 
@@ -29,12 +42,21 @@ export default function RegisterPage() {
       body: JSON.stringify(data),
     });
 
-    const user = await res.json();
+    const json = await res.json();
     setLoading(false);
 
-    if (res.ok) {
-      setDone(true);
-      router.push(`/candidate?userId=${user.id}`);
+    if (!res.ok) {
+      setError(json.error || "Error desconocido");
+      return;
+    }
+
+    setDone(true);
+
+    // 🔵 Redirección por rol
+    if (data.role === "CANDIDATE") {
+      router.push(`/candidate?userId=${json.user.id}`);
+    } else {
+      router.push(`/recruiter?userId=${json.user.id}`);
     }
   }
 
@@ -42,31 +64,50 @@ export default function RegisterPage() {
     <div className="max-w-md mx-auto mt-10">
       <h1 className="text-2xl font-bold mb-4">Registro de Usuario</h1>
 
+      {/* Error de API */}
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 text-red-700 border border-red-300 rounded">
+          {error}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          name="email"
-          placeholder="Correo"
-          className="w-full border p-2 rounded"
-          required
-        />
+        <div>
+          <input
+            name="email"
+            placeholder="Correo"
+            className={`w-full border p-2 rounded ${
+              emailError ? "border-red-500" : ""
+            }`}
+            required
+            onChange={(e) => validateEmail(e.target.value)}
+          />
+
+          {emailError && (
+            <p className="text-red-600 text-sm mt-1">{emailError}</p>
+          )}
+        </div>
 
         <input
           name="name"
           placeholder="Nombre"
           className="w-full border p-2 rounded"
-          required
         />
 
         <select name="role" className="w-full border p-2 rounded" required>
           <option value="">Selecciona un rol</option>
-          <option value="candidate">Candidato</option>
-          <option value="recruiter">Reclutador</option>
+          <option value="CANDIDATE">Candidato</option>
+          <option value="RECRUITER">Reclutador</option>
         </select>
 
         <button
           type="submit"
-          disabled={loading}
-          className="w-full bg-blue-600 text-white p-2 rounded"
+          disabled={loading || emailError !== ""}
+          className={`w-full text-white p-2 rounded ${
+            loading || emailError
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-600"
+          }`}
         >
           {loading ? "Guardando..." : "Crear usuario"}
         </button>
