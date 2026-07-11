@@ -10,7 +10,7 @@ export async function GET(req: Request) {
   }
 
   const candidate = await prisma.user.findUnique({
-    where: { id: userId },
+    where: { id: userId }, // <-- STRING, NO NUMBER
   });
 
   return NextResponse.json(candidate);
