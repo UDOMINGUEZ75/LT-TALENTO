@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Proceso from "../components/Proceso";
 
 export default function RegisterPage() {
   const router = useRouter();
