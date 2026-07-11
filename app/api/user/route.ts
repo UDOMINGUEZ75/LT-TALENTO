@@ -11,7 +11,6 @@ export async function POST(req: Request) {
     const name = String(body.name || "").trim();
     const role = String(body.role || "").trim() as UserRole;
 
-    // Validaciones básicas
     if (!email || !role) {
       return NextResponse.json(
         { error: "Email y rol son obligatorios" },
@@ -19,7 +18,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Validación de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -28,7 +26,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Verificar si ya existe
     const existing = await prisma.user.findUnique({
       where: { email },
     });
@@ -40,7 +37,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Crear usuario base
     const user = await prisma.user.create({
       data: {
         email,
@@ -49,11 +45,10 @@ export async function POST(req: Request) {
       },
     });
 
-    // Crear entidades según rol
     if (role === UserRole.CANDIDATE) {
       await prisma.candidate.create({
         data: {
-          userId: user.id,
+          userId: Number(user.id),
           headline: "",
           summary: "",
           skills: [],
@@ -65,7 +60,7 @@ export async function POST(req: Request) {
     if (role === UserRole.RECRUITER) {
       await prisma.recruiter.create({
         data: {
-          userId: user.id,
+          userId: Number(user.id),
           position: "",
           phone: "",
         },

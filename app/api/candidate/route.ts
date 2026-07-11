@@ -6,11 +6,14 @@ export async function GET(req: Request) {
   const userId = searchParams.get("userId");
 
   if (!userId) {
-    return NextResponse.json({ error: "userId requerido" }, { status: 400 });
+    return NextResponse.json(
+      { error: "userId requerido" },
+      { status: 400 }
+    );
   }
 
   const candidate = await prisma.user.findUnique({
-    where: { id: userId }, // <-- STRING, NO NUMBER
+    where: { id: Number(userId) },
   });
 
   return NextResponse.json(candidate);
