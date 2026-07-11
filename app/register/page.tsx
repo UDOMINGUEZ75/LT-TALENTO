@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -31,8 +33,6 @@ export default function RegisterPage() {
 
     if (res.ok) {
       setDone(true);
-
-      // Redirigir al formulario de candidato
       router.push(`/candidate?userId=${user.id}`);
     }
   }
@@ -56,11 +56,7 @@ export default function RegisterPage() {
           required
         />
 
-        <select
-          name="role"
-          className="w-full border p-2 rounded"
-          required
-        >
+        <select name="role" className="w-full border p-2 rounded" required>
           <option value="">Selecciona un rol</option>
           <option value="candidate">Candidato</option>
           <option value="recruiter">Reclutador</option>

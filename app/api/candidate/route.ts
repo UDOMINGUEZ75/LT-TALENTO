@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 
+export const runtime = "nodejs";
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -24,7 +26,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "userId requerido" }, { status: 400 });
     }
 
-    // 🔥 Transformaciones correctas según tu schema
     const parsedSkills: string[] = skills
       ? (skills.split(",").map((s: string) => s.trim()) as string[])
       : [];
@@ -38,17 +39,13 @@ export async function POST(req: Request) {
       phone: phone || null,
       languages: languages || null,
       preferences: preferences || null,
-
       skills: parsedSkills,
-
       experience: experience
         ? ({ text: experience } as Prisma.InputJsonValue)
         : Prisma.JsonNull,
-
       education: education
         ? ({ text: education } as Prisma.InputJsonValue)
         : Prisma.JsonNull,
-
       userId: Number(userId),
     };
 
@@ -68,4 +65,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Error interno" }, { status: 500 });
   }
 }
-
