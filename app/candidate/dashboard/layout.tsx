@@ -1,7 +1,6 @@
-export const dynamic = "force-dynamic";
-
+import { ReactNode } from "react";
 import ClientPingWrapper from "../../ClientPingWrapper";
 
-export default function CandidateLayout({ children }) {
+export default function CandidateLayout({ children }: { children: ReactNode }) {
   return <ClientPingWrapper>{children}</ClientPingWrapper>;
 }

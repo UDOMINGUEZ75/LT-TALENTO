@@ -25,8 +25,8 @@ export async function POST(req: Request) {
         skills: [],
         headline: "",
         summary: "",
-        experience: null,
-        education: null,
+        experience: {},   // ← FIX: JSON válido
+        education: {},    // ← FIX: JSON válido
       },
       select: {
         id: true,

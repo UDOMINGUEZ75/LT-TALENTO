@@ -1,38 +1,46 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-
 export default function Hero() {
-  const router = useRouter();
-
   return (
-    <section className="w-full py-20 text-center">
-      <h1 className="text-4xl font-bold mb-4">LTTalento</h1>
-      <p className="text-lg mb-6">Impulsa tu carrera con oportunidades reales.</p>
+    <section className="relative w-full h-[480px] flex items-center justify-center">
+      {/* Imagen de fondo */}
+      <img
+        src="/hero.jpg"
+        alt="LTTalento"
+        className="absolute inset-0 w-full h-full object-cover opacity-90"
+      />
 
-      <h2 className="text-2xl font-semibold mb-6">Nuevo registro</h2>
+      {/* Contenido */}
+      <div className="relative z-10 text-center px-6">
+        <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
+          LTTalento
+        </h1>
 
-      <div className="flex justify-center gap-4">
-        <button
-          onClick={() => router.push("/register/candidate")}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg"
-        >
-          Candidato
-        </button>
+        <p className="mt-4 text-xl md:text-2xl text-white drop-shadow-lg">
+          Un modelo de reclutamiento ejecutivo basado en conciencia, claridad y rigor.
+        </p>
 
-        <button
-          onClick={() => router.push("/register/recruiter")}
-          className="px-6 py-3 bg-green-600 text-white rounded-lg"
-        >
-          Reclutador
-        </button>
+        {/* BOTONES ADICIONALES */}
+        <div className="mt-8 flex flex-col md:flex-row gap-4 justify-center">
+          <a
+            href="/register"
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition"
+          >
+            Iniciar Registro
+          </a>
 
-        <button
-          onClick={() => router.push("/continue")}
-          className="px-6 py-3 bg-gray-700 text-white rounded-lg"
-        >
-          Continuar registro
-        </button>
+          <a
+            href="/candidate/evaluation/menu"
+            className="px-6 py-3 bg-green-600 text-white rounded-lg shadow-lg hover:bg-green-700 transition"
+          >
+            Continuar Evaluación
+          </a>
+
+          <a
+            href="/"
+            className="px-6 py-3 bg-gray-800 text-white rounded-lg shadow-lg hover:bg-gray-900 transition"
+          >
+            Volver al Inicio
+          </a>
+        </div>
       </div>
     </section>
   );
