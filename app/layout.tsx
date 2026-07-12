@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "./components/Navbar";
+import ClientPingWrapper from "./ClientPingWrapper";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "LTTalento",
@@ -16,9 +19,9 @@ export default function RootLayout({
     <html lang="es">
       <body className="bg-white text-gray-900">
         <Navbar />
-        <div className="pt-24">
-          {children}
-        </div>
+        <ClientPingWrapper>
+          <div className="pt-24">{children}</div>
+        </ClientPingWrapper>
       </body>
     </html>
   );

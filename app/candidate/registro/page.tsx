@@ -51,10 +51,9 @@ export default function CandidateDashboard() {
           Bienvenido
         </h2>
 
-     <div className="space-y-2 text-gray-700">
-        <p><strong>Nombre:</strong> {candidate?.name || "No disponible"}</p>
-        <p><strong>Correo:</strong> {candidate?.email || "No disponible"}</p>
-      </div>
+        <div className="space-y-2 text-gray-700">
+          <p><strong>Correo:</strong> {candidate?.email || "No disponible"}</p>
+        </div>
 
         <hr className="my-6" />
 
@@ -76,7 +75,7 @@ export default function CandidateDashboard() {
           onClick={() => router.push(`/candidate/evaluation/menu?userId=${userId}`)}
           className="w-full py-3 bg-blue-600 text-white rounded-lg text-lg font-medium hover:bg-blue-700 transition"
         >
-          Continuar Registro
+          Continuar evaluación
         </button>
       </div>
     </div>
