@@ -27,7 +27,7 @@ model User {
   password  String?
   role      UserRole  @default(CANDIDATE)
   createdAt DateTime  @default(now())
-  updatedAt DateTime?
+  updatedAt DateTime  @updatedAt
 
   candidate    Candidate?
   recruiter    Recruiter?
@@ -37,13 +37,13 @@ model User {
 model Candidate {
   id        Int       @id @default(autoincrement())
   createdAt DateTime  @default(now())
-  updatedAt DateTime?
+  updatedAt DateTime  @updatedAt
 
-  user   User @relation(fields: [userId], references: [id])
   userId Int  @unique
+  user   User @relation(fields: [userId], references: [id])
 
   preferences String?
-  status      String?
+  status      String   @default("Pendiente")
 
   skills     String[]
   headline   String?
@@ -53,7 +53,6 @@ model Candidate {
 
   documents Document[]
 
-  // Nuevos modelos del registro
   personal     CandidatePersonal?
   expSection   CandidateExperience?
   eduSection   CandidateEducation?
@@ -81,9 +80,9 @@ model CandidateExperience {
   id        Int     @id @default(autoincrement())
   userId    Int     @unique
 
-  company   String?
-  position  String?
-  years     Int?
+  company     String?
+  position    String?
+  years       Int?
   description String?
 
   candidate Candidate @relation(fields: [userId], references: [userId])
@@ -93,8 +92,8 @@ model CandidateEducation {
   id        Int     @id @default(autoincrement())
   userId    Int     @unique
 
-  school    String?
-  degree    String?
+  school         String?
+  degree         String?
   graduationYear Int?
 
   candidate Candidate @relation(fields: [userId], references: [userId])
@@ -104,9 +103,9 @@ model CandidatePreferences {
   id        Int     @id @default(autoincrement())
   userId    Int     @unique
 
-  area      String?
-  salary    Int?
-  modality  String?
+  area     String?
+  salary   Int?
+  modality String?
 
   candidate Candidate @relation(fields: [userId], references: [userId])
 }
@@ -115,9 +114,9 @@ model CandidateAvailability {
   id        Int     @id @default(autoincrement())
   userId    Int     @unique
 
-  schedule  String?
-  travel    Boolean?
-  relocate  Boolean?
+  schedule String?
+  travel   Boolean?
+  relocate Boolean?
 
   candidate Candidate @relation(fields: [userId], references: [userId])
 }
@@ -126,9 +125,9 @@ model CandidateDocuments {
   id        Int     @id @default(autoincrement())
   userId    Int     @unique
 
-  cvUrl     String?
-  ineUrl    String?
-  proofUrl  String?
+  cvUrl    String?
+  ineUrl   String?
+  proofUrl String?
 
   candidate Candidate @relation(fields: [userId], references: [userId])
 }
@@ -138,8 +137,8 @@ model Recruiter {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user   User @relation(fields: [userId], references: [id])
   userId Int  @unique
+  user   User @relation(fields: [userId], references: [id])
 
   position  String?
   phone     String?
@@ -154,8 +153,8 @@ model Document {
   type      String
   createdAt DateTime @default(now())
 
-  candidate   Candidate @relation(fields: [candidateId], references: [id])
   candidateId Int
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
 }
 
 model Vacancy {
@@ -165,10 +164,10 @@ model Vacancy {
   location    String?
   type        String?
   createdAt   DateTime  @default(now())
-  updatedAt   DateTime?
+  updatedAt   DateTime  @updatedAt
 
-  recruiter   Recruiter? @relation(fields: [recruiterId], references: [id])
   recruiterId Int?
+  recruiter   Recruiter? @relation(fields: [recruiterId], references: [id])
 
   applications Application[]
 }
@@ -176,13 +175,13 @@ model Vacancy {
 model Application {
   id        Int       @id @default(autoincrement())
   createdAt DateTime  @default(now())
-  updatedAt DateTime?
+  updatedAt DateTime  @updatedAt
 
   status ApplicationStatus @default(PENDING)
 
-  user   User @relation(fields: [userId], references: [id])
   userId Int
+  user   User @relation(fields: [userId], references: [id])
 
-  vacancy   Vacancy @relation(fields: [vacancyId], references: [id])
   vacancyId Int
+  vacancy   Vacancy @relation(fields: [vacancyId], references: [id])
 }
