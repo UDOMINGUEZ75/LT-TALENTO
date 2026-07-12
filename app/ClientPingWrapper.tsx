@@ -1,15 +1,19 @@
 "use client";
 
-import { useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 
-export default function ClientPingWrapper({ children }) {
+interface ClientPingWrapperProps {
+  children: ReactNode;
+}
+
+export default function ClientPingWrapper({ children }: ClientPingWrapperProps) {
   useEffect(() => {
     // Ping inicial
-    fetch("/api/ping");
+    fetch("/api/ping").catch(() => {});
 
     // Ping cada 60 segundos
     const interval = setInterval(() => {
-      fetch("/api/ping");
+      fetch("/api/ping").catch(() => {});
     }, 60000);
 
     return () => clearInterval(interval);
