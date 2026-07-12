@@ -1,112 +1,124 @@
 "use client";
 
+import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 
-export default function EvaluationMenuPage() {
-  const router = useRouter();
+export default function EvaluationMenu() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+
   const userId = searchParams.get("userId");
 
-  const [candidate, setCandidate] = useState<any>(null);
+  const [candidate, setCandidate] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadCandidate() {
-      try {
-        const res = await fetch(`/api/candidate/personal?userId=${userId}`);
-        const data = await res.json();
+      if (!userId) return;
 
-        if (data.ok && data.personal) {
-          setCandidate(data.personal);
-        }
-      } catch (error) {
-        console.error("Error cargando información del candidato:", error);
+      const res = await fetch(`/api/candidate?userId=${userId}`);
+      const data = await res.json();
+
+      if (data.ok && data.candidate) {
+        setCandidate(data.candidate);
       }
+
       setLoading(false);
     }
 
-    if (userId) loadCandidate();
+    loadCandidate();
   }, [userId]);
 
-  function go(path: string) {
-    router.push(`/candidate/evaluation/${path}?userId=${userId}`);
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen text-gray-600">
+        Cargando datos...
+      </div>
+    );
   }
 
-  if (loading) return <p className="p-6">Cargando información...</p>;
+  if (!candidate) {
+    return (
+      <div className="flex items-center justify-center h-screen text-red-600">
+        No se encontró información del candidato.
+      </div>
+    );
+  }
 
   return (
-    <div className="p-6 max-w-xl mx-auto space-y-6">
-      <h1 className="text-3xl font-bold text-center">Completar información del candidato</h1>
-      <p className="text-center text-gray-600">ID del candidato: {userId}</p>
+    <div className="max-w-xl mx-auto py-16 px-6">
+      {/* Información del candidato */}
+      <div className="mb-8 p-4 bg-gray-100 rounded-lg">
+        <h2 className="text-xl font-bold">{candidate.user.name}</h2>
+        <p className="text-gray-700">{candidate.user.email}</p>
+      </div>
 
-      {candidate && (
-        <div className="bg-gray-100 p-4 rounded shadow">
-          <h2 className="text-xl font-semibold mb-2">Información del candidato</h2>
+      <h1 className="text-3xl font-bold mb-6">Menú de Registro</h1>
 
-          <p><strong>Nombre:</strong> {candidate.name}</p>
-          <p><strong>Correo:</strong> {candidate.email}</p>
-        </div>
-      )}
-
-      <p className="text-center text-gray-600">
-        Selecciona la sección que deseas completar:
-      </p>
-
-      <div className="space-y-4">
-
+      {/* Botones del menú */}
+      <div className="flex flex-col gap-4">
         <button
-          onClick={() => go("personal")}
-          className="w-full bg-blue-600 text-white p-4 rounded shadow hover:bg-blue-700"
+          onClick={() =>
+            router.push(`/candidate/evaluation/personal?userId=${userId}`)
+          }
+          className="w-full py-3 bg-blue-600 text-white rounded-lg"
         >
-          Datos personales
+          Datos Personales
         </button>
 
         <button
-          onClick={() => go("experience")}
-          className="w-full bg-blue-600 text-white p-4 rounded shadow hover:bg-blue-700"
+          onClick={() =>
+            router.push(`/candidate/evaluation/experience?userId=${userId}`)
+          }
+          className="w-full py-3 bg-blue-600 text-white rounded-lg"
         >
-          Experiencia laboral
+          Experiencia
         </button>
 
         <button
-          onClick={() => go("education")}
-          className="w-full bg-blue-600 text-white p-4 rounded shadow hover:bg-blue-700"
+          onClick={() =>
+            router.push(`/candidate/evaluation/education?userId=${userId}`)
+          }
+          className="w-full py-3 bg-blue-600 text-white rounded-lg"
         >
-          Formación académica
+          Formación Académica
         </button>
 
         <button
-          onClick={() => go("preferences")}
-          className="w-full bg-blue-600 text-white p-4 rounded shadow hover:bg-blue-700"
+          onClick={() =>
+            router.push(`/candidate/evaluation/preferences?userId=${userId}`)
+          }
+          className="w-full py-3 bg-blue-600 text-white rounded-lg"
         >
-          Preferencias laborales
+          Preferencias
         </button>
 
         <button
-          onClick={() => go("availability")}
-          className="w-full bg-blue-600 text-white p-4 rounded shadow hover:bg-blue-700"
+          onClick={() =>
+            router.push(`/candidate/evaluation/availability?userId=${userId}`)
+          }
+          className="w-full py-3 bg-blue-600 text-white rounded-lg"
         >
           Disponibilidad
         </button>
 
         <button
-          onClick={() => go("documents")}
-          className="w-full bg-blue-600 text-white p-4 rounded shadow hover:bg-blue-700"
+          onClick={() =>
+            router.push(`/candidate/evaluation/documents?userId=${userId}`)
+          }
+          className="w-full py-3 bg-blue-600 text-white rounded-lg"
         >
           Documentos
         </button>
-
       </div>
 
-      <div className="text-center mt-8">
-        <button
-          onClick={() => router.push(`/`)}
-          className="px-6 py-3 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-        >
-          Volver a la página inicial
-        </button>
-      </div>
+      {/* Botón volver al inicio */}
+      <button
+        onClick={() => router.push("/")}
+        className="w-full py-3 bg-gray-700 text-white rounded-lg text-lg mt-6"
+      >
+        Volver al inicio
+      </button>
     </div>
   );
 }

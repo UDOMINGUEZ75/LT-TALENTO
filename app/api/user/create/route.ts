@@ -1,21 +1,56 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { PrismaClient } from "@prisma/client";
 
-export async function POST() {
+const prisma = new PrismaClient();
+
+export async function POST(req: Request) {
   try {
+    const { name, email } = await req.json();
+
+    if (!name || !email) {
+      return NextResponse.json(
+        { ok: false, error: "Nombre y correo son requeridos" },
+        { status: 400 }
+      );
+    }
+
+    // Verificar si ya existe
+    const existing = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existing) {
+      return NextResponse.json(
+        { ok: true, user: existing, created: false },
+        { status: 200 }
+      );
+    }
+
+    // Crear usuario
     const user = await prisma.user.create({
       data: {
-        email: `auto_${Date.now()}@lttalento.com`,
-        name: "Auto User",
+        name,
+        email,
         role: "CANDIDATE",
       },
     });
 
-    return NextResponse.json({ ok: true, user });
-  } catch (error) {
-    console.error("Error creando usuario:", error);
+    // Crear candidato asociado
+    const candidate = await prisma.candidate.create({
+      data: {
+        userId: user.id,
+        status: "Pendiente",
+      },
+    });
+
     return NextResponse.json(
-      { ok: false, error: "Error creando usuario" },
+      { ok: true, user, candidate, created: true },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("🔥 ERROR /api/user/create:", error);
+    return NextResponse.json(
+      { ok: false, error: "Error interno" },
       { status: 500 }
     );
   }

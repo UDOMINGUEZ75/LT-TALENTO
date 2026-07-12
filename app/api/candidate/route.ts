@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export async function GET(req: Request) {
   try {
@@ -8,52 +10,48 @@ export async function GET(req: Request) {
 
     if (!userId) {
       return NextResponse.json(
-        { ok: false, error: "userId requerido" },
+        { ok: false, error: "userId es requerido" },
         { status: 400 }
       );
     }
 
-    // Buscar usuario
-    const user = await prisma.user.findUnique({
-      where: { id: Number(userId) },
+    const candidate = await prisma.candidate.findUnique({
+      where: { userId: Number(userId) },
+      select: {
+        id: true,
+        status: true,
+        preferences: true,
+        skills: true,
+        headline: true,
+        summary: true,
+        experience: true,
+        education: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
     });
 
-    if (!user) {
+    if (!candidate) {
       return NextResponse.json(
-        { ok: false, error: "Usuario no encontrado" },
+        { ok: false, error: "Candidato no encontrado" },
         { status: 404 }
       );
     }
 
-    // Buscar candidato asociado
-    let candidate = await prisma.candidate.findFirst({
-      where: { userId: Number(userId) },
-    });
-
-    // Si no existe candidato, crearlo
-    if (!candidate) {
-      candidate = await prisma.candidate.create({
-        data: {
-          userId: Number(userId),
-          status: "Pendiente",
-        },
-      });
-    }
-
-    return NextResponse.json({
-      ok: true,
-      user: {
-        id: user.id,
-        name: user.name || "",
-        email: user.email || "",
+    return NextResponse.json(
+      {
+        ok: true,
+        candidate,
       },
-      candidate: {
-        id: candidate.id,
-        status: candidate.status,
-      },
-    });
+      { status: 200 }
+    );
   } catch (error) {
-    console.error("ERROR GET /api/candidate:", error);
+    console.error("🔥 ERROR API /candidate:", error);
     return NextResponse.json(
       { ok: false, error: "Error interno del servidor" },
       { status: 500 }

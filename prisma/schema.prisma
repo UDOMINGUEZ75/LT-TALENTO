@@ -24,10 +24,10 @@ model User {
   id        Int       @id @default(autoincrement())
   name      String?
   email     String    @unique
-  password  String? // opcional para no romper BD existente
+  password  String?
   role      UserRole  @default(CANDIDATE)
   createdAt DateTime  @default(now())
-  updatedAt DateTime? // opcional para evitar migración destructiva
+  updatedAt DateTime?
 
   candidate    Candidate?
   recruiter    Recruiter?
@@ -37,7 +37,7 @@ model User {
 model Candidate {
   id        Int       @id @default(autoincrement())
   createdAt DateTime  @default(now())
-  updatedAt DateTime? // opcional para evitar migración destructiva
+  updatedAt DateTime?
 
   user   User @relation(fields: [userId], references: [id])
   userId Int  @unique
@@ -45,14 +45,92 @@ model Candidate {
   preferences String?
   status      String?
 
-  // Campos usados por tu API
-  skills     String[] // ← CORREGIDO (lista requerida)
+  skills     String[]
   headline   String?
   summary    String?
   experience Json?
   education  Json?
 
   documents Document[]
+
+  // Nuevos modelos del registro
+  personal     CandidatePersonal?
+  expSection   CandidateExperience?
+  eduSection   CandidateEducation?
+  prefSection  CandidatePreferences?
+  availSection CandidateAvailability?
+  docsSection  CandidateDocuments?
+}
+
+model CandidatePersonal {
+  id       Int     @id @default(autoincrement())
+  userId   Int     @unique
+
+  name     String?
+  email    String?
+  state    String?
+  city     String?
+  zone     String?
+  address  String?
+  phone    String?
+
+  candidate Candidate @relation(fields: [userId], references: [userId])
+}
+
+model CandidateExperience {
+  id        Int     @id @default(autoincrement())
+  userId    Int     @unique
+
+  company   String?
+  position  String?
+  years     Int?
+  description String?
+
+  candidate Candidate @relation(fields: [userId], references: [userId])
+}
+
+model CandidateEducation {
+  id        Int     @id @default(autoincrement())
+  userId    Int     @unique
+
+  school    String?
+  degree    String?
+  graduationYear Int?
+
+  candidate Candidate @relation(fields: [userId], references: [userId])
+}
+
+model CandidatePreferences {
+  id        Int     @id @default(autoincrement())
+  userId    Int     @unique
+
+  area      String?
+  salary    Int?
+  modality  String?
+
+  candidate Candidate @relation(fields: [userId], references: [userId])
+}
+
+model CandidateAvailability {
+  id        Int     @id @default(autoincrement())
+  userId    Int     @unique
+
+  schedule  String?
+  travel    Boolean?
+  relocate  Boolean?
+
+  candidate Candidate @relation(fields: [userId], references: [userId])
+}
+
+model CandidateDocuments {
+  id        Int     @id @default(autoincrement())
+  userId    Int     @unique
+
+  cvUrl     String?
+  ineUrl    String?
+  proofUrl  String?
+
+  candidate Candidate @relation(fields: [userId], references: [userId])
 }
 
 model Recruiter {
@@ -87,7 +165,7 @@ model Vacancy {
   location    String?
   type        String?
   createdAt   DateTime  @default(now())
-  updatedAt   DateTime? // opcional para evitar migración destructiva
+  updatedAt   DateTime?
 
   recruiter   Recruiter? @relation(fields: [recruiterId], references: [id])
   recruiterId Int?
@@ -98,7 +176,7 @@ model Vacancy {
 model Application {
   id        Int       @id @default(autoincrement())
   createdAt DateTime  @default(now())
-  updatedAt DateTime? // opcional para evitar migración destructiva
+  updatedAt DateTime?
 
   status ApplicationStatus @default(PENDING)
 

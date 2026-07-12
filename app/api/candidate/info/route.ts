@@ -17,8 +17,14 @@ export async function GET(req: Request) {
 
     const candidate = await prisma.candidate.findUnique({
       where: { userId: Number(userId) },
-      include: {
-        user: true, // ← IMPORTANTE: trae name + email
+      select: {
+        status: true,        // ← NECESARIO
+        user: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
       },
     });
 
@@ -35,7 +41,7 @@ export async function GET(req: Request) {
         candidate: {
           name: candidate.user.name,
           email: candidate.user.email,
-          status: candidate.status,
+          status: candidate.status,   // ← YA NO FALLA
         },
       },
       { status: 200 }
