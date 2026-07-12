@@ -1,35 +1,27 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
-export default function EvaluationStartPage() {
+export default function StartEvaluation() {
   const router = useRouter();
-
-  useEffect(() => {
-    const startEvaluation = async () => {
-      const res = await fetch("/api/candidate/create", {
-        method: "POST",
-      });
-
-      const data = await res.json();
-
-      if (!data.ok) {
-        alert("Error al iniciar evaluación");
-        return;
-      }
-
-      localStorage.setItem("candidateId", data.candidate.id);
-
-      router.push("/candidate/evaluation/personal");
-    };
-
-    startEvaluation();
-  }, []);
+  const params = new URLSearchParams(window.location.search);
+  const userId = params.get("userId");
 
   return (
-    <div className="p-6">
-      <p>Iniciando evaluación...</p>
+    <div className="max-w-xl mx-auto py-16 px-6">
+      <h1 className="text-2xl font-bold mb-4">Inicio de evaluación</h1>
+
+      <p className="mb-6">
+        Gracias por iniciar tu proceso de evaluación. Completa cada sección para
+        avanzar.
+      </p>
+
+      <button
+        className="p-3 bg-blue-600 text-white rounded"
+        onClick={() => router.push(`/candidate/evaluation/personal?userId=${userId}`)}
+      >
+        Comenzar
+      </button>
     </div>
   );
 }
