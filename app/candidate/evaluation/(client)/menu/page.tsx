@@ -2,14 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-// Tipo correcto para el candidato
 type Candidate = {
   id: number;
-  status: string;
-  headline: string;
-  summary: string;
-  experience: any;
-  education: any;
   user: {
     id: number;
     name: string;
@@ -21,33 +15,39 @@ export default function MenuPage() {
   const [candidate, setCandidate] = useState<Candidate | null>(null);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const rawUserId = params.get("userId");
+
+    // Validación fuerte
+    if (!rawUserId || isNaN(Number(rawUserId))) {
+      console.error("❌ userId inválido:", rawUserId);
+      return;
+    }
+
+    const userId = Number(rawUserId);
+
     async function loadCandidate() {
-      const res = await fetch(`/api/candidate?userId=1`, {
+      const res = await fetch(`/api/candidate?userId=${userId}`, {
         cache: "no-store",
       });
 
       const data = await res.json();
-      setCandidate(data.candidate as Candidate);
+      setCandidate(data.candidate);
     }
 
     loadCandidate();
   }, []);
 
-  if (!candidate) {
-    return <p className="p-6">Cargando...</p>;
-  }
+  if (!candidate) return <p className="p-6">Cargando...</p>;
 
   return (
     <div className="max-w-xl mx-auto py-16 px-6">
-      {/* Información del candidato */}
       <div className="mb-8 p-4 bg-gray-100 rounded-lg">
         <h2 className="text-xl font-bold">{candidate.user.name}</h2>
         <p className="text-gray-700">{candidate.user.email}</p>
       </div>
 
-      <p className="text-gray-700 mb-6">
-        Menú de evaluación listo.
-      </p>
+      <p className="text-gray-700 mb-6">Menú de evaluación listo.</p>
     </div>
   );
 }
