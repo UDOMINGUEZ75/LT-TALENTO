@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 export default function CandidateDashboard() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const userId = searchParams.get("userId");
+  const userId = searchParams?.get("userId");
 
   const [candidate, setCandidate] = useState<any>(null);
   const [loading, setLoading] = useState(true);

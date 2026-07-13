@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 
 export default function SummaryPage() {
   const router = useRouter();
-  const params = new URLSearchParams(window.location.search);
+  const params = useSearchParams();
   const userId = params.get("userId");
 
   return (

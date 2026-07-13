@@ -15,7 +15,7 @@ export default function MenuPage() {
   const [candidate, setCandidate] = useState<Candidate | null>(null);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    const params = useSearchParams();
     const rawUserId = params.get("userId");
 
     // Validación fuerte
