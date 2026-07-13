@@ -2,7 +2,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/prisma";
 import OpenAI from "openai";
 import mammoth from "mammoth";
-import pdf from "pdf-parse";
+
+// IMPORTACIÓN CORRECTA DE PDF-PARSE (CommonJS)
+const pdf = require("pdf-parse");
 
 export const config = {
   api: {
@@ -24,13 +26,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       let text = "";
 
-      // PDF
+      // -----------------------------
+      // PDF PARSING (pdf-parse)
+      // -----------------------------
       if (req.headers["content-type"]?.includes("pdf")) {
         const data = await pdf(buffer);
         text = data.text;
       }
 
-      // WORD
+      // -----------------------------
+      // WORD PARSING (mammoth)
+      // -----------------------------
       if (
         req.headers["content-type"]?.includes("word") ||
         req.headers["content-type"]?.includes("officedocument")
@@ -39,7 +45,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         text = result.value;
       }
 
-      // AI
+      // -----------------------------
+      // AI EXTRACTOR
+      // -----------------------------
       const prompt = `
 Extrae del siguiente currículum la información estructurada del candidato.
 Devuélvela en JSON con este formato EXACTO:
