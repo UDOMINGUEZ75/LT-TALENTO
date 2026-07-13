@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 export default function RegistroExitContinue() {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  // Corrección estricta para TypeScript (strictNullChecks)
   const userId = searchParams?.get("userId") ?? "";
 
   function salir() {
