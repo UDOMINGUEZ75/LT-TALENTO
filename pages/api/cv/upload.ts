@@ -24,7 +24,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       let text = "";
 
-      // ⭐ PDF compatible con Vercel
       if (req.headers["content-type"]?.includes("pdf")) {
         const pdfDoc = await PDFDocument.load(buffer);
         const pages = pdfDoc.getPages();
@@ -37,7 +36,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         text = fullText;
       }
 
-      // ⭐ Word compatible con Vercel
       if (
         req.headers["content-type"]?.includes("word") ||
         req.headers["content-type"]?.includes("officedocument")
@@ -46,7 +44,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         text = result.value;
       }
 
-      // ⭐ IA
       const prompt = `
 Extrae del siguiente currículum la información estructurada del candidato.
 Devuélvela en JSON con este formato EXACTO:
