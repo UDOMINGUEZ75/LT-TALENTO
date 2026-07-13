@@ -2,7 +2,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/prisma";
 import OpenAI from "openai";
 import mammoth from "mammoth";
-import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.js";
+
+// PDFJS (compatible con Turbopack)
+import * as pdfjsLib from "pdfjs-dist/build/pdf.js";
+import "pdfjs-dist/build/pdf.worker.js";
 
 export const config = {
   api: {
@@ -28,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // PDF PARSING (pdfjs-dist)
       // -----------------------------
       if (req.headers["content-type"]?.includes("pdf")) {
-        const loadingTask = pdfjsLib.getDocument(buffer);
+        const loadingTask = pdfjsLib.getDocument({ data: buffer });
         const pdf = await loadingTask.promise;
 
         let fullText = "";
