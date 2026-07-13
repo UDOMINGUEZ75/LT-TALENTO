@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/prisma";
 import OpenAI from "openai";
-import { PDFDocument } from "pdf-lib";
 import mammoth from "mammoth";
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.js";
 
 export const config = {
   api: {
@@ -24,18 +24,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       let text = "";
 
+      // -----------------------------
+      // PDF PARSING (pdfjs-dist)
+      // -----------------------------
       if (req.headers["content-type"]?.includes("pdf")) {
-        const pdfDoc = await PDFDocument.load(buffer);
-        const pages = pdfDoc.getPages();
+        const loadingTask = pdfjsLib.getDocument(buffer);
+        const pdf = await loadingTask.promise;
 
         let fullText = "";
-        for (const page of pages) {
-          fullText += page.getTextContent()?.items?.map((i: any) => i.str).join(" ") + "\n";
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map((item: any) => item.str).join(" ");
+          fullText += pageText + "\n";
         }
 
         text = fullText;
       }
 
+      // -----------------------------
+      // WORD PARSING (mammoth)
+      // -----------------------------
       if (
         req.headers["content-type"]?.includes("word") ||
         req.headers["content-type"]?.includes("officedocument")
@@ -44,6 +54,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         text = result.value;
       }
 
+      // -----------------------------
+      // AI EXTRACTOR
+      // -----------------------------
       const prompt = `
 Extrae del siguiente currículum la información estructurada del candidato.
 Devuélvela en JSON con este formato EXACTO:
