@@ -22,7 +22,8 @@
       ]
     },
     "module": "esnext",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "strictNullChecks": true
   },
   "include": [
     "next-env.d.ts",
