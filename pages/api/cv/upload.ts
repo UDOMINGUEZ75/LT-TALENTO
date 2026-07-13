@@ -30,8 +30,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // PDF PARSING (pdf-parse)
       // -----------------------------
       if (req.headers["content-type"]?.includes("pdf")) {
-        const data = await pdf(buffer);
-        text = data.text;
+        try {
+          const data = await pdf(buffer);
+          text = data.text || "";
+        } catch (err) {
+          console.error("PDF parse error:", err);
+          text = "";
+        }
       }
 
       // -----------------------------
@@ -41,12 +46,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         req.headers["content-type"]?.includes("word") ||
         req.headers["content-type"]?.includes("officedocument")
       ) {
-        const result = await mammoth.extractRawText({ buffer });
-        text = result.value;
+        try {
+          const result = await mammoth.extractRawText({ buffer });
+          text = result.value || "";
+        } catch (err) {
+          console.error("Word parse error:", err);
+          text = "";
+        }
       }
 
       // -----------------------------
-      // AI EXTRACTOR
+      // AI EXTRACTOR (VERSIÓN SEGURA)
       // -----------------------------
       const prompt = `
 Extrae del siguiente currículum la información estructurada del candidato.
@@ -82,18 +92,44 @@ ${text}
         temperature: 0.2,
       });
 
-      const extracted = JSON.parse(completion.choices[0].message.content);
+      // -----------------------------
+      // JSON PARSE SEGURO
+      // -----------------------------
+      const raw = completion.choices?.[0]?.message?.content;
 
+      let extracted = {
+        headline: "",
+        summary: "",
+        experience: [],
+        education: [],
+        skills: [],
+        languages: [],
+      };
+
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          extracted = {
+            headline: parsed.headline || "",
+            summary: parsed.summary || "",
+            experience: parsed.experience || [],
+            education: parsed.education || [],
+            skills: parsed.skills || [],
+            languages: parsed.languages || [],
+          };
+        } catch (err) {
+          console.error("JSON parse error:", err);
+        }
+      } else {
+        console.warn("OpenAI devolvió content = null");
+      }
+
+      // -----------------------------
+      // GUARDAR EN PRISMA
+      // -----------------------------
       const updated = await prisma.candidate.update({
         where: { userId: Number(req.query.userId) },
-        data: {
-          headline: extracted.headline || "",
-          summary: extracted.summary || "",
-          experience: extracted.experience || [],
-          education: extracted.education || [],
-          skills: extracted.skills || [],
-          languages: extracted.languages || [],
-        },
+        data: extracted,
       });
 
       res.status(200).json({
