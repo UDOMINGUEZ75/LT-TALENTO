@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/prisma";
 import OpenAI from "openai";
-import { PDFDocument } from "pdf-lib";
 import mammoth from "mammoth";
 
 export const config = {
