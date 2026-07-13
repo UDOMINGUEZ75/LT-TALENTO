@@ -1,11 +1,13 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function PersonalPage() {
   const router = useRouter();
-  const params = new URLSearchParams(window.location.search);
-  const userId = params.get("userId");
+  const searchParams = useSearchParams();
+
+  // ⭐ Corrección estricta para TypeScript (strictNullChecks)
+  const userId = searchParams?.get("userId") ?? "";
 
   return (
     <div className="max-w-xl mx-auto py-16 px-6">
