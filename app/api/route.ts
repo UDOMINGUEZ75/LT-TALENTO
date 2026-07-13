@@ -1,117 +1,31 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
-// Regex para validar email
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-// Regex para validar contraseña (cuando la agregues)
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-
-export async function POST(req: Request) {
+export async function GET(req: Request) {
   try {
-    const data = await req.json();
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get("userId");
 
-    const { email, name, role, password } = data;
-
-    // Validación: email obligatorio
-    if (!email) {
+    if (!userId) {
       return NextResponse.json(
-        { error: "El correo es obligatorio." },
+        { error: "userId requerido" },
         { status: 400 }
       );
     }
 
-    // Validación: formato de email
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: "El formato del correo no es válido." },
-        { status: 400 }
-      );
-    }
-
-    // Normalizar email
-    const normalizedEmail = email.toLowerCase();
-
-    // Validación: duplicado
-    const existing = await prisma.user.findUnique({
-      where: { email: normalizedEmail },
-    });
-
-    if (existing) {
-      return NextResponse.json(
-        { error: "Este correo ya está registrado." },
-        { status: 400 }
-      );
-    }
-
-    // Validación de contraseña (cuando la actives)
-    if (password && !passwordRegex.test(password)) {
-      return NextResponse.json(
-        {
-          error:
-            "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula y un número.",
-        },
-        { status: 400 }
-      );
-    }
-
-    // Crear usuario
-    const user = await prisma.user.create({
-      data: {
-        email: normalizedEmail,
-        name: name ?? null,
-        role: role ?? "CANDIDATE",
+    const candidate = await prisma.candidate.findUnique({
+      where: { userId: Number(userId) },
+      include: {
+        user: true,
       },
     });
 
-    // Crear Candidate
-    if (role === "CANDIDATE") {
-      await prisma.candidate.create({
-        data: {
-          userId: user.id,
-          skills: data.skills ?? [],
-          headline: data.headline ?? "",
-          summary: data.summary ?? "",
-          experience: data.experience ?? null,
-          education: data.education ?? null,
-        },
-      });
-    }
-
-    // Crear Recruiter
-    if (role === "RECRUITER") {
-      await prisma.recruiter.create({
-        data: {
-          userId: user.id,
-          position: data.position ?? null,
-          phone: data.phone ?? null,
-          companyId: data.companyId ?? null,
-        },
-      });
-    }
-
-    return NextResponse.json({
-      message: "Usuario creado correctamente",
-      user,
-    });
+    return NextResponse.json({ candidate });
   } catch (error) {
-    console.error("Error creando usuario:", error);
-
-    if (String(error).includes("Unique constraint")) {
-      return NextResponse.json(
-        { error: "Este correo ya está registrado." },
-        { status: 400 }
-      );
-    }
-
+    console.error("Error obteniendo candidato:", error);
     return NextResponse.json(
-      { error: "Error creando usuario" },
+      { error: "Error interno del servidor" },
       { status: 500 }
     );
   }
-}
-
-export async function GET() {
-  const users = await prisma.user.findMany();
-  return NextResponse.json(users);
 }

@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
@@ -9,48 +7,40 @@ export async function POST(req: Request) {
 
     if (!name || !email) {
       return NextResponse.json(
-        { ok: false, error: "Nombre y correo son requeridos" },
+        { error: "Nombre y correo son requeridos" },
         { status: 400 }
       );
     }
 
-    // Verificar si ya existe
-    const existing = await prisma.user.findUnique({
+    // Buscar si ya existe
+    let user = await prisma.user.findUnique({
       where: { email },
     });
 
-    if (existing) {
-      return NextResponse.json(
-        { ok: true, user: existing, created: false },
-        { status: 200 }
-      );
+    // Si no existe, crearlo
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          name,
+          email,
+          candidate: {
+            create: {
+              status: "Pendiente",
+              headline: "",
+              summary: "",
+              experience: {},
+              education: {},
+            },
+          },
+        },
+      });
     }
 
-    // Crear usuario
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        role: "CANDIDATE",
-      },
-    });
-
-    // Crear candidato asociado
-    const candidate = await prisma.candidate.create({
-      data: {
-        userId: user.id,
-        status: "Pendiente",
-      },
-    });
-
-    return NextResponse.json(
-      { ok: true, user, candidate, created: true },
-      { status: 201 }
-    );
+    return NextResponse.json({ user });
   } catch (error) {
-    console.error("🔥 ERROR /api/user/create:", error);
+    console.error("Error creando usuario:", error);
     return NextResponse.json(
-      { ok: false, error: "Error interno" },
+      { error: "Error interno del servidor" },
       { status: 500 }
     );
   }

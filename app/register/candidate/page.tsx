@@ -3,100 +3,78 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function CandidateRegisterPage() {
+export default function RegisterPage() {
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  async function handleSubmit() {
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
     setError("");
 
-    if (!name.trim()) {
-      setError("Ingresa tu nombre.");
-      return;
+    try {
+      const res = await fetch("/api/user/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email }),
+      });
+
+      const data = await res.json();
+
+      if (!data.user) {
+        setError("No se pudo crear el usuario.");
+        setLoading(false);
+        return;
+      }
+
+      const userId = data.user.id;
+
+      // ⭐ REDIRECCIÓN CORRECTA AL DASHBOARD
+      router.push(`/candidate/dashboard?userId=${userId}`);
+    } catch (err) {
+      console.error(err);
+      setError("Error al registrar. Intenta nuevamente.");
+      setLoading(false);
     }
-
-    if (!email.trim()) {
-      setError("Ingresa tu correo.");
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError("Ingresa un correo válido.");
-      return;
-    }
-
-    const res = await fetch("/api/user/create", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email }),
-    });
-
-    const data = await res.json();
-
-    if (!data.ok) {
-      setError("No se pudo registrar el usuario.");
-      return;
-    }
-
-    // REDIRECCIÓN CORRECTA
-    router.push(`/candidate/evaluation/menu?userId=${data.user.id}`);
   }
 
   return (
-    <div style={{ padding: "2rem", maxWidth: "400px", margin: "0 auto" }}>
-      <h1 style={{ fontSize: "2rem", marginBottom: "1rem" }}>
-        Registro de Candidato
-      </h1>
+    <div className="max-w-xl mx-auto py-16 px-6">
+      <h1 className="text-3xl font-bold mb-6">Registro de candidato</h1>
 
-      <label>Nombre</label>
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        style={{
-          width: "100%",
-          padding: "0.5rem",
-          marginBottom: "1rem",
-          borderRadius: "6px",
-          border: "1px solid #ccc",
-        }}
-      />
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <input
+          type="text"
+          placeholder="Nombre completo"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="p-3 border rounded"
+          required
+        />
 
-      <label>Correo</label>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        style={{
-          width: "100%",
-          padding: "0.5rem",
-          marginBottom: "1rem",
-          borderRadius: "6px",
-          border: "1px solid #ccc",
-        }}
-      />
+        <input
+          type="email"
+          placeholder="Correo electrónico"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="p-3 border rounded"
+          required
+        />
 
-      {error && (
-        <p style={{ color: "red", marginBottom: "1rem" }}>{error}</p>
-      )}
+        {error && <p className="text-red-600">{error}</p>}
 
-      <button
-        onClick={handleSubmit}
-        style={{
-          width: "100%",
-          padding: "1rem",
-          background: "#0070f3",
-          color: "white",
-          borderRadius: "8px",
-          marginTop: "1rem",
-        }}
-      >
-        Continuar Registro
-      </button>
+        <button
+          type="submit"
+          disabled={loading}
+          className="p-3 bg-blue-600 text-white rounded"
+        >
+          {loading ? "Guardando..." : "Continuar"}
+        </button>
+      </form>
     </div>
   );
 }

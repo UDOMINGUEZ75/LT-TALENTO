@@ -8,66 +8,56 @@ export default function RegisterPage() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  async function handleContinue() {
-    if (!name || !email) {
-      setError("Por favor llena todos los campos.");
-      return;
-    }
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
 
-    try {
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email }),
-      });
+    const res = await fetch("/api/user/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email }),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
+    const userId = data.user.id;
 
-      if (!data.ok) {
-        setError(data.error || "Error desconocido.");
-        return;
-      }
-
-      // Redirige al menú con el userId correcto
-      router.push(`/candidate/evaluation/menu?userId=${data.user.id}`);
-    } catch (err) {
-      console.error("Error en registro:", err);
-      setError("Error en el servidor.");
-    }
+    // ⭐ REDIRECCIÓN CORRECTA AL DASHBOARD
+    router.push(`/candidate/dashboard?userId=${userId}`);
   }
 
   return (
-    <div className="max-w-md mx-auto p-6 space-y-4">
-      <h1 className="text-2xl font-bold">Continuar Registro</h1>
+    <div className="max-w-xl mx-auto py-16 px-6">
+      <h1 className="text-3xl font-bold mb-6">Registro de candidato</h1>
 
-      {error && <p className="text-red-600">{error}</p>}
-
-      <div>
-        <label className="block mb-1">Nombre</label>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
-          className="border p-2 w-full"
+          type="text"
+          placeholder="Nombre completo"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          className="p-3 border rounded"
+          required
         />
-      </div>
 
-      <div>
-        <label className="block mb-1">Correo</label>
         <input
-          className="border p-2 w-full"
+          type="email"
+          placeholder="Correo electrónico"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="p-3 border rounded"
+          required
         />
-      </div>
 
-      <button
-        onClick={handleContinue}
-        className="w-full py-3 bg-blue-600 text-white rounded-lg mt-4"
-      >
-        Continuar
-      </button>
+        <button
+          type="submit"
+          disabled={loading}
+          className="p-3 bg-blue-600 text-white rounded"
+        >
+          {loading ? "Guardando..." : "Continuar"}
+        </button>
+      </form>
     </div>
   );
 }
