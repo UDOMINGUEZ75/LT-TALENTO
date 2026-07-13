@@ -27,7 +27,8 @@ export default function CandidateDashboard() {
 
   const [cvFile, setCvFile] = useState<File | null>(null);
 
-  const userId = searchParams.get("userId");
+  // ⭐ CORRECCIÓN CRÍTICA PARA EL BUILD DE VERCEL
+  const userId = searchParams?.get("userId") ?? "";
 
   useEffect(() => {
     async function loadCandidate() {
