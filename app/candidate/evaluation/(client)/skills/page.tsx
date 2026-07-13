@@ -1,11 +1,12 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function SkillsPage() {
   const router = useRouter();
   const params = useSearchParams();
-  const userId = params.get("userId");
+
+  const userId = params?.get("userId") ?? "";
 
   return (
     <div className="max-w-xl mx-auto py-16 px-6">
@@ -15,7 +16,9 @@ export default function SkillsPage() {
 
       <button
         className="p-3 bg-green-600 text-white rounded"
-        onClick={() => router.push(`/candidate/evaluation/summary?userId=${userId}`)}
+        onClick={() =>
+          router.push(`/candidate/evaluation/summary?userId=${userId}`)
+        }
       >
         Guardar y finalizar
       </button>
