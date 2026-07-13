@@ -3,9 +3,8 @@ import { prisma } from "@/lib/prisma";
 import OpenAI from "openai";
 import mammoth from "mammoth";
 
-// PDFJS (compatible con Turbopack)
+// PDFJS compatible con Turbopack (sin worker)
 import * as pdfjsLib from "pdfjs-dist/build/pdf.js";
-import "pdfjs-dist/build/pdf.worker.js";
 
 export const config = {
   api: {
@@ -27,9 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       let text = "";
 
-      // -----------------------------
-      // PDF PARSING (pdfjs-dist)
-      // -----------------------------
+      // PDF
       if (req.headers["content-type"]?.includes("pdf")) {
         const loadingTask = pdfjsLib.getDocument({ data: buffer });
         const pdf = await loadingTask.promise;
@@ -46,9 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         text = fullText;
       }
 
-      // -----------------------------
-      // WORD PARSING (mammoth)
-      // -----------------------------
+      // WORD
       if (
         req.headers["content-type"]?.includes("word") ||
         req.headers["content-type"]?.includes("officedocument")
@@ -57,9 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         text = result.value;
       }
 
-      // -----------------------------
-      // AI EXTRACTOR
-      // -----------------------------
+      // AI
       const prompt = `
 Extrae del siguiente currículum la información estructurada del candidato.
 Devuélvela en JSON con este formato EXACTO:
