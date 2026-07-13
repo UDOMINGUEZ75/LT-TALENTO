@@ -4,7 +4,9 @@ import { useSearchParams } from "next/navigation";
 
 export default function EvaluationEntryPage() {
   const searchParams = useSearchParams();
-  const userId = searchParams.get("userId");
+
+  // ⭐ Corrección estricta para TypeScript (strictNullChecks)
+  const userId = searchParams?.get("userId") ?? "";
 
   const iniciar = () => {
     window.location.href = `/candidate/evaluation/menu?userId=${userId}`;
