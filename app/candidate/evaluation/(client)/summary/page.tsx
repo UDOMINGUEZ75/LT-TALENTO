@@ -1,11 +1,12 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function SummaryPage() {
   const router = useRouter();
   const params = useSearchParams();
-  const userId = params.get("userId");
+
+  const userId = params?.get("userId") ?? "";
 
   return (
     <div className="max-w-xl mx-auto py-16 px-6">
@@ -17,7 +18,9 @@ export default function SummaryPage() {
 
       <button
         className="p-3 bg-blue-600 text-white rounded"
-        onClick={() => router.push(`/candidate/evaluation/menu?userId=${userId}`)}
+        onClick={() =>
+          router.push(`/candidate/evaluation/menu?userId=${userId}`)
+        }
       >
         Volver al menú
       </button>
