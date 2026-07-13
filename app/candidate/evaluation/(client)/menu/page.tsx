@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 type Candidate = {
   id: number;
@@ -13,10 +14,10 @@ type Candidate = {
 
 export default function MenuPage() {
   const [candidate, setCandidate] = useState<Candidate | null>(null);
+  const params = useSearchParams();
 
   useEffect(() => {
-    const params = useSearchParams();
-    const rawUserId = params.get("userId");
+    const rawUserId = params?.get("userId");
 
     // Validación fuerte
     if (!rawUserId || isNaN(Number(rawUserId))) {
@@ -36,7 +37,7 @@ export default function MenuPage() {
     }
 
     loadCandidate();
-  }, []);
+  }, [params]);
 
   if (!candidate) return <p className="p-6">Cargando...</p>;
 
