@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/prisma";
 import OpenAI from "openai";
+import { PDFDocument } from "pdf-lib";
 import mammoth from "mammoth";
 
 export const config = {
@@ -23,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       let text = "";
 
-      // ⭐ PDF compatible con Vercel + Webpack
+      // ⭐ PDF compatible con Vercel
       if (req.headers["content-type"]?.includes("pdf")) {
         const pdfDoc = await PDFDocument.load(buffer);
         const pages = pdfDoc.getPages();
@@ -45,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         text = result.value;
       }
 
-      // ⭐ IA: extraer información
+      // ⭐ IA
       const prompt = `
 Extrae del siguiente currículum la información estructurada del candidato.
 Devuélvela en JSON con este formato EXACTO:
@@ -82,7 +83,6 @@ ${text}
 
       const extracted = JSON.parse(completion.choices[0].message.content);
 
-      // ⭐ Guardar en Prisma
       const updated = await prisma.candidate.update({
         where: { userId: Number(req.query.userId) },
         data: {
