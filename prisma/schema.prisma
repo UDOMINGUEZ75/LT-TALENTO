@@ -1,10 +1,168 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String?
+  email        String        @unique
+  password     String?
+  role         UserRole      @default(CANDIDATE)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  applications Application[]
+  candidate    Candidate?
+  recruiter    Recruiter?
+}
+
+model Candidate {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  userId       Int      @unique
+  cvUrl        String?
+  city         String?
+  status       String   @default("Pendiente")
+
+  experience   Json?
+  education    Json?
+  availability Json?
+  languages    Json?
+  preferences  Json?
+  skills       Json?
+
+  user         User     @relation(fields: [userId], references: [id])
+
+  personal     CandidatePersonal?
+  expSection   CandidateExperience?
+  eduSection   CandidateEducation?
+  prefSection  CandidatePreferences?
+  availSection CandidateAvailability?
+  docsSection  CandidateDocuments?
+
+  documents    Document[]
+}
+
+model CandidatePersonal {
+  id          Int       @id @default(autoincrement())
+  state       String?
+  city        String?
+  zone        String?
+  address     String?
+  phone       String?
+
+  candidateId Int       @unique
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
+}
+
+model CandidateExperience {
+  id          Int       @id @default(autoincrement())
+  company     String?
+  position    String?
+  years       Int?
+  description String?
+
+  candidateId Int       @unique
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
+}
+
+model CandidateEducation {
+  id             Int       @id @default(autoincrement())
+  school         String?
+  degree         String?
+  graduationYear Int?
+
+  candidateId    Int       @unique
+  candidate      Candidate @relation(fields: [candidateId], references: [id])
+}
+
+model CandidatePreferences {
+  id          Int       @id @default(autoincrement())
+  area        String?
+  salary      Int?
+  modality    String?
+
+  candidateId Int       @unique
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
+}
+
+model CandidateAvailability {
+  id          Int       @id @default(autoincrement())
+  schedule    String?
+  travel      Boolean?
+  relocate    Boolean?
+
+  candidateId Int       @unique
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
+}
+
+model CandidateDocuments {
+  id          Int       @id @default(autoincrement())
+  cvUrl       String?
+  ineUrl      String?
+  proofUrl    String?
+
+  candidateId Int       @unique
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
+}
+
+model Document {
+  id          Int       @id @default(autoincrement())
+  url         String
+  type        String
+  createdAt   DateTime  @default(now())
+
+  candidateId Int
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
+}
+
+model Recruiter {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  userId    Int       @unique
+  position  String?
+  phone     String?
+  companyId Int?
+
+  user      User      @relation(fields: [userId], references: [id])
+  vacancies Vacancy[]
+}
+
+model Vacancy {
+  id           Int           @id @default(autoincrement())
+  title        String
+  description  String?
+  location     String?
+  type         String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  recruiterId  Int?
+  recruiter    Recruiter?    @relation(fields: [recruiterId], references: [id])
+
+  applications Application[]
+}
+
+model Application {
+  id        Int               @id @default(autoincrement())
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  status    ApplicationStatus @default(PENDING)
+
+  userId    Int
+  vacancyId Int
+
+  user      User              @relation(fields: [userId], references: [id])
+  vacancy   Vacancy           @relation(fields: [vacancyId], references: [id])
 }
 
 enum UserRole {
@@ -18,172 +176,4 @@ enum ApplicationStatus {
   REVIEWING
   APPROVED
   REJECTED
-}
-
-model User {
-  id        Int       @id @default(autoincrement())
-  name      String?
-  email     String    @unique
-  password  String?
-  role      UserRole  @default(CANDIDATE)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  candidate    Candidate?
-  recruiter    Recruiter?
-  applications Application[]
-}
-
-model Candidate {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  userId Int  @unique
-  user   User @relation(fields: [userId], references: [id])
-
-  preferences String?
-  status      String   @default("Pendiente")
-
-  skills     String[]
-  headline   String?
-  summary    String?
-  experience Json?
-  education  Json?
-
-  personalData Json?
-
-  documents Document[]
-
-  personal     CandidatePersonal?
-  expSection   CandidateExperience?
-  eduSection   CandidateEducation?
-  prefSection  CandidatePreferences?
-  availSection CandidateAvailability?
-  docsSection  CandidateDocuments?
-}
-
-model CandidatePersonal {
-  id       Int     @id @default(autoincrement())
-  userId   Int     @unique
-
-  name     String?
-  email    String?
-  state    String?
-  city     String?
-  zone     String?
-  address  String?
-  phone    String?
-
-  candidate Candidate @relation(fields: [userId], references: [userId])
-}
-
-model CandidateExperience {
-  id        Int     @id @default(autoincrement())
-  userId    Int     @unique
-
-  company     String?
-  position    String?
-  years       Int?
-  description String?
-
-  candidate Candidate @relation(fields: [userId], references: [userId])
-}
-
-model CandidateEducation {
-  id        Int     @id @default(autoincrement())
-  userId    Int     @unique
-
-  school         String?
-  degree         String?
-  graduationYear Int?
-
-  candidate Candidate @relation(fields: [userId], references: [userId])
-}
-
-model CandidatePreferences {
-  id        Int     @id @default(autoincrement())
-  userId    Int     @unique
-
-  area     String?
-  salary   Int?
-  modality String?
-
-  candidate Candidate @relation(fields: [userId], references: [userId])
-}
-
-model CandidateAvailability {
-  id        Int     @id @default(autoincrement())
-  userId    Int     @unique
-
-  schedule String?
-  travel   Boolean?
-  relocate Boolean?
-
-  candidate Candidate @relation(fields: [userId], references: [userId])
-}
-
-model CandidateDocuments {
-  id        Int     @id @default(autoincrement())
-  userId    Int     @unique
-
-  cvUrl    String?
-  ineUrl   String?
-  proofUrl String?
-
-  candidate Candidate @relation(fields: [userId], references: [userId])
-}
-
-model Recruiter {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId Int  @unique
-  user   User @relation(fields: [userId], references: [id])
-
-  position  String?
-  phone     String?
-  companyId Int?
-
-  vacancies Vacancy[]
-}
-
-model Document {
-  id        Int      @id @default(autoincrement())
-  url       String
-  type      String
-  createdAt DateTime @default(now())
-
-  candidateId Int
-  candidate   Candidate @relation(fields: [candidateId], references: [id])
-}
-
-model Vacancy {
-  id          Int       @id @default(autoincrement())
-  title       String
-  description String?
-  location    String?
-  type        String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  recruiterId Int?
-  recruiter   Recruiter? @relation(fields: [recruiterId], references: [id])
-
-  applications Application[]
-}
-
-model Application {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  status ApplicationStatus @default(PENDING)
-
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
-
-  vacancyId Int
-  vacancy   Vacancy @relation(fields: [vacancyId], references: [id])
 }

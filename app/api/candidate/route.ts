@@ -1,44 +1,25 @@
-import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient();
-
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
-    const userId = searchParams?.get("userId");
+    const id = req.nextUrl.searchParams.get("id");
 
-    if (!userId) {
+    if (!id) {
       return NextResponse.json(
-        { ok: false, error: "userId es requerido" },
+        { ok: false, message: "ID no proporcionado" },
         { status: 400 }
       );
     }
 
     const candidate = await prisma.candidate.findUnique({
-      where: { userId: Number(userId) },
-      select: {
-        id: true,
-        status: true,
-        preferences: true,
-        skills: true,
-        headline: true,
-        summary: true,
-        experience: true,
-        education: true,
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-      },
+      where: { id: Number(id) },
+      include: { user: true },
     });
 
     if (!candidate) {
       return NextResponse.json(
-        { ok: false, error: "Candidato no encontrado" },
+        { ok: false, message: "Perfil no encontrado" },
         { status: 404 }
       );
     }
@@ -46,14 +27,15 @@ export async function GET(req: Request) {
     return NextResponse.json(
       {
         ok: true,
-        candidate,
+        user: candidate.user,
+        profile: candidate,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("🔥 ERROR API /candidate:", error);
+    console.error("Error en /api/candidate:", error);
     return NextResponse.json(
-      { ok: false, error: "Error interno del servidor" },
+      { ok: false, message: "Error interno" },
       { status: 500 }
     );
   }

@@ -30,6 +30,7 @@ export default function Navbar() {
           <Link href="#proceso">Proceso</Link>
           <Link href="#servicios">Servicios</Link>
           <Link href="#contacto">Contacto</Link>
+          <Link href="#vacantes">Vacantes</Link>
         </div>
 
         {/* Botón hamburguesa */}
@@ -49,6 +50,7 @@ export default function Navbar() {
           <Link href="#proceso" onClick={() => setOpen(false)}>Proceso</Link>
           <Link href="#servicios" onClick={() => setOpen(false)}>Servicios</Link>
           <Link href="#contacto" onClick={() => setOpen(false)}>Contacto</Link>
+          <Link href="#vacantes" onClick={() => setOpen(false)}>Vacantes</Link>
         </div>
       )}
     </nav>

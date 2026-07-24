@@ -1,3 +1,7 @@
 export default function Header() {
-  return <div>Header</div>;
+  return (
+    <header style={{ background: "black", color: "white", padding: "20px" }}>
+      HEADER DE PRUEBA
+    </header>
+  );
 }
