@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useEffect, useState, use } from "react";
+import Link from "next/link";
 
-export default function ActualizarReclutador() {
-  const params = useParams();
-  const id = params?.id as string;
+export const dynamic = "force-dynamic";
+
+export default function ActualizarReclutador({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = use(params);
+  const id = resolvedParams?.id;
 
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({
@@ -131,12 +133,12 @@ export default function ActualizarReclutador() {
             >
               Guardar Cambios 💾
             </button>
-            <a
-              href="/reclutador/dashboard"
-              className="px-6 py-4 bg-[#0A1A3A] text-white font-bold text-lg rounded-xl hover:bg-[#142850] transition text-center"
+            <Link
+              href={`/reclutador/dashboard?id=${id}`}
+              className="px-6 py-4 bg-[#0A1A3A] text-white font-bold text-lg rounded-xl hover:bg-[#142850] transition text-center flex items-center justify-center"
             >
               Ir al Dashboard →
-            </a>
+            </Link>
           </div>
         </form>
       </div>
