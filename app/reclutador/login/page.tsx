@@ -6,18 +6,9 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-function RegistroReclutadorForm() {
+function LoginReclutadorForm() {
   const router = useRouter();
-
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    company: "",
-    phone: "",
-  });
-
+  const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -28,39 +19,27 @@ function RegistroReclutadorForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
-
-    if (form.password !== form.confirmPassword) {
-      setErrorMsg("Las contraseñas no coinciden");
-      return;
-    }
-
     setLoading(true);
 
     try {
-      const res = await fetch("/api/reclutador/register", {
+      const res = await fetch("/api/reclutador/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          password: form.password,
-          company: form.company,
-          phone: form.phone,
-        }),
+        body: JSON.stringify(form),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        setErrorMsg(data.error || "Error al registrarse");
+        setErrorMsg(data.error || "Credenciales incorrectas");
         return;
       }
 
-      alert("¡Registro de reclutador exitoso!");
+      // Redirige al panel de actualización con su ID correspondiente
       router.push(`/reclutador/actualizar/${data.recruiterId}`);
     } catch (err) {
       console.error("Error:", err);
-      setErrorMsg("Error de red al registrarse");
+      setErrorMsg("Error de red al iniciar sesión");
     } finally {
       setLoading(false);
     }
@@ -69,8 +48,8 @@ function RegistroReclutadorForm() {
   return (
     <section className="w-full min-h-screen bg-[#0A1A3A] text-white flex items-center justify-center px-6 py-12">
       <div className="max-w-md w-full bg-white text-[#0A1A3A] p-8 rounded-2xl shadow-xl">
-        <h1 className="text-2xl font-black text-center text-[#C9A86A] mb-2">Registro de Reclutador</h1>
-        <p className="text-center text-gray-500 text-sm mb-6">Crea tu cuenta corporativa para gestionar vacantes</p>
+        <h1 className="text-2xl font-black text-center text-[#C9A86A] mb-2">Acceso Reclutadores</h1>
+        <p className="text-center text-gray-500 text-sm mb-6">Ingresa tus datos para actualizar tu información</p>
 
         {errorMsg && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mb-4 text-sm text-center">
@@ -79,18 +58,6 @@ function RegistroReclutadorForm() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-semibold mb-1">Nombre Completo</label>
-            <input
-              name="name"
-              required
-              value={form.name}
-              onChange={handleChange}
-              className="w-full border p-3 rounded-xl bg-gray-50 text-gray-900 text-sm"
-              placeholder="Ej. Ana Pérez"
-            />
-          </div>
-
           <div>
             <label className="block text-sm font-semibold mb-1">Correo Electrónico</label>
             <input
@@ -117,47 +84,12 @@ function RegistroReclutadorForm() {
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-semibold mb-1">Confirmar Contraseña</label>
-            <input
-              name="confirmPassword"
-              type="password"
-              required
-              value={form.confirmPassword}
-              onChange={handleChange}
-              className="w-full border p-3 rounded-xl bg-gray-50 text-gray-900 text-sm"
-              placeholder="••••••••"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold mb-1">Empresa</label>
-            <input
-              name="company"
-              value={form.company}
-              onChange={handleChange}
-              className="w-full border p-3 rounded-xl bg-gray-50 text-gray-900 text-sm"
-              placeholder="Nombre de la empresa"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold mb-1">Teléfono</label>
-            <input
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-              className="w-full border p-3 rounded-xl bg-gray-50 text-gray-900 text-sm"
-              placeholder="6141234567"
-            />
-          </div>
-
           <button
             type="submit"
             disabled={loading}
             className="w-full py-3.5 bg-[#C9A86A] text-[#0A1A3A] font-bold rounded-xl hover:bg-[#d8b97a] transition shadow-md mt-6"
           >
-            {loading ? "Registrando..." : "Crear Cuenta de Reclutador 🚀"}
+            {loading ? "Verificando..." : "Ingresar a Actualizar Datos ➔"}
           </button>
         </form>
 
@@ -171,10 +103,10 @@ function RegistroReclutadorForm() {
   );
 }
 
-export default function RegistroReclutadorPage() {
+export default function LoginReclutadorPage() {
   return (
     <Suspense fallback={<div className="min-h-screen bg-[#0A1A3A] text-white flex items-center justify-center">Cargando...</div>}>
-      <RegistroReclutadorForm />
+      <LoginReclutadorForm />
     </Suspense>
   );
 }
