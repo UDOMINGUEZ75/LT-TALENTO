@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState, use } from "react";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
-export const dynamic = "force-dynamic";
-
-export default function ActualizarReclutador({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = use(params);
-  const id = resolvedParams?.id;
+export default function ActualizarReclutador() {
+  const params = useParams();
+  const router = useRouter();
+  const id = params?.id as string;
 
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({
@@ -17,8 +17,16 @@ export default function ActualizarReclutador({ params }: { params: Promise<{ id:
     phone: "",
   });
   const [success, setSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
+    // Validación de seguridad por sesión
+    const loggedId = localStorage.getItem("recruiterId");
+    if (!loggedId || loggedId !== id) {
+      router.push("/reclutador/login");
+      return;
+    }
+
     if (!id) return;
     async function load() {
       try {
@@ -33,15 +41,18 @@ export default function ActualizarReclutador({ params }: { params: Promise<{ id:
               phone: data.recruiter.phone || "",
             });
           }
+        } else {
+          setErrorMsg("No se pudieron cargar los datos.");
         }
       } catch (err) {
         console.error("Error al cargar reclutador:", err);
+        setErrorMsg("Error de conexión.");
       } finally {
         setLoading(false);
       }
     }
     load();
-  }, [id]);
+  }, [id, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -49,6 +60,7 @@ export default function ActualizarReclutador({ params }: { params: Promise<{ id:
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg("");
     try {
       const res = await fetch(`/api/reclutador/${id}`, {
         method: "PUT",
@@ -58,7 +70,7 @@ export default function ActualizarReclutador({ params }: { params: Promise<{ id:
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.error || "Error al actualizar");
+        setErrorMsg(data.error || "Error al actualizar");
         return;
       }
 
@@ -66,21 +78,33 @@ export default function ActualizarReclutador({ params }: { params: Promise<{ id:
       setTimeout(() => setSuccess(false), 4000);
     } catch (err) {
       console.error("Error:", err);
-      alert("Error al guardar cambios");
+      setErrorMsg("Error al guardar cambios");
     }
   };
 
-  if (loading) return <p className="text-white p-10 text-center">Cargando perfil...</p>;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0A1A3A] text-white flex items-center justify-center text-xl">
+        Cargando perfil...
+      </div>
+    );
+  }
 
   return (
-    <section className="w-full min-h-screen bg-[#0A1A3A] text-white pt-20 pb-24 px-6">
-      <div className="max-w-xl mx-auto bg-white text-[#0A1A3A] p-10 rounded-2xl shadow-xl">
+    <section className="w-full min-h-screen bg-[#0A1A3A] text-white pt-20 pb-24 px-6 flex items-center justify-center">
+      <div className="max-w-xl w-full bg-white text-[#0A1A3A] p-10 rounded-2xl shadow-xl">
         <h1 className="text-3xl font-bold text-center text-[#C9A86A] mb-2">Actualizar Datos de Reclutador</h1>
         <p className="text-center text-gray-600 mb-8 font-medium">Gestiona tu información corporativa</p>
 
         {success && (
           <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-xl text-center font-semibold">
             ¡Cambios guardados con éxito! ✅
+          </div>
+        )}
+
+        {errorMsg && (
+          <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-xl text-center font-semibold">
+            {errorMsg}
           </div>
         )}
 

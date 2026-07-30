@@ -35,6 +35,9 @@ function LoginReclutadorForm() {
         return;
       }
 
+      // Guardamos la sesión en el navegador para que la validación de seguridad la reconozca
+      localStorage.setItem("recruiterId", data.recruiterId);
+
       // Redirige al panel de actualización con su ID correspondiente
       router.push(`/reclutador/actualizar/${data.recruiterId}`);
     } catch (err) {
