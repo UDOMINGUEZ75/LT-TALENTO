@@ -57,7 +57,7 @@ function RegistroReclutadorForm() {
       }
 
       alert("¡Registro de reclutador exitoso!");
-      router.push(`/reclutador/actualizar/${data.recruiterId}`);
+      router.push(`/reclutador/dashboard/${data.recruiterId}`);
     } catch (err) {
       console.error("Error:", err);
       setErrorMsg("Error de red al registrarse");
