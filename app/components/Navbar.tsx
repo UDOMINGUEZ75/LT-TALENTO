@@ -9,7 +9,7 @@ export default function Navbar() {
 
   // Función para hacer scroll suave hacia la sección
   const scrollToSection = (sectionId: string) => {
-    setOpen(false); // Cierra el menú móvil si está abierto
+    setOpen(false);
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
@@ -40,14 +40,6 @@ export default function Navbar() {
           <span onClick={() => scrollToSection("servicios")} className="hover:text-[#C9A86A] transition">Servicios</span>
           <span onClick={() => scrollToSection("contacto")} className="hover:text-[#C9A86A] transition">Contacto</span>
           <span onClick={() => scrollToSection("vacantes")} className="hover:text-[#C9A86A] transition">Vacantes</span>
-          
-          {/* Botón de Reclutadores */}
-          <Link 
-            href="/reclutador/login" 
-            className="px-4 py-2 bg-[#0A1A3A] text-white rounded-xl hover:bg-[#162e5d] transition text-sm"
-          >
-            Empresas / Reclutadores
-          </Link>
         </div>
 
         {/* Botón hamburguesa para móvil */}
@@ -69,13 +61,6 @@ export default function Navbar() {
           <span onClick={() => scrollToSection("servicios")} className="hover:text-[#C9A86A] transition">Servicios</span>
           <span onClick={() => scrollToSection("contacto")} className="hover:text-[#C9A86A] transition">Contacto</span>
           <span onClick={() => scrollToSection("vacantes")} className="hover:text-[#C9A86A] transition">Vacantes</span>
-          <Link 
-            href="/reclutador/login" 
-            onClick={() => setOpen(false)} 
-            className="w-full py-3 bg-[#0A1A3A] text-white text-center rounded-xl transition text-base"
-          >
-            Empresas / Reclutadores
-          </Link>
         </div>
       )}
     </nav>
