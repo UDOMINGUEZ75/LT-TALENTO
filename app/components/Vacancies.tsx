@@ -42,7 +42,7 @@ export default function Vacancies() {
       location: "Chihuahua, CHIH",
       type: "Tiempo completo",
       salaryMin: 15000,
-      salaryMax: 22000,
+      salaryMax: 19000,
       description:
         "Carrera técnica en Mantenimiento Industrial, Electromecánica, Mecánica o Electricidad. Experiencia de 2-3 años. Soldadura MIG/TIG, electricidad industrial, sistemas neumáticos e hidráulicos. Horario: Lunes a Viernes de 7 a 17 hrs. Pago semanal sin semana de fondo.",
     },
