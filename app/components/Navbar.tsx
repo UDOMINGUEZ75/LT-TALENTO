@@ -70,7 +70,7 @@ export default function Navbar() {
           <span onClick={() => scrollToSection("contacto")} className="hover:text-[#C9A86A] transition">Contacto</span>
           <span onClick={() => scrollToSection("vacantes")} className="hover:text-[#C9A86A] transition">Vacantes</span>
           <Link 
-            href="/reclutador/login1" 
+            href="/reclutador/login" 
             onClick={() => setOpen(false)} 
             className="w-full py-3 bg-[#0A1A3A] text-white text-center rounded-xl transition text-base"
           >
