@@ -1,15 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
-// Forzar renderizado dinámico para evitar errores de compilación con useSearchParams
 export const dynamic = "force-dynamic";
 
-export default function ReclutadorDashboard() {
+function DashboardContent() {
   const searchParams = useSearchParams();
-  const id = searchParams.get("id") || "1"; // Obtiene el ID de la URL o usa 1 por defecto
+  const id = searchParams.get("id") || "1";
 
   const [recruiter, setRecruiter] = useState({ name: "", company: "", email: "" });
   const [loading, setLoading] = useState(true);
@@ -79,10 +78,9 @@ export default function ReclutadorDashboard() {
           </div>
         </div>
 
-        {/* Cuadrícula de Acciones Rápidas (Grid de Opciones) */}
+        {/* Cuadrícula de Acciones Rápidas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          {/* Opción 1: Publicar Vacante */}
           <div className="bg-white text-[#0A1A3A] p-6 rounded-2xl shadow-xl flex flex-col justify-between border-t-4 border-[#C9A86A]">
             <div>
               <div className="text-3xl mb-3">📢</div>
@@ -99,7 +97,6 @@ export default function ReclutadorDashboard() {
             </Link>
           </div>
 
-          {/* Opción 2: Ver Candidatos Postulados */}
           <div className="bg-white text-[#0A1A3A] p-6 rounded-2xl shadow-xl flex flex-col justify-between border-t-4 border-[#C9A86A]">
             <div>
               <div className="text-3xl mb-3">👥</div>
@@ -116,7 +113,6 @@ export default function ReclutadorDashboard() {
             </Link>
           </div>
 
-          {/* Opción 3: Mis Vacantes Activas */}
           <div className="bg-white text-[#0A1A3A] p-6 rounded-2xl shadow-xl flex flex-col justify-between border-t-4 border-[#C9A86A]">
             <div>
               <div className="text-3xl mb-3">📊</div>
@@ -137,5 +133,13 @@ export default function ReclutadorDashboard() {
 
       </main>
     </div>
+  );
+}
+
+export default function ReclutadorDashboard() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#0A1A3A] text-white flex items-center justify-center text-xl">Cargando panel...</div>}>
+      <DashboardContent />
+    </Suspense>
   );
 }
