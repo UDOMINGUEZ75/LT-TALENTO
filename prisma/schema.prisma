@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Candidate {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  password     String
+  status       String   @default("Nuevo")
+  cvUrl        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  availability CandidateAvailability?
+  documents    CandidateDocuments[]
+  education    CandidateEducation?
+  experience   CandidateExperience?
+  personal     CandidatePersonal?
+  preferences  CandidatePreferences?
+}
+
+model CandidatePersonal {
+  id          Int      @id @default(autoincrement())
+  candidateId Int      @unique
+  state       String?
+  city        String?
+  zone        String?
+  address     String?
+  phone       String?
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+}
+
+model CandidateExperience {
+  id          Int      @id @default(autoincrement())
+  candidateId Int      @unique
+  company     String?
+  position    String?
+  years       Int?
+  description String?
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+}
+
+model CandidateEducation {
+  id             Int      @id @default(autoincrement())
+  candidateId    Int      @unique
+  school         String?
+  degree         String?
+  graduationYear Int?
+  candidate      Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+}
+
+model CandidateAvailability {
+  id          Int      @id @default(autoincrement())
+  candidateId Int      @unique
+  schedule    String?
+  travel      Boolean?  @default(false)
+  relocate    Boolean?  @default(false)
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+}
+
+model CandidatePreferences {
+  id          Int      @id @default(autoincrement())
+  candidateId Int      @unique
+  area        String?
+  salary      Int?
+  modality    String?
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+}
+
+model CandidateDocuments {
+  id          Int      @id @default(autoincrement())
+  candidateId Int
+  url         String
+  type        String
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+}
+
+// ==========================================
+// NUEVO MODELO DE RECLUTADORES
+// ==========================================
+model Recruiter {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  company   String?
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
