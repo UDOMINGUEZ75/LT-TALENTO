@@ -22,27 +22,27 @@ export default function Page() {
       </section>
 
       {/* VACANTES */}
-      <section className="max-w-7xl mx-auto px-6 pb-16">
+      <section id="vacantes" className="max-w-7xl mx-auto px-6 pb-16">
         <Vacancies />
       </section>
 
       {/* ABOUT */}
-      <section className="max-w-7xl mx-auto px-6 py-12">
+      <section id="nosotros" className="max-w-7xl mx-auto px-6 py-12">
         <About />
       </section>
 
       {/* PROCESS */}
-      <section className="max-w-7xl mx-auto px-6 py-12">
+      <section id="proceso" className="max-w-7xl mx-auto px-6 py-12">
         <Process />
       </section>
 
       {/* SERVICES */}
-      <section className="max-w-7xl mx-auto px-6 py-12">
+      <section id="servicios" className="max-w-7xl mx-auto px-6 py-12">
         <Services />
       </section>
 
-      {/* CTA */}
-      <section className="max-w-7xl mx-auto px-6 py-12">
+      {/* CTA / CONTACTO */}
+      <section id="contacto" className="max-w-7xl mx-auto px-6 py-12">
         <CTA />
       </section>
 
