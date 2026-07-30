@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
+// Forzar renderizado dinámico para evitar errores de compilación con useSearchParams
+export const dynamic = "force-dynamic";
+
 export default function ReclutadorDashboard() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id") || "1"; // Obtiene el ID de la URL o usa 1 por defecto
