@@ -36,7 +36,7 @@ export default function RegistroReclutador() {
       }
 
       alert("¡Registro de reclutador exitoso!");
-      router.push(`/reclutador/actualizar/${data.recruiterId}`);
+      router.push(`/reclutador/dashboard?id=${data.recruiterId}`);
     } catch (err) {
       console.error("Error:", err);
       alert("Error de red al registrarse");
