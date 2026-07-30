@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+export const dynamic = "force-dynamic";
+
 export default function Vacancies() {
   const allVacancies = [
     {
@@ -34,11 +36,21 @@ export default function Vacancies() {
       description:
         "Supervisión de procesos de pintura electrostática, control de producción, indicadores y gestión de personal.",
     },
+    {
+      id: 4,
+      title: "Técnico de Mantenimiento",
+      location: "Chihuahua, CHIH",
+      type: "Tiempo completo",
+      salaryMin: 15000,
+      salaryMax: 22000,
+      description:
+        "Carrera técnica en Mantenimiento Industrial, Electromecánica, Mecánica o Electricidad. Experiencia de 2-3 años. Soldadura MIG/TIG, electricidad industrial, sistemas neumáticos e hidráulicos. Horario: Lunes a Viernes de 7 a 17 hrs. Pago semanal sin semana de fondo.",
+    },
   ];
 
-  const titles = [...new Set(allVacancies.map(v => v.title))];
-  const locations = [...new Set(allVacancies.map(v => v.location))];
-  const types = [...new Set(allVacancies.map(v => v.type))];
+  const titles = [...new Set(allVacancies.map((v) => v.title))];
+  const locations = [...new Set(allVacancies.map((v) => v.location))];
+  const types = [...new Set(allVacancies.map((v) => v.type))];
 
   const [titleFilter, setTitleFilter] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
@@ -117,32 +129,35 @@ export default function Vacancies() {
           {filteredVacancies.map((v) => (
             <div
               key={v.id}
-              className="p-6 rounded-xl transition bg-transparent"
+              className="p-6 rounded-xl transition bg-[#0f234d] border border-[#C9A86A]/20 shadow-lg flex flex-col justify-between"
             >
-              <h3 className="text-xl font-semibold mb-1 text-[#C9A86A]">
-                {v.title}
-              </h3>
+              <div>
+                <h3 className="text-xl font-semibold mb-1 text-[#C9A86A]">
+                  {v.title}
+                </h3>
 
-              <p>{v.location}</p>
-              <p className="text-sm">{v.type}</p>
+                <p className="text-gray-300 font-medium">{v.location}</p>
+                <p className="text-sm text-gray-400">{v.type}</p>
 
-              <p className="mt-4">
-                <strong className="text-[#C9A86A]">Sueldo:</strong> ${v.salaryMin.toLocaleString()} a ${v.salaryMax.toLocaleString()}
-              </p>
+                <p className="mt-4">
+                  <strong className="text-[#C9A86A]">Sueldo:</strong> ${v.salaryMin.toLocaleString()} a ${v.salaryMax.toLocaleString()} MXN
+                </p>
 
-              <p className="mt-3 text-sm leading-relaxed">
-                {v.description}
-              </p>
+                <p className="mt-3 text-sm leading-relaxed text-gray-200">
+                  {v.description}
+                </p>
+              </div>
 
               <button
+                onClick={() => alert(`Para postularte a "${v.title}", por favor envía tu CV por WhatsApp al 614 398 1235`)}
                 className="
-                  mt-5 w-full px-4 py-2
+                  mt-5 w-full px-4 py-2.5
                   bg-[#C9A86A] hover:bg-[#D4AF37]
                   text-[#0A1A3A] font-semibold
-                  rounded-lg transition
+                  rounded-lg transition shadow-md
                 "
               >
-                Ver detalles
+                Postularme / Ver detalles
               </button>
             </div>
           ))}

@@ -18,7 +18,7 @@ export default function Hero() {
 
         {/* Slogan Actualizado */}
         <p className="mt-4 text-lg sm:text-xl md:text-2xl text-white font-light max-w-2xl mx-auto leading-relaxed">
-          Conectando el ADN exacto de tu empresa con el futuro.
+           CONECTAMOS TALENTO, IMPULSAMOS FUTUROS.
         </p>
 
         {/* Botones en dos columnas */}
