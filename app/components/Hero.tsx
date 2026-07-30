@@ -71,7 +71,7 @@ export default function Hero() {
             </Link>
 
             <Link
-              href="/reclutador/login"
+              href="/reclutador/actualizar/1"
               className="
                 px-8 py-3.5 bg-white hover:bg-gray-200
                 text-[#0A1A3A] font-medium rounded-lg shadow-lg
