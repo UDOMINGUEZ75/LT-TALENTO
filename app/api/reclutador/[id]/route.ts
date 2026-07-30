@@ -1,68 +1,67 @@
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-export const runtime = "nodejs";
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
 
-import { NextRequest, NextResponse } from "next/server";
+const prisma = new PrismaClient();
 
+// GET: Obtener los datos del reclutador para rellenar el formulario
 export async function GET(
-  req: NextRequest,
-  context: { params: Promise<{ id: string }> | { id: string } }
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { prisma } = await import("@/lib/prisma");
-    const rawParams = await Promise.resolve(context.params);
-    const id = Number(rawParams?.id);
+    const { id } = await params;
+    const recruiterId = parseInt(id, 10);
 
-    if (!id || isNaN(id)) {
+    if (isNaN(recruiterId)) {
       return NextResponse.json({ error: "ID inválido" }, { status: 400 });
     }
 
     const recruiter = await prisma.recruiter.findUnique({
-      where: { id },
-      select: { id: true, name: true, email: true, company: true, phone: true },
+      where: { id: recruiterId },
     });
 
     if (!recruiter) {
       return NextResponse.json({ error: "Reclutador no encontrado" }, { status: 404 });
     }
 
-    return NextResponse.json({ recruiter });
+    return NextResponse.json({ recruiter }, { status: 200 });
   } catch (error) {
     console.error("Error al obtener reclutador:", error);
     return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
   }
 }
 
+// PUT: Guardar los cambios actualizados del reclutador
 export async function PUT(
-  req: NextRequest,
-  context: { params: Promise<{ id: string }> | { id: string } }
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { prisma } = await import("@/lib/prisma");
-    const rawParams = await Promise.resolve(context.params);
-    const id = Number(rawParams?.id);
+    const { id } = await params;
+    const recruiterId = parseInt(id, 10);
 
-    if (!id || isNaN(id)) {
+    if (isNaN(recruiterId)) {
       return NextResponse.json({ error: "ID inválido" }, { status: 400 });
     }
 
-    const body = await req.json().catch(() => null);
-    if (!body) {
-      return NextResponse.json({ error: "Cuerpo inválido" }, { status: 400 });
-    }
+    const body = await request.json();
+    const { name, company, phone } = body;
 
-    const updated = await prisma.recruiter.update({
-      where: { id },
+    const updatedRecruiter = await prisma.recruiter.update({
+      where: { id: recruiterId },
       data: {
-        name: body.name,
-        company: body.company,
-        phone: body.phone,
+        name,
+        company,
+        phone,
       },
     });
 
-    return NextResponse.json({ ok: true, updated });
+    return NextResponse.json(
+      { message: "Actualizado con éxito", recruiter: updatedRecruiter },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error al actualizar reclutador:", error);
-    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
+    return NextResponse.json({ error: "Error al actualizar los datos" }, { status: 500 });
   }
 }
