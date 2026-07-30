@@ -1,129 +1,138 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 export default function ReclutadorDashboard() {
-  const [candidates, setCandidates] = useState<any[]>([]);
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id") || "1"; // Obtiene el ID de la URL o usa 1 por defecto
+
+  const [recruiter, setRecruiter] = useState({ name: "", company: "", email: "" });
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    async function fetchCandidates() {
+    async function fetchDashboardData() {
       try {
-        const res = await fetch("/api/reclutador/candidatos", { cache: "no-store" });
+        const res = await fetch(`/api/reclutador/${id}`, { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
-          setCandidates(data.candidates || []);
+          if (data.recruiter) {
+            setRecruiter(data.recruiter);
+          }
         }
       } catch (err) {
-        console.error("Error cargando candidatos:", err);
+        console.error("Error cargando datos del dashboard:", err);
       } finally {
         setLoading(false);
       }
     }
-    fetchCandidates();
-  }, []);
-
-  const filteredCandidates = candidates.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase()) ||
-    c.email.toLowerCase().includes(search.toLowerCase()) ||
-    c.preferences?.area?.toLowerCase().includes(search.toLowerCase())
-  );
+    fetchDashboardData();
+  }, [id]);
 
   if (loading) {
-    return (
-      <div className="w-full min-h-screen bg-[#0A1A3A] text-white flex items-center justify-center">
-        <p className="text-xl font-semibold animate-pulse">Cargando panel de reclutamiento...</p>
-      </div>
-    );
+    return <div className="min-h-screen bg-[#0A1A3A] text-white flex items-center justify-center text-xl">Cargando panel de control...</div>;
   }
 
   return (
-    <section className="w-full min-h-screen bg-[#0A1A3A] text-white py-16 px-6">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-[#0A1A3A] text-white">
+      {/* Barra superior del Dashboard */}
+      <header className="bg-[#0e244f] border-b border-[#1c366b] py-4 px-8 flex justify-between items-center shadow-md">
+        <div>
+          <h1 className="text-xl font-bold text-[#C9A86A]">LT-TALENTO | Portal de Empresas</h1>
+          <p className="text-xs text-gray-300">Bienvenido, <span className="font-semibold text-white">{recruiter.name || "Reclutador"}</span> ({recruiter.company || "Corporativo"})</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/"
+            className="text-sm bg-red-600/80 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition"
+          >
+            Cerrar Sesión
+          </Link>
+        </div>
+      </header>
+
+      {/* Contenido Principal */}
+      <main className="max-w-6xl mx-auto px-6 py-10">
         
-        {/* Encabezado */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10 border-b border-[#C9A86A]/40 pb-6">
+        {/* Tarjeta de bienvenida / Resumen */}
+        <div className="bg-gradient-to-r from-[#112a5c] to-[#1a3a75] border border-[#C9A86A]/30 p-8 rounded-2xl shadow-xl mb-10 flex flex-col md:flex-row justify-between items-center gap-6">
           <div>
-            <span className="text-xs font-extrabold uppercase tracking-widest text-[#C9A86A]">
-              Panel Interno • LT Talento
+            <span className="bg-[#C9A86A] text-[#0A1A3A] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+              Panel Activo
             </span>
-            <h1 className="text-3xl font-black mt-1">Dashboard de Reclutamiento</h1>
-            <p className="text-gray-300 text-sm mt-1">
-              Total de candidatos registrados: <strong className="text-[#C9A86A]">{candidates.length}</strong>
+            <h2 className="text-3xl font-extrabold mt-3 text-white">Gestión de Talento y Vacantes</h2>
+            <p className="text-gray-300 mt-2 max-w-xl text-sm leading-relaxed">
+              Desde aquí puedes administrar tus ofertas de empleo, revisar candidatos postulados con inteligencia artificial y configurar los datos de tu empresa.
             </p>
           </div>
-
-          <a
-            href="/"
-            className="px-5 py-2.5 bg-gray-800 text-white font-semibold text-sm rounded-xl hover:bg-gray-700 transition border border-gray-600"
-          >
-            ← Volver al Inicio
-          </a>
+          <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+            <Link
+              href={`/reclutador/actualizar/${id}`}
+              className="px-6 py-3 bg-white text-[#0A1A3A] font-semibold rounded-xl hover:bg-gray-100 transition text-center shadow"
+            >
+              ⚙️ Editar Mis Datos
+            </Link>
+          </div>
         </div>
 
-        {/* Buscador */}
-        <div className="mb-8">
-          <input
-            type="text"
-            placeholder="Buscar por nombre, correo o área de especialidad..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full md:w-96 px-4 py-3 rounded-xl bg-white text-[#0A1A3A] placeholder-gray-500 font-medium focus:outline-none focus:ring-2 focus:ring-[#C9A86A] shadow-md"
-          />
+        {/* Cuadrícula de Acciones Rápidas (Grid de Opciones) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          {/* Opción 1: Publicar Vacante */}
+          <div className="bg-white text-[#0A1A3A] p-6 rounded-2xl shadow-xl flex flex-col justify-between border-t-4 border-[#C9A86A]">
+            <div>
+              <div className="text-3xl mb-3">📢</div>
+              <h3 className="text-xl font-bold mb-2">Publicar Nueva Vacante</h3>
+              <p className="text-gray-600 text-sm mb-6">
+                Crea una oferta laboral detallada para atraer a los mejores candidatos del mercado.
+              </p>
+            </div>
+            <Link
+              href="/reclutador/vacantes/nueva"
+              className="w-full py-3 bg-[#0A1A3A] text-white font-semibold rounded-xl hover:bg-[#142850] transition text-center"
+            >
+              Crear Vacante +
+            </Link>
+          </div>
+
+          {/* Opción 2: Ver Candidatos Postulados */}
+          <div className="bg-white text-[#0A1A3A] p-6 rounded-2xl shadow-xl flex flex-col justify-between border-t-4 border-[#C9A86A]">
+            <div>
+              <div className="text-3xl mb-3">👥</div>
+              <h3 className="text-xl font-bold mb-2">Candidatos Postulados</h3>
+              <p className="text-gray-600 text-sm mb-6">
+                Visualiza los perfiles evaluados, revisa las coincidencias de IA y filtra los mejores talentos.
+              </p>
+            </div>
+            <Link
+              href="/reclutador/candidatos"
+              className="w-full py-3 bg-[#0A1A3A] text-white font-semibold rounded-xl hover:bg-[#142850] transition text-center"
+            >
+              Ver Candidatos →
+            </Link>
+          </div>
+
+          {/* Opción 3: Mis Vacantes Activas */}
+          <div className="bg-white text-[#0A1A3A] p-6 rounded-2xl shadow-xl flex flex-col justify-between border-t-4 border-[#C9A86A]">
+            <div>
+              <div className="text-3xl mb-3">📊</div>
+              <h3 className="text-xl font-bold mb-2">Mis Vacantes</h3>
+              <p className="text-gray-600 text-sm mb-6">
+                Monitorea el estatus de tus ofertas publicadas, edítalas o ciérralas cuando cubras el puesto.
+              </p>
+            </div>
+            <Link
+              href="/reclutador/vacantes"
+              className="w-full py-3 bg-[#0A1A3A] text-white font-semibold rounded-xl hover:bg-[#142850] transition text-center"
+            >
+              Administrar Vacantes 🗂️
+            </Link>
+          </div>
+
         </div>
 
-        {/* Tabla / Grid de Candidatos */}
-        {filteredCandidates.length === 0 ? (
-          <div className="bg-white text-[#0A1A3A] p-12 rounded-2xl text-center shadow-xl">
-            <p className="text-lg font-bold text-gray-700">No se encontraron candidatos registrados.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCandidates.map((c) => (
-              <div key={c.id} className="bg-white text-[#0A1A3A] p-6 rounded-2xl shadow-xl flex flex-col justify-between border-t-4 border-[#C9A86A]">
-                <div>
-                  <div className="flex justify-between items-start gap-2 mb-3">
-                    <h3 className="text-lg font-bold text-[#0A1A3A]">{c.name}</h3>
-                    <span className={`px-2.5 py-1 text-xs font-bold rounded-full ${
-                      c.status === "Completado" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
-                    }`}>
-                      {c.status}
-                    </span>
-                  </div>
-
-                  <p className="text-xs text-gray-500 mb-4 font-medium">{c.email}</p>
-
-                  <div className="space-y-2 text-xs text-gray-700 mb-6 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                    <p><strong>Ubicación:</strong> {c.personal?.city || "N/A"}, {c.personal?.state || "N/A"}</p>
-                    <p><strong>Área:</strong> {c.preferences?.area || "No especificada"}</p>
-                    <p><strong>Puesto:</strong> {c.experience?.position || "N/A"}</p>
-                    <p><strong>Expectativa:</strong> ${c.preferences?.salary || "N/A"}</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-2 pt-2 border-t border-gray-100">
-                  <a
-                    href={`/candidatos/brief/${c.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 py-2.5 bg-[#0A1A3A] text-white text-center text-xs font-bold rounded-lg hover:bg-[#142850] transition"
-                  >
-                    Ver Brief 📄
-                  </a>
-                  <a
-                    href={`/candidatos/actualizar/${c.id}`}
-                    className="px-4 py-2.5 bg-gray-100 text-gray-800 text-center text-xs font-bold rounded-lg hover:bg-gray-200 transition"
-                  >
-                    Editar ⚙️
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-      </div>
-    </section>
+      </main>
+    </div>
   );
 }
