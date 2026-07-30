@@ -158,7 +158,7 @@ function RegistroReclutadorForm() {
             disabled={loading}
             className="w-full py-3.5 bg-[#C9A86A] text-[#0A1A3A] font-bold rounded-xl hover:bg-[#d8b97a] transition shadow-md mt-6"
           >
-            {loading ? "Registrando..." : "Crear Cuenta de Reclutador 1 🚀"}
+            {loading ? "Registrando..." : "Crear Cuenta de Reclutador 🚀"}
           </button>
         </form>
 

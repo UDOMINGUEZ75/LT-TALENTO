@@ -89,8 +89,9 @@ function DashboardContent() {
                 Crea una oferta laboral detallada para atraer a los mejores candidatos del mercado.
               </p>
             </div>
+            {/* ENLACE CORREGIDO PASANDO EL ID */}
             <Link
-              href="/reclutador/vacantes/nueva"
+              href={`/reclutador/vacantes/nueva?id=${id}`}
               className="w-full py-3 bg-[#0A1A3A] text-white font-semibold rounded-xl hover:bg-[#142850] transition text-center"
             >
               Crear Vacante +
@@ -106,7 +107,7 @@ function DashboardContent() {
               </p>
             </div>
             <Link
-              href="/reclutador/candidatos"
+              href={`/reclutador/candidatos?id=${id}`}
               className="w-full py-3 bg-[#0A1A3A] text-white font-semibold rounded-xl hover:bg-[#142850] transition text-center"
             >
               Ver Candidatos →
@@ -122,7 +123,7 @@ function DashboardContent() {
               </p>
             </div>
             <Link
-              href="/reclutador/vacantes"
+              href={`/reclutador/vacantes?id=${id}`}
               className="w-full py-3 bg-[#0A1A3A] text-white font-semibold rounded-xl hover:bg-[#142850] transition text-center"
             >
               Administrar Vacantes 🗂️
