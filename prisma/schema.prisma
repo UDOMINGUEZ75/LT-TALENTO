@@ -26,8 +26,8 @@ model Candidate {
 }
 
 model CandidatePersonal {
-  id          Int      @id @default(autoincrement())
-  candidateId Int      @unique
+  id          Int     @id @default(autoincrement())
+  candidateId Int     @unique
   state       String?
   city        String?
   zone        String?
@@ -37,8 +37,8 @@ model CandidatePersonal {
 }
 
 model CandidateExperience {
-  id          Int      @id @default(autoincrement())
-  candidateId Int      @unique
+  id          Int     @id @default(autoincrement())
+  candidateId Int     @unique
   company     String?
   position    String?
   years       Int?
@@ -47,8 +47,8 @@ model CandidateExperience {
 }
 
 model CandidateEducation {
-  id             Int      @id @default(autoincrement())
-  candidateId    Int      @unique
+  id             Int     @id @default(autoincrement())
+  candidateId    Int     @unique
   school         String?
   degree         String?
   graduationYear Int?
@@ -59,14 +59,14 @@ model CandidateAvailability {
   id          Int      @id @default(autoincrement())
   candidateId Int      @unique
   schedule    String?
-  travel      Boolean?  @default(false)
-  relocate    Boolean?  @default(false)
+  travel      Boolean? @default(false)
+  relocate    Boolean? @default(false)
   candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
 }
 
 model CandidatePreferences {
-  id          Int      @id @default(autoincrement())
-  candidateId Int      @unique
+  id          Int     @id @default(autoincrement())
+  candidateId Int     @unique
   area        String?
   salary      Int?
   modality    String?
@@ -74,7 +74,7 @@ model CandidatePreferences {
 }
 
 model CandidateDocuments {
-  id          Int      @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   candidateId Int
   url         String
   type        String
@@ -82,7 +82,7 @@ model CandidateDocuments {
 }
 
 // ==========================================
-// NUEVO MODELO DE RECLUTADORES
+// MODELO DE RECLUTADORES
 // ==========================================
 model Recruiter {
   id        Int      @id @default(autoincrement())
@@ -93,4 +93,22 @@ model Recruiter {
   phone     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relación con las vacantes publicadas
+  jobs      Job[]
+}
+
+// ==========================================
+// MODELO DE VACANTES
+// ==========================================
+model Job {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String
+  salary      String?
+  location    String?
+  recruiterId Int
+  recruiter   Recruiter @relation(fields: [recruiterId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
