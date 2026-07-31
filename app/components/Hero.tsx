@@ -18,7 +18,7 @@ export default function Hero() {
 
         {/* Slogan Actualizado */}
         <p className="mt-4 text-lg sm:text-xl md:text-2xl text-white font-light max-w-2xl mx-auto leading-relaxed">
-           CONECTAMOS TALENTO, IMPULSAMOS FUTUROS.
+            CONECTAMOS TALENTO, IMPULSAMOS FUTUROS.
         </p>
 
         {/* Botones en dos columnas */}
@@ -81,20 +81,6 @@ export default function Hero() {
               Empresa / reclutador registrado
             </Link>
           </div>
-        </div>
-
-        {/* Botón Vacantes estandarizado */}
-        <div className="mt-10 flex justify-center">
-          <Link
-            href="/vacantes/login"
-            className="
-              px-8 py-3.5 bg-[#C9A86A] hover:bg-[#D4AF37]
-              text-[#0A1A3A] font-medium rounded-lg shadow-lg
-              transition-all duration-200 transform hover:-translate-y-1
-            "
-          >
-            Vacantes
-          </Link>
         </div>
 
       </div>

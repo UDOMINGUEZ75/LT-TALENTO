@@ -1,173 +1,226 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-export const dynamic = "force-dynamic";
+interface Job {
+  id: number;
+  title: string;
+  location: string;
+  type?: string;
+  salary?: string;
+  description: string;
+}
 
-export default function Vacancies() {
-  const allVacancies = [
-    {
-      id: 1,
-      title: "Coordinador de Instalación de Racks",
-      location: "Chihuahua, CHIH",
-      type: "Tiempo completo",
-      salaryMin: 16000,
-      salaryMax: 20000,
-      description:
-        "Coordina equipos técnicos, supervisa instalaciones industriales y asegura calidad y seguridad en proyectos de racks.",
-    },
-    {
-      id: 2,
-      title: "Auxiliar de Aduanas",
-      location: "Chihuahua, CHIH",
-      type: "Tiempo completo",
-      salaryMin: 18000,
-      salaryMax: 25000,
-      description:
-        "Revisión documental, logística, manejo de pedimentos, BL, certificados de origen y comunicación con agentes aduanales.",
-    },
-    {
-      id: 3,
-      title: "Jefe de Área de Pintura",
-      location: "Chihuahua, Chihuahua",
-      type: "Tiempo completo",
-      salaryMin: 18000,
-      salaryMax: 18000,
-      description:
-        "Supervisión de procesos de pintura electrostática, control de producción, indicadores y gestión de personal.",
-    },
-    {
-      id: 4,
-      title: "Técnico de Mantenimiento",
-      location: "Chihuahua, CHIH",
-      type: "Tiempo completo",
-      salaryMin: 15000,
-      salaryMax: 19000,
-      description:
-        "Carrera técnica en Mantenimiento Industrial, Electromecánica, Mecánica o Electricidad. Experiencia de 2-3 años. Soldadura MIG/TIG, electricidad industrial, sistemas neumáticos e hidráulicos. Horario: Lunes a Viernes de 7 a 17 hrs. Pago semanal sin semana de fondo.",
-    },
-  ];
+export default function VacantesPublicas() {
+  const router = useRouter();
+  const [allVacancies, setAllVacancies] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState("");
+  
+  // Estados para los filtros avanzados
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("Todas");
+  const [selectedType, setSelectedType] = useState("Todos");
+  const [selectedSalary, setSelectedSalary] = useState("Todos");
 
-  const titles = [...new Set(allVacancies.map((v) => v.title))];
-  const locations = [...new Set(allVacancies.map((v) => v.location))];
-  const types = [...new Set(allVacancies.map((v) => v.type))];
+  useEffect(() => {
+    async function loadVacancies() {
+      try {
+        const res = await fetch("/api/vacantes", { cache: "no-store" });
+        const data = await res.json();
+        if (res.ok && data.vacancies) {
+          setAllVacancies(data.vacancies);
+        } else {
+          setErrorMsg("No se pudieron cargar las vacantes.");
+        }
+      } catch (err) {
+        console.error("Error al obtener vacantes:", err);
+        setErrorMsg("Error de conexión con la base de datos.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadVacancies();
+  }, []);
 
-  const [titleFilter, setTitleFilter] = useState("");
-  const [locationFilter, setLocationFilter] = useState("");
-  const [typeFilter, setTypeFilter] = useState("");
+  // Extraer ubicaciones únicas para el filtro dinámico
+  const locations = useMemo(() => {
+    const locs = allVacancies.map((v) => v.location).filter(Boolean);
+    return ["Todas", ...Array.from(new Set(locs))];
+  }, [allVacancies]);
 
-  const filteredVacancies = allVacancies.filter((v) => {
-    const matchTitle = titleFilter === "" || v.title === titleFilter;
-    const matchLocation = locationFilter === "" || v.location === locationFilter;
-    const matchType = typeFilter === "" || v.type === typeFilter;
-    return matchTitle && matchLocation && matchType;
-  });
+  // Función auxiliar para normalizar textos (eliminar acentos y pasar a minúsculas)
+  const normalizeText = (text: string) => {
+    return text
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+  };
+
+  // Filtrar vacantes ignorando mayúsculas y acentos
+  const filteredVacancies = useMemo(() => {
+    const normalizedSearch = normalizeText(searchTerm);
+
+    return allVacancies.filter((v) => {
+      const titleNormalized = normalizeText(v.title || "");
+      const descNormalized = normalizeText(v.description || "");
+
+      const matchesSearch =
+        titleNormalized.includes(normalizedSearch) ||
+        descNormalized.includes(normalizedSearch);
+      
+      const matchesLocation =
+        selectedLocation === "Todas" || v.location === selectedLocation;
+
+      const matchesType =
+        selectedType === "Todos" || v.type === selectedType;
+
+      const matchesSalary =
+        selectedSalary === "Todos" || 
+        (selectedSalary === "Competitivo" && (!v.salary || v.salary.toLowerCase().includes("competitivo"))) ||
+        (selectedSalary !== "Competitivo" && v.salary?.toLowerCase().includes(selectedSalary.toLowerCase()));
+
+      return matchesSearch && matchesLocation && matchesType && matchesSalary;
+    });
+  }, [allVacancies, searchTerm, selectedLocation, selectedType, selectedSalary]);
+
+  const handlePostularseClick = (e: React.MouseEvent<HTMLAnchorElement>, jobId: number) => {
+    const isLoggedIn = sessionStorage.getItem("candidateLoggedIn");
+    
+    if (!isLoggedIn) {
+      e.preventDefault();
+      localStorage.setItem("redirectAfterLogin", `/candidatos/postular/${jobId}`);
+      router.push("/candidatos/acceso-vacante"); 
+    }
+  };
+
+  if (loading) {
+    return <div className="text-center py-20 text-[#C9A86A] text-lg font-medium">Cargando vacantes disponibles...</div>;
+  }
+
+  if (errorMsg) {
+    return <div className="text-center py-20 text-red-400 font-medium">{errorMsg}</div>;
+  }
 
   return (
     <section className="py-16 bg-[#0A1A3A] text-white">
       <div className="max-w-6xl mx-auto px-6">
+        
+        {/* Título Centrado y Estilizado */}
+        <div className="text-center mb-12">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#C9A86A] tracking-tight mb-3">
+            Vacantes Disponibles
+          </h2>
+          <p className="text-gray-300 text-sm sm:text-base max-w-xl mx-auto">
+            Explore nuestras oportunidades profesionales y postúlese de forma directa y segura.
+          </p>
+        </div>
 
-        <h2 className="text-3xl font-bold mb-8 text-[#C9A86A]">
-          Vacantes disponibles
-        </h2>
-
-        {/* FILTROS */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-
+        {/* Sección de Filtros Múltiples Profesionales */}
+        <div className="bg-[#0f234d] p-6 rounded-3xl border border-[#C9A86A]/30 shadow-2xl mb-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-center">
+          
+          {/* 1. Buscador por texto (Sin discriminar mayúsculas ni acentos) */}
           <div>
-            <label className="block text-[#C9A86A] mb-2 font-medium">
-              Puesto
-            </label>
+            <label className="block text-xs font-semibold text-[#C9A86A] mb-1.5 uppercase tracking-wider">Buscar puesto</label>
+            <input
+              type="text"
+              placeholder="Ej. Mantenimiento, Ventas..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-4 py-3 bg-[#08142c] border border-gray-700/80 rounded-xl text-white placeholder-gray-400 text-sm focus:outline-none focus:border-[#C9A86A] transition"
+            />
+          </div>
+
+          {/* 2. Filtro por Ubicación */}
+          <div>
+            <label className="block text-xs font-semibold text-[#C9A86A] mb-1.5 uppercase tracking-wider">Ubicación</label>
             <select
-              className="w-full p-3 border border-[#C9A86A] rounded-lg bg-white text-black"
-              value={titleFilter}
-              onChange={(e) => setTitleFilter(e.target.value)}
+              value={selectedLocation}
+              onChange={(e) => setSelectedLocation(e.target.value)}
+              className="w-full px-4 py-3 bg-[#08142c] border border-gray-700/80 rounded-xl text-white text-sm focus:outline-none focus:border-[#C9A86A] transition cursor-pointer"
             >
-              <option value="">Todos</option>
-              {titles.map((t) => (
-                <option key={t} value={t}>{t}</option>
+              {locations.map((loc, idx) => (
+                <option key={idx} value={loc} className="bg-[#08142c] text-white">
+                  {loc === "Todas" ? "Todas las ubicaciones" : loc}
+                </option>
               ))}
             </select>
           </div>
 
+          {/* 3. Filtro por Tipo de Contrato */}
           <div>
-            <label className="block text-[#C9A86A] mb-2 font-medium">
-              Ubicación
-            </label>
+            <label className="block text-xs font-semibold text-[#C9A86A] mb-1.5 uppercase tracking-wider">Tipo de empleo</label>
             <select
-              className="w-full p-3 border border-[#C9A86A] rounded-lg bg-white text-black"
-              value={locationFilter}
-              onChange={(e) => setLocationFilter(e.target.value)}
+              value={selectedType}
+              onChange={(e) => setSelectedType(e.target.value)}
+              className="w-full px-4 py-3 bg-[#08142c] border border-gray-700/80 rounded-xl text-white text-sm focus:outline-none focus:border-[#C9A86A] transition cursor-pointer"
             >
-              <option value="">Todas</option>
-              {locations.map((loc) => (
-                <option key={loc} value={loc}>{loc}</option>
-              ))}
+              <option value="Todos">Todos los tipos</option>
+              <option value="Tiempo completo">Tiempo completo</option>
+              <option value="Medio tiempo">Medio tiempo</option>
+              <option value="Temporal">Temporal / Proyecto</option>
             </select>
           </div>
 
+          {/* 4. Filtro por Compensación */}
           <div>
-            <label className="block text-[#C9A86A] mb-2 font-medium">
-              Tipo de trabajo
-            </label>
+            <label className="block text-xs font-semibold text-[#C9A86A] mb-1.5 uppercase tracking-wider">Compensación</label>
             <select
-              className="w-full p-3 border border-[#C9A86A] rounded-lg bg-white text-black"
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
+              value={selectedSalary}
+              onChange={(e) => setSelectedSalary(e.target.value)}
+              className="w-full px-4 py-3 bg-[#08142c] border border-gray-700/80 rounded-xl text-white text-sm focus:outline-none focus:border-[#C9A86A] transition cursor-pointer"
             >
-              <option value="">Todos</option>
-              {types.map((t) => (
-                <option key={t} value={t}>{t}</option>
-              ))}
+              <option value="Todos">Cualquier sueldo</option>
+              <option value="Competitivo">Sueldo competitivo</option>
             </select>
           </div>
 
         </div>
 
-        {/* LISTA DE VACANTES — TRANSPARENTE */}
+        {/* Cuadrícula de Vacantes */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredVacancies.map((v) => (
             <div
               key={v.id}
-              className="p-6 rounded-xl transition bg-[#0f234d] border border-[#C9A86A]/20 shadow-lg flex flex-col justify-between"
+              className="p-8 rounded-2xl bg-[#0f234d] border border-[#C9A86A]/30 shadow-2xl flex flex-col justify-between w-full min-h-[420px] transition-transform hover:-translate-y-1 duration-200"
             >
-              <div>
-                <h3 className="text-xl font-semibold mb-1 text-[#C9A86A]">
-                  {v.title}
-                </h3>
+              <div className="space-y-4">
+                <h3 className="text-2xl font-bold text-[#C9A86A]">{v.title}</h3>
+                
+                {/* Etiquetas sin iconos */}
+                <div className="text-xs font-semibold flex flex-wrap gap-2 pt-1">
+                  <span className="bg-[#162e5d] px-3 py-1.5 rounded-lg border border-[#C9A86A]/20 text-gray-200">
+                    <span className="text-[#C9A86A] font-medium mr-1">Ubicación:</span> {v.location || "Presencial"}
+                  </span>
+                  <span className="bg-[#162e5d] px-3 py-1.5 rounded-lg border border-[#C9A86A]/20 text-gray-200">
+                    <span className="text-[#C9A86A] font-medium mr-1">Sueldo:</span> {v.salary || "Competitivo"}
+                  </span>
+                </div>
 
-                <p className="text-gray-300 font-medium">{v.location}</p>
-                <p className="text-sm text-gray-400">{v.type}</p>
-
-                <p className="mt-4">
-                  <strong className="text-[#C9A86A]">Sueldo:</strong> ${v.salaryMin.toLocaleString()} a ${v.salaryMax.toLocaleString()} MXN
-                </p>
-
-                <p className="mt-3 text-sm leading-relaxed text-gray-200">
+                <p className="text-sm text-gray-300 line-clamp-4 leading-relaxed pt-2">
                   {v.description}
                 </p>
               </div>
 
-              <button
-                onClick={() => alert(`Para postularte a "${v.title}", por favor envía tu CV por WhatsApp al 614 398 1235`)}
-                className="
-                  mt-5 w-full px-4 py-2.5
-                  bg-[#C9A86A] hover:bg-[#D4AF37]
-                  text-[#0A1A3A] font-semibold
-                  rounded-lg transition shadow-md
-                "
+              <Link
+                href={`/candidatos/postular/${v.id}`}
+                onClick={(e) => handlePostularseClick(e, v.id)}
+                className="w-full py-3.5 bg-[#C9A86A] text-[#0A1A3A] font-bold rounded-xl hover:bg-[#d8b97a] transition text-sm shadow-lg mt-6 text-center block"
               >
                 Postularme / Ver detalles
-              </button>
+              </Link>
             </div>
           ))}
         </div>
 
         {filteredVacancies.length === 0 && (
-          <p className="mt-6 text-center text-[#C9A86A]">
-            No se encontraron vacantes con los filtros seleccionados.
-          </p>
+          <div className="text-center py-16 bg-[#0f234d]/50 rounded-2xl border border-gray-800">
+            <p className="text-gray-400 text-base">No se encontraron vacantes con los filtros seleccionados.</p>
+          </div>
         )}
+
       </div>
     </section>
   );
