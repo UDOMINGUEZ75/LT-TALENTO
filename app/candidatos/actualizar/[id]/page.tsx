@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import CVUpload from "@/app/candidatos/completar/CVUpload";
 
 export default function ActualizarDatos() {
@@ -393,7 +394,7 @@ export default function ActualizarDatos() {
             {/* BOTÓN PARA GUARDAR Y ACTUALIZAR DEFINITIVAMENTE */}
             <button
               onClick={handleSubmit}
-              className="w-full py-4 bg-[#C9A86A] text-[#0A1A3A] font-bold text-lg rounded-md hover:bg-[#d8b97a] transition shadow-md"
+              className="w-full py-4 bg-[#C9A86A] text-[#0A1A3A] font-bold text-lg rounded-md hover:bg-[#d8b97a] transition shadow-md cursor-pointer"
             >
               Guardar y actualizar información
             </button>
@@ -410,19 +411,19 @@ export default function ActualizarDatos() {
             </p>
 
             <div className="flex gap-4">
-              <a
+              <Link
                 href="/vacantes"
-                className="px-6 py-3 bg-[#0A1A3A] text-white rounded-md font-semibold hover:bg-[#142850] transition"
+                className="px-6 py-3 bg-[#0A1A3A] text-white rounded-md font-semibold hover:bg-[#142850] transition text-center inline-block"
               >
                 Ver Vacantes
-              </a>
+              </Link>
 
-              <a
+              <Link
                 href="/"
-                className="px-6 py-3 bg-[#C9A86A] text-[#0A1A3A] rounded-md font-semibold hover:bg-[#d8b97a] transition"
+                className="px-6 py-3 bg-[#C9A86A] text-[#0A1A3A] rounded-md font-semibold hover:bg-[#d8b97a] transition text-center inline-block"
               >
                 Ir al Inicio
-              </a>
+              </Link>
             </div>
           </div>
         )}

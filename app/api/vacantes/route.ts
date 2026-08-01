@@ -30,6 +30,7 @@ export async function POST(req: Request) {
   try {
     const { prisma } = await import("@/lib/prisma");
     
+    // Leemos correctamente el FormData enviado por el frontend
     const formData = await req.formData().catch(() => null);
 
     if (!formData) {
@@ -41,23 +42,9 @@ export async function POST(req: Request) {
     const salary = formData.get("salary") as string;
     const location = formData.get("location") as string;
     const recruiterId = formData.get("recruiterId") as string;
-    const flyerFile = formData.get("flyer") as File | null;
 
     if (!title || !description || !recruiterId) {
       return NextResponse.json({ error: "Faltan campos obligatorios" }, { status: 400 });
-    }
-
-    let flyerUrl = "";
-    if (flyerFile && flyerFile.size > 0) {
-      try {
-        // Importación dinámica para evitar que falle el GET si hay problemas con storage
-        const { uploadCVToBlob } = await import("@/lib/azure-storage");
-        const arrayBuffer = await flyerFile.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-        flyerUrl = await uploadCVToBlob(buffer, flyerFile.name, flyerFile.type);
-      } catch (storageErr) {
-        console.warn("No se pudo subir el flyer a Blob Storage:", storageErr);
-      }
     }
 
     const nuevaVacante = await prisma.job.create({
@@ -73,6 +60,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, vacancy: nuevaVacante }, { status: 201 });
   } catch (error: any) {
     console.error("Error al crear vacante:", error);
-    return NextResponse.json({ error: "Error interno del servidor", details: error?.message || String(error) }, { status: 500 });
+    return NextResponse.json({ ok: false, error: "Error interno del servidor", details: error?.message || String(error) }, { status: 500 });
   }
 }
