@@ -411,12 +411,14 @@ export default function ActualizarDatos() {
             </p>
 
             <div className="flex gap-4">
-              <Link
-                href="/vacantes"
-                className="px-6 py-3 bg-[#0A1A3A] text-white rounded-md font-semibold hover:bg-[#142850] transition text-center inline-block"
+              <button
+                onClick={() => {
+                  window.location.href = "/vacantes";
+                }}
+                className="px-6 py-3 bg-[#0A1A3A] text-white rounded-md font-semibold hover:bg-[#142850] transition text-center cursor-pointer"
               >
                 Ver Vacantes
-              </Link>
+              </button>
 
               <Link
                 href="/"

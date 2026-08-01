@@ -21,8 +21,12 @@ export async function GET(req: Request) {
 
     return NextResponse.json({ ok: true, vacancies }, { status: 200 });
   } catch (error: any) {
-    console.error("Error al obtener vacantes:", error);
-    return NextResponse.json({ ok: false, error: "Error interno del servidor", details: error?.message || String(error) }, { status: 500 });
+    console.error("Error al obtener vacantes en la API:", error);
+    return NextResponse.json({ 
+      ok: false, 
+      error: "Error interno del servidor", 
+      details: error?.message || String(error) 
+    }, { status: 500 });
   }
 }
 
@@ -30,7 +34,6 @@ export async function POST(req: Request) {
   try {
     const { prisma } = await import("@/lib/prisma");
     
-    // Leemos correctamente el FormData enviado por el frontend
     const formData = await req.formData().catch(() => null);
 
     if (!formData) {
@@ -60,6 +63,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, vacancy: nuevaVacante }, { status: 201 });
   } catch (error: any) {
     console.error("Error al crear vacante:", error);
-    return NextResponse.json({ ok: false, error: "Error interno del servidor", details: error?.message || String(error) }, { status: 500 });
+    return NextResponse.json({ 
+      ok: false, 
+      error: "Error interno del servidor", 
+      details: error?.message || String(error) 
+    }, { status: 500 });
   }
 }
