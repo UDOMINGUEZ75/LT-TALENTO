@@ -27,15 +27,13 @@ export default function VacantesPublicas() {
         const res = await fetch("/api/vacantes", { cache: "no-store" });
         const data = await res.json();
         
-        console.log("Respuesta del API vacantes:", data); // Esto te permitirá ver el error real en la consola F12
+        console.log("Datos recibidos del API:", data); // Revisa tu consola F12 si gustas ver la estructura exacta
 
-        if (res.ok && data.vacancies) {
-          setAllVacancies(data.vacancies);
-        } else {
-          setAllVacancies([]);
-        }
+        // Aceptamos cualquier formato posible que devuelva tu API (array directo, .vacancies o .jobs)
+        const listaVacantes = Array.isArray(data) ? data : data.vacancies || data.jobs || data.data || [];
+        setAllVacancies(listaVacantes);
       } catch (err) {
-        console.error("Error de red al obtener vacantes:", err);
+        console.error("Error al obtener vacantes:", err);
         setAllVacancies([]);
       } finally {
         setLoading(false);
@@ -165,7 +163,7 @@ export default function VacantesPublicas() {
 
         {filteredVacancies.length === 0 && (
           <div className="text-center py-16 bg-white/5 rounded-2xl border border-gray-700 max-w-4xl mx-auto">
-            <p className="text-gray-300 text-base">No hay vacantes disponibles en este momento o la base de datos está conectándose.</p>
+            <p className="text-gray-300 text-base">No hay vacantes disponibles en este momento.</p>
           </div>
         )}
 
