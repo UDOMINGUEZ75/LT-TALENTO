@@ -2,7 +2,7 @@ export default function CTA() {
   return (
     <section
       id="contacto"
-      className="w-full py-24 bg-[#0A1A3A] text-white text-center /40"
+      className="w-full py-24 bg-[#0A1A3A] text-white text-center"
     >
       <div className="max-w-4xl mx-auto px-6">
 

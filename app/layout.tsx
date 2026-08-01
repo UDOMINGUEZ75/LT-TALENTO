@@ -1,5 +1,6 @@
 import "./globals.css";
 import Navbar from "./components/Navbar";
+import CookieConsent from "./components/CookieConsent";
 
 export const metadata = {
   title: "LT Talento",
@@ -14,8 +15,9 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body>
-        <Navbar />   {/* ← Aquí se carga SIEMPRE */}
+        <Navbar />
         {children}
+        <CookieConsent />
       </body>
     </html>
   );

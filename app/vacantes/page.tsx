@@ -27,7 +27,7 @@ function NuevaVacanteForm() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Analiza automáticamente el flyer al seleccionarlo y llena los campos
+  // ESTA FUNCIÓN ES LA QUE FALTA EN TU CÓDIGO ACTUAL PARA LLAMAR A LA IA
   const handleFlyerChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -94,7 +94,6 @@ function NuevaVacanteForm() {
       });
 
       const data = await res.json();
-      console.log("DETALLE DE LA RESPUESTA DE VACANTES:", data);
 
       if (!res.ok) {
         setErrorMsg(data.error || data.message || "Error al publicar la vacante");
@@ -105,7 +104,7 @@ function NuevaVacanteForm() {
       alert("¡Vacante publicada con éxito! 🎉");
       router.push(`/reclutador/dashboard?id=${recruiterId}`);
     } catch (err) {
-      console.error("Error de red:", err);
+      console.error("Error:", err);
       setErrorMsg("Error de red al publicar la vacante");
       setLoading(false);
     }
@@ -114,7 +113,7 @@ function NuevaVacanteForm() {
   return (
     <section className="w-full min-h-screen bg-[#0A1A3A] text-white flex items-center justify-center px-6 py-12">
       <div className="max-w-xl w-full bg-white text-[#0A1A3A] p-8 rounded-2xl shadow-xl">
-        <h1 className="text-2xl font-black text-center text-[#C9A86A] mb-2">Publicar Vacante</h1>
+        <h1 className="text-2xl font-black text-center text-[#C9A86A] mb-2">Publicar Vacante con Azure AI</h1>
         <p className="text-center text-gray-500 text-sm mb-6">Sube tu flyer y la IA llenará los campos automáticamente</p>
 
         {errorMsg && (
@@ -127,7 +126,7 @@ function NuevaVacanteForm() {
           
           <div className="bg-blue-50/50 border border-blue-100 p-4 rounded-xl">
             <label className="block text-sm font-bold text-[#0A1A3A] mb-1">
-              Sube tu Flyer Oficial (Análisis con IA)
+              Sube tu Flyer Oficial (Análisis Inteligente)
             </label>
             <input
               type="file"
@@ -137,12 +136,12 @@ function NuevaVacanteForm() {
             />
             {analyzing && (
               <p className="text-xs text-[#C9A86A] font-semibold mt-2 animate-pulse">
-                🤖 Analizando imagen y autocompletando campos...
+                🤖 Analizando imagen con Azure OpenAI y estructurando vacante...
               </p>
             )}
             {flyerFile && !analyzing && (
               <p className="text-xs text-emerald-600 font-semibold mt-2">
-                ✓ Flyer analizado correctamente: {flyerFile.name}
+                ✓ Flyer procesado: {flyerFile.name}
               </p>
             )}
           </div>
@@ -155,7 +154,7 @@ function NuevaVacanteForm() {
               value={form.title}
               onChange={handleChange}
               className="w-full border p-3 rounded-xl bg-gray-50 text-gray-900 text-sm focus:outline-none focus:border-[#C9A86A]"
-              placeholder="Ej. Auxiliar de Aduanas"
+              placeholder="Se llenará automáticamente..."
             />
           </div>
 
@@ -168,7 +167,7 @@ function NuevaVacanteForm() {
               value={form.description}
               onChange={handleChange}
               className="w-full border p-3 rounded-xl bg-gray-50 text-gray-900 text-xs font-mono focus:outline-none focus:border-[#C9A86A]"
-              placeholder="La descripción estructurada aparecerá aquí..."
+              placeholder="El contenido aparecerá estructurado aquí..."
             />
           </div>
 
@@ -199,7 +198,7 @@ function NuevaVacanteForm() {
             disabled={loading || analyzing}
             className="w-full py-3.5 bg-[#C9A86A] text-[#0A1A3A] font-bold rounded-xl hover:bg-[#d8b97a] transition shadow-md mt-4 cursor-pointer disabled:opacity-50"
           >
-            {loading ? "Publicando..." : "Publicar Vacante"}
+            {loading ? "Publicando..." : "Publicar Vacante 📢"}
           </button>
         </form>
 

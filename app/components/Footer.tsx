@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="w-full py-12 bg-[#0A1A3A] text-center /40">
+    <footer className="w-full py-12 bg-[#0A1A3A] text-center border-t border-white/10">
       <div className="max-w-4xl mx-auto px-6">
 
         {/* Texto principal */}
@@ -9,9 +9,9 @@ export default function Footer() {
         </p>
 
         {/* Links */}
-        <div className="mt-6 flex justify-center gap-10 text-lg font-medium">
+        <div className="mt-6 flex flex-wrap justify-center gap-8 md:gap-10 text-base font-medium">
           <a
-            href="https://wa.me/5216140000000"
+            href="https://wa.me/5216143981235"
             target="_blank"
             className="text-[#C9A86A] hover:text-white transition"
           >

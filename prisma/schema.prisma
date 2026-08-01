@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -74,7 +77,7 @@ model CandidatePreferences {
 }
 
 model CandidateDocuments {
-  id          Int     @id @default(autoincrement())
+  id          Int    @id @default(autoincrement())
   candidateId Int
   url         String
   type        String
@@ -107,6 +110,7 @@ model Job {
   description String
   salary      String?
   location    String?
+  flyerUrl    String?   // <-- Campo para almacenar la ruta o URL del flyer de la vacante
   recruiterId Int
   recruiter   Recruiter @relation(fields: [recruiterId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
