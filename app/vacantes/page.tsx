@@ -17,7 +17,7 @@ export default function VacantesPublicas() {
   const router = useRouter();
   const [allVacancies, setAllVacancies] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("Todas");
 
@@ -26,12 +26,18 @@ export default function VacantesPublicas() {
       try {
         const res = await fetch("/api/vacantes", { cache: "no-store" });
         const data = await res.json();
-        
-        console.log("Datos recibidos del API:", data); // Revisa tu consola F12 si gustas ver la estructura exacta
 
-        // Aceptamos cualquier formato posible que devuelva tu API (array directo, .vacancies o .jobs)
-        const listaVacantes = Array.isArray(data) ? data : data.vacancies || data.jobs || data.data || [];
-        setAllVacancies(listaVacantes);
+        console.log("Datos recibidos del API:", data);
+
+        if (res.ok) {
+          const listaVacantes = Array.isArray(data)
+            ? data
+            : data.vacancies || data.jobs || data.data || [];
+          setAllVacancies(listaVacantes);
+        } else {
+          console.error("Error en respuesta de API:", data);
+          setAllVacancies([]);
+        }
       } catch (err) {
         console.error("Error al obtener vacantes:", err);
         setAllVacancies([]);
@@ -64,7 +70,7 @@ export default function VacantesPublicas() {
       const matchesSearch =
         titleNormalized.includes(normalizedSearch) ||
         descNormalized.includes(normalizedSearch);
-      
+
       const matchesLocation =
         selectedLocation === "Todas" || v.location === selectedLocation;
 
@@ -72,24 +78,31 @@ export default function VacantesPublicas() {
     });
   }, [allVacancies, searchTerm, selectedLocation]);
 
-  const handlePostularseClick = (e: React.MouseEvent<HTMLAnchorElement>, jobId: number) => {
+  const handlePostularseClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    jobId: number
+  ) => {
     const isLoggedIn = sessionStorage.getItem("candidateLoggedIn");
-    
+
     if (!isLoggedIn) {
       e.preventDefault();
       localStorage.setItem("redirectAfterLogin", `/candidatos/postular/${jobId}`);
-      router.push("/candidatos/acceso-vacante"); 
+      router.push("/candidatos/acceso-vacante");
     }
   };
 
   if (loading) {
-    return <div className="text-center py-20 text-[#C9A86A] text-lg font-medium bg-[#0A1A3A] min-h-screen">Cargando vacantes disponibles...</div>;
+    return (
+      <div className="text-center py-32 text-[#C9A86A] text-lg font-medium bg-[#0A1A3A] min-h-screen">
+        Cargando vacantes disponibles...
+      </div>
+    );
   }
 
   return (
-    <section className="py-16 bg-[#0A1A3A] text-white min-h-screen">
+    /* Agregamos pt-28 sm:pt-36 para dar espacio suficiente debajo de la Navbar */
+    <section className="pt-28 sm:pt-36 pb-16 bg-[#0A1A3A] text-white min-h-screen">
       <div className="max-w-6xl mx-auto px-6">
-        
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-[#C9A86A] tracking-tight mb-3">
             Vacantes Disponibles
@@ -99,9 +112,12 @@ export default function VacantesPublicas() {
           </p>
         </div>
 
+        {/* Buscador y Filtros */}
         <div className="bg-white p-6 rounded-3xl border border-gray-200 shadow-2xl mb-10 grid grid-cols-1 md:grid-cols-2 gap-6 items-center text-gray-900 max-w-4xl mx-auto">
           <div>
-            <label className="block text-xs font-bold text-[#0A1A3A] mb-1.5 uppercase tracking-wider">Buscar puesto</label>
+            <label className="block text-xs font-bold text-[#0A1A3A] mb-1.5 uppercase tracking-wider">
+              Buscar puesto
+            </label>
             <input
               type="text"
               placeholder="Ej. Mantenimiento, Ventas..."
@@ -112,7 +128,9 @@ export default function VacantesPublicas() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-[#0A1A3A] mb-1.5 uppercase tracking-wider">Ubicación</label>
+            <label className="block text-xs font-bold text-[#0A1A3A] mb-1.5 uppercase tracking-wider">
+              Ubicación
+            </label>
             <select
               value={selectedLocation}
               onChange={(e) => setSelectedLocation(e.target.value)}
@@ -127,6 +145,7 @@ export default function VacantesPublicas() {
           </div>
         </div>
 
+        {/* Tarjetas de Vacantes */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredVacancies.map((v) => (
             <div
@@ -135,13 +154,15 @@ export default function VacantesPublicas() {
             >
               <div className="space-y-4">
                 <h3 className="text-2xl font-bold text-[#0A1A3A]">{v.title}</h3>
-                
+
                 <div className="text-xs font-semibold flex flex-wrap gap-2 pt-1">
                   <span className="bg-[#0A1A3A]/5 px-3 py-1.5 rounded-lg border border-[#0A1A3A]/15 text-[#0A1A3A]">
-                    <span className="text-[#8c6f33] font-medium mr-1">Ubicación:</span> {v.location || "Presencial"}
+                    <span className="text-[#8c6f33] font-medium mr-1">Ubicación:</span>{" "}
+                    {v.location || "Presencial"}
                   </span>
                   <span className="bg-[#C9A86A]/15 px-3 py-1.5 rounded-lg border border-[#C9A86A]/30 text-[#8c6f33]">
-                    <span className="font-bold mr-1">Sueldo:</span> {v.salary || "Competitivo"}
+                    <span className="font-bold mr-1">Sueldo:</span>{" "}
+                    {v.salary || "Competitivo"}
                   </span>
                 </div>
 
@@ -166,7 +187,6 @@ export default function VacantesPublicas() {
             <p className="text-gray-300 text-base">No hay vacantes disponibles en este momento.</p>
           </div>
         )}
-
       </div>
     </section>
   );

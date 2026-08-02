@@ -8,46 +8,79 @@ export async function GET(req: Request) {
   try {
     const { prisma } = await import("@/lib/prisma");
     const { searchParams } = new URL(req.url);
-    const recruiterId = searchParams.get("recruiterId");
 
-    const whereClause = recruiterId && !isNaN(Number(recruiterId)) 
-      ? { recruiterId: Number(recruiterId) } 
-      : {};
+    const recruiterIdParam = searchParams.get("recruiterId") || searchParams.get("id");
+    const recruiterIdNum = recruiterIdParam ? Number(recruiterIdParam) : null;
+
+    // Filtro para mostrar ÚNICAMENTE vacantes que NO estén cerradas
+    const whereClause: any = {
+      NOT: {
+        status: "CERRADA",
+      },
+    };
+
+    // Si viene un filtro por reclutador, lo agregamos
+    if (recruiterIdNum && !isNaN(recruiterIdNum)) {
+      whereClause.recruiterId = recruiterIdNum;
+    }
 
     const vacancies = await prisma.job.findMany({
       where: whereClause,
+      include: {
+        recruiter: true,
+      },
       orderBy: { id: "desc" },
     });
 
     return NextResponse.json({ ok: true, vacancies }, { status: 200 });
   } catch (error: any) {
-    console.error("Error al obtener vacantes en la API:", error);
-    return NextResponse.json({ 
-      ok: false, 
-      error: "Error interno del servidor", 
-      details: error?.message || String(error) 
-    }, { status: 500 });
+    console.error("Error al obtener vacantes en /api/vacantes:", error);
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "Error interno del servidor",
+        details: error?.message || String(error),
+      },
+      { status: 500 }
+    );
   }
 }
 
 export async function POST(req: Request) {
   try {
     const { prisma } = await import("@/lib/prisma");
-    
-    const formData = await req.formData().catch(() => null);
 
-    if (!formData) {
-      return NextResponse.json({ error: "Cuerpo de la petición inválido" }, { status: 400 });
+    let title = "";
+    let description = "";
+    let salary = "";
+    let location = "";
+    let recruiterId = "";
+
+    const contentType = req.headers.get("content-type") || "";
+
+    if (contentType.includes("application/json")) {
+      const body = await req.json();
+      title = body.title;
+      description = body.description;
+      salary = body.salary;
+      location = body.location;
+      recruiterId = body.recruiterId;
+    } else {
+      const formData = await req.formData().catch(() => null);
+      if (formData) {
+        title = formData.get("title") as string;
+        description = formData.get("description") as string;
+        salary = formData.get("salary") as string;
+        location = formData.get("location") as string;
+        recruiterId = formData.get("recruiterId") as string;
+      }
     }
 
-    const title = formData.get("title") as string;
-    const description = formData.get("description") as string;
-    const salary = formData.get("salary") as string;
-    const location = formData.get("location") as string;
-    const recruiterId = formData.get("recruiterId") as string;
-
     if (!title || !description || !recruiterId) {
-      return NextResponse.json({ error: "Faltan campos obligatorios" }, { status: 400 });
+      return NextResponse.json(
+        { ok: false, error: "Faltan campos obligatorios" },
+        { status: 400 }
+      );
     }
 
     const nuevaVacante = await prisma.job.create({
@@ -57,16 +90,23 @@ export async function POST(req: Request) {
         salary: salary ? String(salary) : "A convenir",
         location: location || "Remoto / No especificado",
         recruiterId: Number(recruiterId),
+        status: "ACTIVA",
       },
     });
 
-    return NextResponse.json({ ok: true, vacancy: nuevaVacante }, { status: 201 });
+    return NextResponse.json(
+      { ok: true, vacancy: nuevaVacante },
+      { status: 201 }
+    );
   } catch (error: any) {
     console.error("Error al crear vacante:", error);
-    return NextResponse.json({ 
-      ok: false, 
-      error: "Error interno del servidor", 
-      details: error?.message || String(error) 
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "Error interno del servidor",
+        details: error?.message || String(error),
+      },
+      { status: 500 }
+    );
   }
 }
