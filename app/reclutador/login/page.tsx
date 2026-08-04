@@ -35,54 +35,71 @@ function LoginReclutadorForm() {
         return;
       }
 
-      // Guardamos la sesión en el navegador para que la validación de seguridad la reconozca
-      localStorage.setItem("recruiterId", data.recruiterId);
-
-      // Redirige al panel de actualización con su ID correspondiente
-      router.push(`/reclutador/actualizar/${data.recruiterId}`);
+      localStorage.setItem("recruiterId", String(data.recruiterId));
+      router.push(`/reclutador/dashboard?id=${data.recruiterId}`);
     } catch (err) {
-      console.error("Error:", err);
-      setErrorMsg("Error de red al iniciar sesión");
+      console.error("Error al iniciar sesión:", err);
+      setErrorMsg("Error de conexión al servidor");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section className="w-full min-h-screen bg-[#0A1A3A] text-white flex items-center justify-center px-6 py-12">
-      <div className="max-w-md w-full bg-white text-[#0A1A3A] p-8 rounded-2xl shadow-xl">
-        <h1 className="text-2xl font-black text-center text-[#C9A86A] mb-2">Acceso Reclutadores</h1>
-        <p className="text-center text-gray-500 text-sm mb-6">Ingresa tus datos para actualizar tu información</p>
+    <section className="relative w-full min-h-screen bg-[#0A1A3A] text-white flex items-center justify-center px-4 sm:px-6 pt-24 pb-16 overflow-hidden">
+      
+      {/* Efecto de resplandor sutil al fondo */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#C9A86A]/10 rounded-full blur-3xl pointer-events-none" />
 
+      <div className="relative max-w-md w-full bg-white text-gray-900 p-8 sm:p-10 rounded-3xl shadow-2xl border-t-8 border-[#C9A86A] transition-all">
+        
+        {/* Encabezado Corporativo Elevado */}
+        <div className="text-center mb-8 space-y-2">
+          <span className="inline-block px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-widest text-[#0A1A3A] bg-[#FFF9EF] border border-[#C9A86A]/40 rounded-full shadow-sm">
+            Portal Organizacional
+          </span>
+          <h1 className="text-3xl font-black tracking-tight text-[#0A1A3A]">
+            Acceso Reclutadores
+          </h1>
+          <p className="text-xs text-gray-500 font-light">
+            LT Talent Solutions • Conectamos talento. Transformamos futuros.
+          </p>
+        </div>
+
+        {/* Mensaje de Error */}
         {errorMsg && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mb-4 text-sm text-center">
+          <div className="mb-6 p-3.5 bg-red-50 border border-red-300 text-red-700 rounded-2xl text-center text-xs font-bold animate-pulse">
             {errorMsg}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-semibold mb-1">Correo Electrónico</label>
+            <label className="block text-[11px] font-bold text-[#0A1A3A] mb-1.5 uppercase tracking-wider">
+              Correo Electrónico
+            </label>
             <input
               name="email"
               type="email"
               required
               value={form.email}
               onChange={handleChange}
-              className="w-full border p-3 rounded-xl bg-gray-50 text-gray-900 text-sm"
-              placeholder="ana@empresa.com"
+              className="border-2 border-gray-200 p-3.5 rounded-xl w-full bg-gray-50/80 text-gray-900 text-sm font-medium focus:border-[#C9A86A] focus:bg-white focus:ring-2 focus:ring-[#C9A86A]/20 focus:outline-none transition-all shadow-sm"
+              placeholder="tu@empresa.com"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-1">Contraseña</label>
+            <label className="block text-[11px] font-bold text-[#0A1A3A] mb-1.5 uppercase tracking-wider">
+              Contraseña
+            </label>
             <input
               name="password"
               type="password"
               required
               value={form.password}
               onChange={handleChange}
-              className="w-full border p-3 rounded-xl bg-gray-50 text-gray-900 text-sm"
+              className="border-2 border-gray-200 p-3.5 rounded-xl w-full bg-gray-50/80 text-gray-900 text-sm font-medium focus:border-[#C9A86A] focus:bg-white focus:ring-2 focus:ring-[#C9A86A]/20 focus:outline-none transition-all shadow-sm"
               placeholder="••••••••"
             />
           </div>
@@ -90,14 +107,14 @@ function LoginReclutadorForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 bg-[#C9A86A] text-[#0A1A3A] font-bold rounded-xl hover:bg-[#d8b97a] transition shadow-md mt-6"
+            className="w-full py-4 bg-[#C9A86A] text-[#0A1A3A] font-black text-sm uppercase tracking-wider rounded-xl hover:bg-[#d8b97a] hover:shadow-lg hover:shadow-[#C9A86A]/30 active:scale-[0.99] transition-all cursor-pointer disabled:opacity-50 mt-4 border border-[#C9A86A]/40"
           >
-            {loading ? "Verificando..." : "Ingresar a Actualizar Datos ➔"}
+            {loading ? "Verificando..." : "Ingresar a Mi Panel"}
           </button>
         </form>
 
-        <div className="text-center mt-6">
-          <Link href="/" className="text-xs text-gray-500 hover:underline">
+        <div className="text-center mt-8 pt-4 border-t border-gray-100">
+          <Link href="/" className="text-xs font-semibold text-gray-400 hover:text-[#0A1A3A] transition">
             ← Volver al inicio
           </Link>
         </div>
@@ -108,7 +125,7 @@ function LoginReclutadorForm() {
 
 export default function LoginReclutadorPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#0A1A3A] text-white flex items-center justify-center">Cargando...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#0A1A3A] text-[#C9A86A] flex items-center justify-center font-bold">Cargando...</div>}>
       <LoginReclutadorForm />
     </Suspense>
   );
