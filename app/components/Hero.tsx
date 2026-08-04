@@ -1,11 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 export default function Hero() {
-  // Variantes de animación para la entrada estilo Apple
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -16,14 +15,14 @@ export default function Hero() {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 25, scale: 0.98 },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 100,
         damping: 18,
       },
@@ -85,7 +84,7 @@ export default function Hero() {
           {/* Columna Oportunidades / Candidatos */}
           <motion.div 
             whileHover={{ y: -6, scale: 1.01 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            transition={{ type: "spring" as const, stiffness: 300, damping: 20 }}
             className="group relative rounded-3xl bg-white shadow-xl hover:shadow-2xl hover:shadow-[#C9A86A]/15 overflow-hidden flex flex-col justify-between text-[#0A1A3A] transition-shadow duration-300"
           >
             {/* Línea dorada superior interactiva */}
@@ -125,7 +124,7 @@ export default function Hero() {
           {/* Columna Empresas / Reclutadores */}
           <motion.div 
             whileHover={{ y: -6, scale: 1.01 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            transition={{ type: "spring" as const, stiffness: 300, damping: 20 }}
             className="group relative rounded-3xl bg-white shadow-xl hover:shadow-2xl hover:shadow-[#C9A86A]/15 overflow-hidden flex flex-col justify-between text-[#0A1A3A] transition-shadow duration-300"
           >
             {/* Línea dorada superior interactiva */}
