@@ -1,10 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 export default function CTA() {
-  // Variantes de animación al scroll
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -15,7 +14,7 @@ export default function CTA() {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 25, scale: 0.98 },
     visible: {
       opacity: 1,
@@ -48,6 +47,7 @@ export default function CTA() {
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#C9A86A] rounded-full blur-[140px] pointer-events-none" 
       />
 
+      { }
       <motion.div 
         className="max-w-4xl mx-auto px-6 relative z-10"
         variants={containerVariants}
@@ -63,7 +63,8 @@ export default function CTA() {
           </span>
         </motion.div>
 
-        {/* Título Principal Tipográfico (Corregido: Sin cuadros grises opacos) */}
+        { }
+        {/* Título Principal Tipográfico Nítido */}
         <motion.h2 
           className="text-4xl sm:text-5xl md:text-6xl font-black text-white leading-tight tracking-tight"
           variants={itemVariants}
@@ -82,6 +83,7 @@ export default function CTA() {
           Conectamos a las empresas con las personas que generan resultados. Platiquemos sobre cómo podemos impulsar juntos el desarrollo y futuro de tu organización.
         </motion.p>
 
+        { }
         {/* Botón de Acción Principal Interactivo */}
         <motion.div variants={itemVariants}>
           <motion.a

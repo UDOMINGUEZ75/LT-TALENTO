@@ -1,11 +1,11 @@
 "use client";
 
 import { Briefcase, Users, CheckCircle } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 export default function Services() {
-  // Variantes de animación al scroll estilo Apple
-  const containerVariants = {
+  // Variantes de animación al scroll estilo Apple con tipos explícitos de TypeScript
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -16,7 +16,7 @@ export default function Services() {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30, scale: 0.98 },
     visible: {
       opacity: 1,
@@ -57,7 +57,7 @@ export default function Services() {
           variants={itemVariants}
         >
           Nuestros{" "}
-          <span className="bg-gradient-to-r from-[#C9A86A] via-[#E2C488] to-[#C9A86A] bg-clip-text text-transparent">
+          <span className="text-[#C9A86A]">
             Servicios
           </span>
         </motion.h2>

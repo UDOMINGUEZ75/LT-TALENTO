@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { Search, ClipboardCheck, CheckCircle } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 export default function Process() {
-  const [activeStep, setActiveStep] = useState<number>(3); // El paso 3 seleccionado como en tu captura
+  const [activeStep, setActiveStep] = useState<number>(3);
 
-  // Variantes para la animación al hacer scroll estilo Apple
-  const containerVariants = {
+  // Variantes para la animación al hacer scroll estilo Apple con tipos explícitos de Framer Motion
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -19,7 +19,7 @@ export default function Process() {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30, scale: 0.98 },
     visible: {
       opacity: 1,
@@ -174,7 +174,7 @@ export default function Process() {
           })}
         </motion.div>
 
-        {/* Cierre de Manifiesto Breve (CORREGIDO: Alta Visibilidad y Elegancia) */}
+        {/* Cierre de Manifiesto Breve */}
         <motion.p 
           className="mt-16 text-base md:text-lg text-[#C9A86A] font-medium tracking-wide max-w-2xl mx-auto italic"
           variants={itemVariants}
