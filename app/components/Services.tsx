@@ -1,10 +1,42 @@
 "use client";
 
-import { Heart, Handshake, TrendingUp } from "lucide-react";
+import { useState } from "react";
+import { Heart, Handshake, TrendingUp, AlertCircle } from "lucide-react";
 import { motion, Variants } from "framer-motion";
 
+const pillarsData = [
+  {
+    id: 1,
+    tag: "Conexión Humana",
+    title: "Personas en el Centro",
+    description: "Leemos más allá de un currículum: identificamos el potencial, los valores y el liderazgo que encajan de manera natural con la cultura de tu empresa.",
+    footerText: "Criterio ético y cercano",
+    icon: Heart,
+    iconBg: "bg-[#FFF9EF] border-[#C9A86A]/30 text-[#8c6f33]",
+  },
+  {
+    id: 2,
+    tag: "Acompañamiento Cercano",
+    title: "Socios Estratégicos",
+    description: "Actuamos con claridad, agilidad y transparencia para entender los retos reales del negocio y responder con soluciones de valor a largo plazo.",
+    footerText: "Respuestas con confianza",
+    icon: Handshake,
+    iconBg: "bg-[#0A1A3A]/5 border-[#0A1A3A]/10 text-[#0A1A3A]",
+  },
+  {
+    id: 3,
+    tag: "Éxito Sostenible",
+    title: "Impacto Real",
+    description: "Más que realizar contrataciones temporales, creamos conexiones que generan resultados sostenibles y transforman el desarrollo de profesionales y empresas.",
+    footerText: "Resultados duraderos",
+    icon: TrendingUp,
+    iconBg: "bg-[#FFF9EF] border-[#C9A86A]/30 text-[#8c6f33]",
+  },
+];
+
 export default function About() {
-  // Variantes de animación al scroll estilo Apple con tipos explícitos de TypeScript
+  const [videoError, setVideoError] = useState(false);
+
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
@@ -23,7 +55,7 @@ export default function About() {
       y: 0,
       scale: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 90,
         damping: 18,
       },
@@ -31,10 +63,24 @@ export default function About() {
   };
 
   return (
-    <section id="nosotros" className="relative w-full py-28 bg-[#0A1A3A] text-white px-6 overflow-hidden">
+    <section id="nosotros" className="relative w-full py-28 bg-[#0A1A3A] text-white px-4 sm:px-6 md:px-8 overflow-hidden">
       
-      {/* Resplandor ambiental de fondo */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[500px] bg-[#C9A86A]/5 rounded-full blur-[140px] pointer-events-none" />
+      {/* FONDO CINEMATOGRÁFICO AJUSTADO DE ANCHO Y ALTO COMPLETO */}
+      <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        {!videoError && (
+          <video
+            src="/videos/services.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            onError={() => setVideoError(true)}
+            className="absolute inset-0 w-full h-full object-cover sm:object-fill min-w-full min-h-full opacity-75"
+          />
+        )}
+        {/* Capa de contraste y oscurecimiento uniforme */}
+        <div className="absolute inset-0 w-full h-full bg-[#0A1A3A]/60" />
+      </div>
 
       <motion.div 
         className="max-w-6xl mx-auto text-center relative z-10"
@@ -43,7 +89,6 @@ export default function About() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
       >
-
         {/* Tagline de Marca */}
         <motion.div variants={itemVariants}>
           <span className="inline-block px-4 py-1.5 mb-4 text-xs font-bold uppercase tracking-widest text-[#0A1A3A] bg-[#C9A86A] rounded-full shadow-lg border border-[#C9A86A]/40">
@@ -53,7 +98,7 @@ export default function About() {
 
         {/* Título Principal */}
         <motion.h2 
-          className="text-4xl md:text-5xl font-black tracking-tight text-white"
+          className="text-4xl md:text-5xl font-black tracking-tight text-white drop-shadow-md"
           variants={itemVariants}
         >
           ¿Quiénes Somos en <span className="text-[#C9A86A]">LT Talent Solutions</span>?
@@ -61,7 +106,7 @@ export default function About() {
 
         {/* Manifiesto de Marca */}
         <motion.p 
-          className="mt-6 text-lg md:text-xl text-gray-200 max-w-4xl mx-auto leading-relaxed font-light"
+          className="mt-6 text-lg md:text-xl text-gray-100 max-w-4xl mx-auto leading-relaxed font-light drop-shadow"
           variants={itemVariants}
         >
           Creemos que detrás de cada empresa exitosa hay{" "}
@@ -74,116 +119,58 @@ export default function About() {
           className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8"
           variants={itemVariants}
         >
+          {pillarsData.map((pillar) => {
+            const IconComponent = pillar.icon;
+            return (
+              <motion.div 
+                key={pillar.id}
+                whileHover={{ y: -6, scale: 1.01 }}
+                transition={{ type: "spring" as const, stiffness: 300, damping: 20 }}
+                className="group relative rounded-3xl bg-white/95 shadow-2xl hover:shadow-[#C9A86A]/40 overflow-hidden text-left flex flex-col justify-between text-[#0A1A3A] transition-all duration-300 backdrop-blur-md"
+              >
+                {/* Línea dorada superior */}
+                <div className="w-full h-[3px] bg-[#C9A86A] shrink-0 group-hover:h-[5px] transition-all duration-300" />
 
-          {/* Pilar 1: Personas en el Centro */}
-          <motion.div 
-            whileHover={{ y: -6, scale: 1.01 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="group relative rounded-3xl bg-white shadow-xl hover:shadow-2xl hover:shadow-[#C9A86A]/15 overflow-hidden text-left flex flex-col justify-between text-[#0A1A3A] transition-shadow duration-300"
-          >
-            {/* Línea dorada superior delgada */}
-            <div className="w-full h-[3px] bg-[#C9A86A] shrink-0 group-hover:h-[4px] transition-all duration-300" />
+                <div className="p-8 pt-6 flex flex-col justify-between flex-1">
+                  <div>
+                    <div className={`p-3 border rounded-2xl inline-block mb-6 group-hover:bg-[#C9A86A] group-hover:text-[#0A1A3A] group-hover:border-[#C9A86A] transition-colors duration-300 ${pillar.iconBg}`}>
+                      <IconComponent className="transition-colors duration-300" size={34} />
+                    </div>
+                    
+                    <span className="text-xs font-bold text-[#8c6f33] uppercase tracking-widest block mb-1">
+                      {pillar.tag}
+                    </span>
+                    <h3 className="text-2xl font-bold text-[#0A1A3A]">
+                      {pillar.title}
+                    </h3>
+                    <p className="mt-4 text-gray-600 font-light leading-relaxed text-sm">
+                      {pillar.description}
+                    </p>
+                  </div>
 
-            <div className="p-8 pt-6 flex flex-col justify-between flex-1">
-              <div>
-                <div className="p-3 bg-[#FFF9EF] border border-[#C9A86A]/30 rounded-2xl inline-block mb-6 group-hover:bg-[#C9A86A] group-hover:text-[#0A1A3A] transition-colors duration-300">
-                  <Heart className="text-[#8c6f33] group-hover:text-[#0A1A3A] transition-colors duration-300" size={34} />
+                  {/* Texto inferior destacado y amplio */}
+                  <div className="mt-8 pt-4 border-t border-gray-100 flex items-center justify-start text-sm md:text-base font-bold text-[#8c6f33]">
+                    <span>✓ {pillar.footerText}</span>
+                  </div>
                 </div>
-                
-                <span className="text-xs font-bold text-[#8c6f33] uppercase tracking-widest block mb-1">
-                  Conexión Humana
-                </span>
-                <h3 className="text-2xl font-bold text-[#0A1A3A]">
-                  Personas en el Centro
-                </h3>
-                <p className="mt-4 text-gray-600 font-light leading-relaxed text-sm">
-                  Leemos más allá de un currículum: identificamos el potencial, los valores y el liderazgo que encajan de manera natural con la cultura de tu empresa.
-                </p>
-              </div>
-
-              <div className="mt-8 pt-4 border-t border-gray-100 flex items-center justify-between text-xs font-semibold text-[#8c6f33]">
-                <span>✓ Criterio ético y cercano</span>
-                <span className="transform group-hover:translate-x-1.5 transition-transform duration-300 font-bold">→</span>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Pilar 2: Socios Estratégicos */}
-          <motion.div 
-            whileHover={{ y: -6, scale: 1.01 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="group relative rounded-3xl bg-white shadow-xl hover:shadow-2xl hover:shadow-[#C9A86A]/15 overflow-hidden text-left flex flex-col justify-between text-[#0A1A3A] transition-shadow duration-300"
-          >
-            {/* Línea dorada superior delgada */}
-            <div className="w-full h-[3px] bg-[#C9A86A] shrink-0 group-hover:h-[4px] transition-all duration-300" />
-
-            <div className="p-8 pt-6 flex flex-col justify-between flex-1">
-              <div>
-                <div className="p-3 bg-[#0A1A3A]/5 border border-[#0A1A3A]/10 rounded-2xl inline-block mb-6 group-hover:bg-[#0A1A3A] group-hover:text-white transition-colors duration-300">
-                  <Handshake className="text-[#0A1A3A] group-hover:text-white transition-colors duration-300" size={34} />
-                </div>
-
-                <span className="text-xs font-bold text-[#8c6f33] uppercase tracking-widest block mb-1">
-                  Acompañamiento Cercano
-                </span>
-                <h3 className="text-2xl font-bold text-[#0A1A3A]">
-                  Socios Estratégicos
-                </h3>
-                <p className="mt-4 text-gray-600 font-light leading-relaxed text-sm">
-                  Actuamos con claridad, agilidad y transparencia para entender los retos reales del negocio y responder con soluciones de valor a largo plazo.
-                </p>
-              </div>
-
-              <div className="mt-8 pt-4 border-t border-gray-100 flex items-center justify-between text-xs font-semibold text-[#0A1A3A]">
-                <span>✓ Respuestas con confianza</span>
-                <span className="transform group-hover:translate-x-1.5 transition-transform duration-300 font-bold">→</span>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Pilar 3: Impacto Real */}
-          <motion.div 
-            whileHover={{ y: -6, scale: 1.01 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="group relative rounded-3xl bg-white shadow-xl hover:shadow-2xl hover:shadow-[#C9A86A]/15 overflow-hidden text-left flex flex-col justify-between text-[#0A1A3A] transition-shadow duration-300"
-          >
-            {/* Línea dorada superior delgada */}
-            <div className="w-full h-[3px] bg-[#C9A86A] shrink-0 group-hover:h-[4px] transition-all duration-300" />
-
-            <div className="p-8 pt-6 flex flex-col justify-between flex-1">
-              <div>
-                <div className="p-3 bg-[#FFF9EF] border border-[#C9A86A]/30 rounded-2xl inline-block mb-6 group-hover:bg-[#C9A86A] group-hover:text-[#0A1A3A] transition-colors duration-300">
-                  <TrendingUp className="text-[#8c6f33] group-hover:text-[#0A1A3A] transition-colors duration-300" size={34} />
-                </div>
-
-                <span className="text-xs font-bold text-[#8c6f33] uppercase tracking-widest block mb-1">
-                  Éxito Sostenible
-                </span>
-                <h3 className="text-2xl font-bold text-[#0A1A3A]">
-                  Impacto Real
-                </h3>
-                <p className="mt-4 text-gray-600 font-light leading-relaxed text-sm">
-                  Más que realizar contrataciones temporales, creamos conexiones que generan resultados sostenibles y transforman el desarrollo de profesionales y empresas.
-                </p>
-              </div>
-
-              <div className="mt-8 pt-4 border-t border-gray-100 flex items-center justify-between text-xs font-semibold text-[#8c6f33]">
-                <span>✓ Resultados duraderos</span>
-                <span className="transform group-hover:translate-x-1.5 transition-transform duration-300 font-bold">→</span>
-              </div>
-            </div>
-          </motion.div>
-
+              </motion.div>
+            );
+          })}
         </motion.div>
+
+        {videoError && (
+          <div className="mt-8 inline-flex items-center gap-2 bg-red-500/20 border border-red-500/40 px-4 py-2 rounded-xl text-xs text-red-200">
+            <AlertCircle size={14} /> El archivo de video en <code className="text-white">/videos/services.mp4</code> no pudo cargarse.
+          </div>
+        )}
 
         {/* Lema de Cierre Animado */}
         <motion.p 
           variants={itemVariants}
-          className="mt-16 text-lg text-[#C9A86A] font-semibold tracking-wide"
+          className="mt-16 text-lg md:text-xl text-[#C9A86A] font-bold tracking-wide drop-shadow-md"
         >
           "Conectamos talento. Transformamos futuros."
         </motion.p>
-
       </motion.div>
     </section>
   );
