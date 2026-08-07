@@ -27,7 +27,7 @@ export default function Navbar() {
     { name: "Contacto", sectionId: "contacto", href: "/#contacto" },
   ];
 
-  // OBSERVADOR DE SECCIONES PARA DESKTOP
+  // Observador de secciones activas en Desktop
   useEffect(() => {
     if (!isMounted || typeof window === "undefined" || pathname !== "/") return;
 
@@ -82,7 +82,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="w-full fixed top-0 left-0 z-30 bg-white border-b border-[#C9A86A]/40 shadow-sm">
+    <header className="w-full fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#C9A86A]/40 shadow-sm">
       {/* BARRA PRINCIPAL */}
       <div className="w-full flex items-stretch justify-between h-14 sm:h-16 lg:h-18">
         
@@ -100,7 +100,7 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* NAVEGACIÓN DESKTOP (SOLO VISIBLE EN PANTALLAS GRANDES) */}
+        {/* NAVEGACIÓN DESKTOP (SOLO PANTALLAS GRANDES) */}
         <div className="hidden lg:flex items-stretch justify-end flex-1 pl-6 relative">
           <div 
             className="w-full bg-[#0A1A3A] flex items-stretch justify-end pr-6"
@@ -128,7 +128,7 @@ export default function Navbar() {
               })}
             </nav>
 
-            {/* BOTÓN BÚSQUEDA DESKTOP */}
+            {/* BÚSQUEDA DESKTOP */}
             <div className="flex items-center pl-4 border-l border-white/20 my-auto ml-4">
               <button
                 onClick={() => setSearchOpen(!searchOpen)}
