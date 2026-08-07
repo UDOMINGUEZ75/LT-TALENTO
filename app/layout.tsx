@@ -16,11 +16,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body className="pb-20 md:pb-0">
-        <Navbar />
-        {children}
-        <CookieConsent />
-        <BottomNav />
+      <body className="bg-[#0A1A3A] text-white antialiased">
+        {/* Este contenedor absorbe el scroll horizontal sin alterar la barra fija en Safari */}
+        <div className="w-full overflow-x-hidden min-h-screen flex flex-col pb-20 md:pb-0">
+          <Navbar />
+          <main className="flex-grow">{children}</main>
+          <CookieConsent />
+          <BottomNav />
+        </div>
       </body>
     </html>
   );
