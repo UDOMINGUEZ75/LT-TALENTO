@@ -201,12 +201,13 @@ export default function Vacancies() {
                 "
               >
                 <div>
-                  {/* Encabezado Tarjeta Móvil: Título y Salario */}
-                  <div className="flex justify-between items-start gap-2 mb-2">
+                  {/* CORRECCIÓN DE SALARIO: Encabezado adaptable (se apila en celular si el texto es largo) */}
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1.5 sm:gap-2 mb-2.5">
                     <h3 className="text-base sm:text-lg font-extrabold text-[#0A1A3A] group-hover:text-[#8c6f33] transition-colors leading-snug line-clamp-2">
                       {v.title}
                     </h3>
-                    <span className="shrink-0 text-[11px] font-bold text-[#8c6f33] bg-[#FFF9EF] px-2.5 py-1 rounded-full border border-[#C9A86A]/30">
+                    {/* El badge del salario ahora se ajusta solo y nunca se amontona */}
+                    <span className="inline-block self-start sm:self-auto shrink-0 text-[11px] font-bold text-[#8c6f33] bg-[#FFF9EF] px-2.5 py-1 rounded-full border border-[#C9A86A]/30 whitespace-normal sm:whitespace-nowrap">
                       {v.salary || "Atractivo"}
                     </span>
                   </div>
@@ -229,7 +230,7 @@ export default function Vacancies() {
                   </p>
                 </div>
 
-                {/* Pie de tarjeta con Acción Clara */}
+                {/* Pie de tarjeta */}
                 <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
                   <span className="text-[11px] font-bold text-[#0A1A3A] group-hover:text-[#8c6f33]">
                     Ver detalle de vacante

@@ -41,7 +41,7 @@ export default function Hero() {
   return (
     <section id="hero" className="relative w-full pt-32 pb-24 bg-[#0A1A3A] text-white px-4 sm:px-6 lg:px-8 overflow-hidden">
       
-      {/* FONDO CINEMATOGRÁFICO DE VIDEO Y EFECTO DE BRILLO */}
+      {/* FONDO CINEMATOGRÁFICO DE VIDEO MÁS VISIBLE Y LUMINOSO */}
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
         {isMounted && !videoError && (
           <video
@@ -52,22 +52,22 @@ export default function Hero() {
             playsInline
             preload="metadata"
             onError={() => setVideoError(true)}
-            className="absolute inset-0 w-full h-full object-cover opacity-75"
+            className="absolute inset-0 w-full h-full object-cover opacity-95 transition-opacity duration-500"
           />
         )}
         
-        {/* Capa de brillo central (Radial Gradient) y viñeteado en los bordes */}
+        {/* Capa de brillo central aclara el video al centro y viñetea suavemente las orillas */}
         <div 
           className="absolute inset-0 w-full h-full z-10"
           style={{
             background: `
-              radial-gradient(circle at center, rgba(201, 168, 106, 0.18) 0%, rgba(10, 26, 58, 0.65) 45%, rgba(10, 26, 58, 0.92) 100%)
+              radial-gradient(circle at center, rgba(10, 26, 58, 0.15) 0%, rgba(10, 26, 58, 0.5) 60%, rgba(10, 26, 58, 0.85) 100%)
             `
           }}
         />
 
-        {/* Capa de oscurecimiento uniforme para legibilidad */}
-        <div className="absolute inset-0 w-full h-full bg-[#0A1A3A]/30 z-20" />
+        {/* Capa ultra-ligera de balance (solo 10% de oscurecimiento) */}
+        <div className="absolute inset-0 w-full h-full bg-[#0A1A3A]/10 z-20" />
       </div>
 
       <motion.div 
@@ -84,9 +84,9 @@ export default function Hero() {
           </span>
         </motion.div>
 
-        {/* Título Principal */}
+        {/* Título Principal con Sombra de Alta Definición para Garantizar Lectura */}
         <motion.h1 
-          className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-white drop-shadow-md"
+          className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.85)]"
           variants={itemVariants}
         >
           LT <span className="text-[#C9A86A]">Talent Solutions</span>
@@ -94,19 +94,19 @@ export default function Hero() {
 
         {/* Subtítulo / Manifiesto */}
         <motion.p 
-          className="mt-4 text-sm sm:text-base md:text-lg text-gray-100 max-w-2xl mx-auto leading-relaxed font-light drop-shadow"
+          className="mt-4 text-sm sm:text-base md:text-lg text-white max-w-2xl mx-auto leading-relaxed font-light drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]"
           variants={itemVariants}
         >
           Conectamos talento. <span className="text-[#C9A86A] font-semibold">Transformamos futuros.</span>
         </motion.p>
         <motion.p 
-          className="mt-2 text-xs sm:text-sm text-gray-300 max-w-xl mx-auto font-light px-2"
+          className="mt-2 text-xs sm:text-sm text-gray-200 max-w-xl mx-auto font-light px-2 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]"
           variants={itemVariants}
         >
           Construimos relaciones de valor que impulsan el crecimiento de profesionales y organizaciones extraordinarias.
         </motion.p>
 
-        {/* Tarjetas de Acceso / Propuesta de Valor */}
+        {/* Tarjetas de Acceso con Ligera Traslucidez */}
         <motion.div 
           className="mt-10 sm:mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto"
           variants={itemVariants}
@@ -115,7 +115,7 @@ export default function Hero() {
           <motion.div
             whileHover={{ y: -6, scale: 1.01 }}
             transition={{ type: "spring", stiffness: 250, damping: 20 }}
-            className="group relative rounded-[28px] sm:rounded-[32px] bg-white p-6 sm:p-8 text-center flex flex-col justify-between items-center text-[#0A1A3A] shadow-[0_0_30px_rgba(201,168,106,0.3)] border-2 border-[#C9A86A] hover:shadow-[0_0_40px_rgba(201,168,106,0.5)] transition-all duration-300"
+            className="group relative rounded-[28px] sm:rounded-[32px] bg-white/95 backdrop-blur-md p-6 sm:p-8 text-center flex flex-col justify-between items-center text-[#0A1A3A] shadow-[0_0_35px_rgba(0,0,0,0.4)] border-2 border-[#C9A86A] hover:shadow-[0_0_45px_rgba(201,168,106,0.6)] transition-all duration-300"
           >
             <div className="w-full space-y-3 mb-6">
               <span className="text-xs font-bold text-[#8c6f33] uppercase tracking-widest block">
@@ -150,7 +150,7 @@ export default function Hero() {
           <motion.div
             whileHover={{ y: -6, scale: 1.01 }}
             transition={{ type: "spring", stiffness: 250, damping: 20 }}
-            className="group relative rounded-[28px] sm:rounded-[32px] bg-white p-6 sm:p-8 text-center flex flex-col justify-between items-center text-[#0A1A3A] shadow-[0_0_30px_rgba(201,168,106,0.3)] border-2 border-[#C9A86A] hover:shadow-[0_0_40px_rgba(201,168,106,0.5)] transition-all duration-300"
+            className="group relative rounded-[28px] sm:rounded-[32px] bg-white/95 backdrop-blur-md p-6 sm:p-8 text-center flex flex-col justify-between items-center text-[#0A1A3A] shadow-[0_0_35px_rgba(0,0,0,0.4)] border-2 border-[#C9A86A] hover:shadow-[0_0_45px_rgba(201,168,106,0.6)] transition-all duration-300"
           >
             <div className="w-full space-y-3 mb-6">
               <span className="text-xs font-bold text-[#8c6f33] uppercase tracking-widest block">
