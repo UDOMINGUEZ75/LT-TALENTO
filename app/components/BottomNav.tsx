@@ -147,8 +147,11 @@ export default function BottomNav() {
         )}
       </AnimatePresence>
 
-      {/* BARRA INFERIOR FIJA CON ISLA FLOTANTE DE PROTECCIÓN */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0A1A3A]/95 backdrop-blur-md border-t border-[#C9A86A]/40 px-3 pt-2.5 pb-safari-fix shadow-[0_-8px_25px_rgba(0,0,0,0.6)]">
+      {/* BARRA INFERIOR FIJA CON RENDERIZADO POR GPU EN SAFARI */}
+      <nav 
+        style={{ WebkitTransform: "translate3d(0,0,0)" }}
+        className="md:hidden fixed bottom-0 left-0 right-0 z-50 transform-gpu will-change-transform bg-[#0A1A3A] border-t border-[#C9A86A]/40 px-3 pt-2.5 pb-safari-fix shadow-[0_-8px_25px_rgba(0,0,0,0.6)]"
+      >
         <div className="flex items-center justify-around">
           <button onClick={() => handleNavigation("hero", "/")} className="flex flex-col items-center gap-1 p-1 text-gray-300 hover:text-[#C9A86A] transition-colors cursor-pointer">
             <Home size={20} className="text-[#C9A86A]" />

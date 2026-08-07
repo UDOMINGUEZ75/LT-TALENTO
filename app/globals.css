@@ -2,24 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Paleta de Marca Oficial LT Talent Solutions */
 :root {
   --background: #0A1A3A;
   --foreground: #FFFFFF;
   --accent-gold: #C9A86A;
 }
 
-html, body {
+/* Scroll suave y base global */
+html {
+  scroll-behavior: smooth;
+  background-color: #0A1A3A;
+  color: #FFFFFF;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
   background-color: #0A1A3A;
   color: #FFFFFF;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   line-height: 1.6;
   margin: 0;
   padding: 0;
-  scroll-behavior: smooth;
-  /* IMPORTANTE: No colocar overflow-x: hidden aquí para no romper position: fixed en Safari */
+  /* Nota: Sin overflow-x: hidden en body para evitar romper position:fixed en Safari */
 }
 
-/* Regla de padding para barra inferior en iOS */
+/* Padding de seguridad para el notch/barras de gestos en iOS Safari */
 .pb-safari-fix {
-  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 12px)) !important;
+  padding-bottom: calc(0.85rem + env(safe-area-inset-bottom, 12px)) !important;
 }
