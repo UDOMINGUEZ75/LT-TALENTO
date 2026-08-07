@@ -1,9 +1,10 @@
 import "./globals.css";
+import type { Metadata } from "next";
 import Navbar from "./components/Navbar";
 import CookieConsent from "./components/CookieConsent";
 import BottomNav from "./components/BottomNav";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "LT Talento",
   description: "Sistema de Reclutamiento",
 };
