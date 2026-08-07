@@ -34,3 +34,8 @@ body {
 .bottom-safe {
   bottom: env(safe-area-inset-bottom, 0px);
 }
+
+/* Espaciado para la barra de Safari en iOS al scrollear hacia arriba */
+.pb-safe-ios {
+  padding-bottom: calc(0.85rem + env(safe-area-inset-bottom, 12px));
+}
