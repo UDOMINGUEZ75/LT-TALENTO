@@ -35,9 +35,9 @@ export default function CTA() {
   return (
     <section
       id="contacto"
-      className="relative w-full py-28 bg-[#0A1A3A] text-white text-center overflow-hidden px-4 sm:px-6 md:px-8"
+      className="relative w-full py-24 md:py-32 bg-[#0A1A3A] text-white text-center overflow-hidden px-4 sm:px-6 lg:px-8"
     >
-      {/* FONDO CINEMATOGRÁFICO AJUSTADO */}
+      {/* FONDO CINEMATOGRÁFICO DE VIDEO Y SUPERPOSICIÓN */}
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
         {!videoError && (
           <video
@@ -47,11 +47,11 @@ export default function CTA() {
             muted
             playsInline
             onError={() => setVideoError(true)}
-            className="absolute inset-0 w-full h-full object-cover sm:object-fill min-w-full min-h-full opacity-75"
+            className="absolute inset-0 w-full h-full object-cover opacity-70"
           />
         )}
         {/* Capa de contraste y oscurecimiento uniforme */}
-        <div className="absolute inset-0 w-full h-full bg-[#0A1A3A]/65" />
+        <div className="absolute inset-0 w-full h-full bg-[#0A1A3A]/70" />
       </div>
 
       {/* Resplandor ambiental dinámico de fondo */}
@@ -65,11 +65,11 @@ export default function CTA() {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[450px] bg-[#C9A86A] rounded-full blur-[140px] pointer-events-none z-0" 
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] sm:w-[650px] h-[320px] sm:h-[450px] bg-[#C9A86A] rounded-full blur-[120px] md:blur-[140px] pointer-events-none z-0" 
       />
 
       <motion.div 
-        className="max-w-4xl mx-auto relative z-10 p-8 sm:p-12 md:p-16 bg-transparent border-0 shadow-none"
+        className="max-w-4xl mx-auto relative z-10 py-6 sm:py-10 bg-transparent border-0 shadow-none"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -84,7 +84,7 @@ export default function CTA() {
 
         {/* Título Principal Tipográfico Nítido */}
         <motion.h2 
-          className="text-4xl sm:text-5xl md:text-6xl font-black text-white leading-tight tracking-tight drop-shadow-md"
+          className="text-3xl sm:text-5xl md:text-6xl font-black text-white leading-tight tracking-tight drop-shadow-md"
           variants={itemVariants}
         >
           Tu próximo gran talento{" "}
@@ -95,7 +95,7 @@ export default function CTA() {
 
         {/* Descripción con Tono de Marca */}
         <motion.p 
-          className="mt-6 text-lg md:text-xl text-gray-100 max-w-2xl mx-auto leading-relaxed font-light drop-shadow"
+          className="mt-6 text-sm sm:text-lg md:text-xl text-gray-100 max-w-2xl mx-auto leading-relaxed font-light drop-shadow px-2"
           variants={itemVariants}
         >
           Conectamos a las empresas con las personas que generan resultados. Platiquemos sobre cómo podemos impulsar juntos el desarrollo y futuro de tu organización.
@@ -111,22 +111,22 @@ export default function CTA() {
             whileTap={{ scale: 0.97 }}
             transition={{ type: "spring", stiffness: 350, damping: 20 }}
             className="
-              inline-flex items-center gap-3 mt-10 
-              bg-[#C9A86A] hover:bg-[#d8b97a] text-[#0A1A3A] 
-              font-extrabold text-base md:text-lg
-              px-10 py-4.5 rounded-2xl 
-              shadow-xl hover:shadow-2xl hover:shadow-[#C9A86A]/40
-              transition-all duration-300 border border-[#C9A86A]/40
+              inline-flex items-center justify-center gap-3 mt-8 sm:mt-10 
+              bg-[#C9A86A] hover:bg-[#b89555] text-[#0A1A3A] 
+              font-extrabold text-sm sm:text-base md:text-lg
+              px-8 sm:px-10 py-3.5 sm:py-4.5 rounded-2xl 
+              shadow-[0_0_25px_rgba(201,168,106,0.35)] hover:shadow-[0_0_35px_rgba(201,168,106,0.6)]
+              transition-all duration-300 border border-[#C9A86A]/50
             "
           >
-            <MessageCircle className="w-5 h-5 fill-current" />
+            <MessageCircle className="w-5 h-5 fill-current shrink-0" />
             <span>Iniciar Conversación en WhatsApp</span>
           </motion.a>
         </motion.div>
 
         {/* Nota Ágil y Cercana */}
         <motion.p 
-          className="mt-5 text-xs md:text-sm text-gray-300 font-light"
+          className="mt-5 text-xs sm:text-sm text-gray-300 font-light"
           variants={itemVariants}
         >
           Respuesta inmediata y acompañamiento personalizado.

@@ -34,27 +34,37 @@ export default function Hero() {
   };
 
   return (
-    <section id="hero" className="relative w-full pt-36 pb-28 bg-[#0A1A3A] text-white px-4 sm:px-6 md:px-8 overflow-hidden">
+    <section id="hero" className="relative w-full pt-32 pb-24 bg-[#0A1A3A] text-white px-4 sm:px-6 lg:px-8 overflow-hidden">
       
-      {/* FONDO CINEMATOGRÁFICO DE VIDEO */}
+      {/* FONDO CINEMATOGRÁFICO DE VIDEO Y EFECTO DE BRILLO */}
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
         {!videoError && (
           <video
-            src="/videos/services.mp4"
+            src="/videos/inicio.mp4"
             autoPlay
             loop
             muted
             playsInline
             onError={() => setVideoError(true)}
-            className="absolute inset-0 w-full h-full object-cover sm:object-fill min-w-full min-h-full opacity-75"
+            className="absolute inset-0 w-full h-full object-cover opacity-75"
           />
         )}
-        {/* Capa de contraste y oscurecimiento uniforme */}
-        <div className="absolute inset-0 w-full h-full bg-[#0A1A3A]/70" />
+        
+        {/* Capa de brillo central (Radial Gradient) y viñeteado */}
+        <div 
+          className="absolute inset-0 w-full h-full z-10"
+          style={{
+            background: `
+              radial-gradient(circle at center, rgba(201, 168, 106, 0.18) 0%, rgba(10, 26, 58, 0.65) 45%, rgba(10, 26, 58, 0.92) 100%)
+            `
+          }}
+        />
+        {/* Capa de oscurecimiento uniforme */}
+        <div className="absolute inset-0 w-full h-full bg-[#0A1A3A]/30 z-20" />
       </div>
 
       <motion.div 
-        className="max-w-6xl mx-auto text-center relative z-10"
+        className="max-w-6xl mx-auto text-center relative z-30"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -69,7 +79,7 @@ export default function Hero() {
 
         {/* Título Principal */}
         <motion.h1 
-          className="text-4xl md:text-6xl font-black tracking-tight text-white drop-shadow-md"
+          className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-white drop-shadow-md"
           variants={itemVariants}
         >
           LT <span className="text-[#C9A86A]">Talent Solutions</span>
@@ -77,13 +87,13 @@ export default function Hero() {
 
         {/* Subtítulo / Manifiesto */}
         <motion.p 
-          className="mt-4 text-base md:text-lg text-gray-100 max-w-2xl mx-auto leading-relaxed font-light drop-shadow"
+          className="mt-4 text-sm sm:text-base md:text-lg text-gray-100 max-w-2xl mx-auto leading-relaxed font-light drop-shadow"
           variants={itemVariants}
         >
           Conectamos talento. <span className="text-[#C9A86A] font-semibold">Transformamos futuros.</span>
         </motion.p>
         <motion.p 
-          className="mt-2 text-xs md:text-sm text-gray-300 max-w-xl mx-auto font-light"
+          className="mt-2 text-xs sm:text-sm text-gray-300 max-w-xl mx-auto font-light px-2"
           variants={itemVariants}
         >
           Construimos relaciones de valor que impulsan el crecimiento de profesionales y organizaciones extraordinarias.
@@ -91,14 +101,14 @@ export default function Hero() {
 
         {/* Tarjetas de Acceso / Propuesta de Valor */}
         <motion.div 
-          className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+          className="mt-10 sm:mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto"
           variants={itemVariants}
         >
           {/* Tarjeta Profesionales */}
           <motion.div
             whileHover={{ y: -6, scale: 1.01 }}
             transition={{ type: "spring", stiffness: 250, damping: 20 }}
-            className="group relative rounded-[32px] bg-white p-6 sm:p-8 text-center flex flex-col justify-between items-center shadow-2xl transition-all duration-300 border border-gray-200/80 text-[#0A1A3A]"
+            className="group relative rounded-[28px] sm:rounded-[32px] bg-white p-6 sm:p-8 text-center flex flex-col justify-between items-center text-[#0A1A3A] shadow-[0_0_30px_rgba(201,168,106,0.3)] border-2 border-[#C9A86A] transition-all duration-300"
           >
             <div className="w-full space-y-3 mb-6">
               <span className="text-xs font-bold text-[#8c6f33] uppercase tracking-widest block">
@@ -133,7 +143,7 @@ export default function Hero() {
           <motion.div
             whileHover={{ y: -6, scale: 1.01 }}
             transition={{ type: "spring", stiffness: 250, damping: 20 }}
-            className="group relative rounded-[32px] bg-white p-6 sm:p-8 text-center flex flex-col justify-between items-center shadow-2xl transition-all duration-300 border border-gray-200/80 text-[#0A1A3A]"
+            className="group relative rounded-[28px] sm:rounded-[32px] bg-white p-6 sm:p-8 text-center flex flex-col justify-between items-center text-[#0A1A3A] shadow-[0_0_30px_rgba(201,168,106,0.3)] border-2 border-[#C9A86A] transition-all duration-300"
           >
             <div className="w-full space-y-3 mb-6">
               <span className="text-xs font-bold text-[#8c6f33] uppercase tracking-widest block">
@@ -167,7 +177,7 @@ export default function Hero() {
 
         {videoError && (
           <div className="mt-8 inline-flex items-center gap-2 bg-red-500/20 border border-red-500/40 px-4 py-2 rounded-xl text-xs text-red-200">
-            <AlertCircle size={14} /> El archivo de video en <code className="text-white">/videos/services.mp4</code> no pudo cargarse.
+            <AlertCircle size={14} /> El archivo de video en <code className="text-white">/videos/inicio.mp4</code> no pudo cargarse.
           </div>
         )}
       </motion.div>

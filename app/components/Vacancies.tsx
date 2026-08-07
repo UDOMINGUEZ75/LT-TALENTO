@@ -94,7 +94,7 @@ export default function Vacancies() {
 
   if (loading) {
     return (
-      <section id="vacantes" className="relative w-full pt-36 pb-28 bg-[#0A1A3A] text-white text-center">
+      <section id="vacantes" className="relative w-full pt-32 pb-24 bg-[#0A1A3A] text-white text-center px-4 sm:px-6 lg:px-8">
         <div className="text-center py-16 text-[#C9A86A] text-sm font-medium">
           Cargando oportunidades de desarrollo...
         </div>
@@ -103,7 +103,7 @@ export default function Vacancies() {
   }
 
   return (
-    <section id="vacantes" className="relative w-full pt-36 pb-28 bg-[#0A1A3A] text-white px-4 sm:px-6 md:px-8 overflow-hidden">
+    <section id="vacantes" className="relative w-full pt-32 pb-24 bg-[#0A1A3A] text-white px-4 sm:px-6 lg:px-8 overflow-hidden">
       
       {/* Resplandor ambiental de fondo */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#C9A86A]/5 rounded-full blur-[120px] pointer-events-none z-0" />
@@ -112,19 +112,19 @@ export default function Vacancies() {
         
         {/* Encabezado limpio y proporcionado */}
         <div className="text-center mb-10 space-y-2">
-          <span className="inline-block px-3.5 py-1 text-[11px] font-bold uppercase tracking-widest text-[#0A1A3A] bg-[#C9A86A] rounded-full shadow-md border border-[#C9A86A]/40">
+          <span className="inline-block px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-[#0A1A3A] bg-[#C9A86A] rounded-full shadow-md border border-[#C9A86A]/40">
             Bolsa de Trabajo
           </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
             Oportunidades de Crecimiento
           </h2>
-          <p className="text-gray-300 text-xs sm:text-sm max-w-xl mx-auto font-light leading-relaxed">
+          <p className="text-gray-300 text-xs sm:text-sm max-w-xl mx-auto font-light leading-relaxed px-2">
             Conectamos profesionales extraordinarios con organizaciones que impulsan su desarrollo.
           </p>
         </div>
 
         {/* Sección de Filtros Compacta */}
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-xl mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 items-center text-gray-900 max-w-3xl mx-auto">
+        <div className="bg-white p-4 sm:p-6 rounded-2xl border border-gray-200 shadow-xl mb-12 grid grid-cols-1 md:grid-cols-2 gap-4 items-center text-gray-900 max-w-3xl mx-auto">
           <div>
             <label className="block text-[11px] font-bold text-[#0A1A3A] mb-1 uppercase tracking-wider">
               Buscar por Perfil o Área
@@ -156,18 +156,18 @@ export default function Vacancies() {
           </div>
         </div>
 
-        {/* Cuadrícula de Vacantes Estilo Tarjeta Compacta */}
+        {/* Cuadrícula de Vacantes con Borde Brillante Dorado */}
         {filteredVacancies.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {filteredVacancies.map((v) => (
               <div
                 key={v.id}
                 onClick={(e) => handlePostularseClick(e, v.id)}
-                className="group p-6 rounded-2xl bg-white text-gray-900 border border-gray-200 shadow-lg hover:shadow-xl hover:border-[#C9A86A]/50 flex flex-col justify-between w-full min-h-[340px] transition-all duration-200 cursor-pointer relative"
+                className="group p-6 rounded-[28px] sm:rounded-[32px] bg-white text-gray-900 shadow-[0_0_30px_rgba(201,168,106,0.25)] border-2 border-[#C9A86A] hover:shadow-[0_0_40px_rgba(201,168,106,0.45)] flex flex-col justify-between w-full min-h-[360px] transition-all duration-300 cursor-pointer relative"
               >
                 <div className="space-y-3">
                   {/* Título de la Vacante */}
-                  <h3 className="text-lg font-bold text-[#0A1A3A] group-hover:text-[#8c6f33] transition-colors line-clamp-2">
+                  <h3 className="text-lg font-extrabold text-[#0A1A3A] group-hover:text-[#8c6f33] transition-colors line-clamp-2 leading-snug">
                     {v.title}
                   </h3>
 
@@ -196,7 +196,7 @@ export default function Vacancies() {
                   </div>
 
                   {/* Descripción corta */}
-                  <p className="text-xs text-gray-500 line-clamp-3 leading-relaxed pt-1">
+                  <p className="text-xs text-gray-500 line-clamp-3 leading-relaxed pt-1 font-light">
                     {v.description}
                   </p>
                 </div>
@@ -206,7 +206,7 @@ export default function Vacancies() {
                   <span className="text-[11px] font-semibold text-gray-400 group-hover:text-[#0A1A3A] transition-colors">
                     Ver detalles y postularse
                   </span>
-                  <div className="w-10 h-10 rounded-full border border-gray-200 group-hover:border-[#0A1A3A] group-hover:bg-[#0A1A3A] group-hover:text-white text-gray-700 flex items-center justify-center transition-all duration-200 shadow-sm">
+                  <div className="w-10 h-10 rounded-full border border-gray-200 group-hover:border-[#0A1A3A] group-hover:bg-[#0A1A3A] group-hover:text-white text-gray-700 flex items-center justify-center transition-all duration-200 shadow-sm shrink-0">
                     <ArrowRight size={16} />
                   </div>
                 </div>

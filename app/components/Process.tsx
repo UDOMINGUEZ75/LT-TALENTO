@@ -8,7 +8,7 @@ export default function Process() {
   const [activeStep, setActiveStep] = useState<number>(3);
   const [videoError, setVideoError] = useState(false);
 
-  // Variantes para la animación al hacer scroll estilo Apple con tipos explícitos de Framer Motion
+  // Variantes para la animación al hacer scroll estilo Apple
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
@@ -68,9 +68,9 @@ export default function Process() {
   ];
 
   return (
-    <section id="proceso" className="relative w-full py-28 bg-[#0A1A3A] text-white px-4 sm:px-6 md:px-8 overflow-hidden">
+    <section id="proceso" className="relative w-full py-24 md:py-32 bg-[#0A1A3A] text-white px-4 sm:px-6 lg:px-8 overflow-hidden">
       
-      {/* FONDO CINEMATOGRÁFICO AJUSTADO DE ANCHO Y ALTO COMPLETO */}
+      {/* FONDO CINEMATOGRÁFICO DE VIDEO Y SUPERPOSICIÓN */}
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
         {!videoError && (
           <video
@@ -80,11 +80,11 @@ export default function Process() {
             muted
             playsInline
             onError={() => setVideoError(true)}
-            className="absolute inset-0 w-full h-full object-cover sm:object-fill min-w-full min-h-full opacity-75"
+            className="absolute inset-0 w-full h-full object-cover opacity-60"
           />
         )}
         {/* Capa de contraste y oscurecimiento uniforme */}
-        <div className="absolute inset-0 w-full h-full bg-[#0A1A3A]/60" />
+        <div className="absolute inset-0 w-full h-full bg-[#0A1A3A]/80" />
       </div>
 
       <motion.div 
@@ -104,7 +104,7 @@ export default function Process() {
 
         {/* Título Principal */}
         <motion.h2 
-          className="text-4xl md:text-5xl font-black tracking-tight text-white drop-shadow-md"
+          className="text-3xl sm:text-5xl font-black tracking-tight text-white drop-shadow-md"
           variants={itemVariants}
         >
           Nuestro{" "}
@@ -115,7 +115,7 @@ export default function Process() {
 
         {/* Descripción con Voz de Marca */}
         <motion.p 
-          className="mt-6 text-lg md:text-xl text-gray-100 max-w-3xl mx-auto leading-relaxed font-light drop-shadow"
+          className="mt-6 text-sm sm:text-lg md:text-xl text-gray-100 max-w-3xl mx-auto leading-relaxed font-light drop-shadow px-2"
           variants={itemVariants}
         >
           Combinamos evaluación humana profunda con soluciones tecnológicas de vanguardia. 
@@ -123,9 +123,9 @@ export default function Process() {
           que generan resultados e impulsan la transformación de las organizaciones.
         </motion.p>
 
-        {/* Tarjetas de Pasos */}
+        {/* Tarjetas de Pasos (Pintadas limpias sin franjas cortadas) */}
         <motion.div 
-          className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8"
           variants={itemVariants}
         >
           {stepsData.map((step) => {
@@ -138,16 +138,13 @@ export default function Process() {
                 onClick={() => setActiveStep(step.id)}
                 whileHover={{ y: -6, scale: 1.01 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className={`group relative rounded-3xl bg-white/95 shadow-2xl hover:shadow-[#C9A86A]/40 overflow-hidden text-left flex flex-col justify-between text-[#0A1A3A] cursor-pointer transition-all duration-300 backdrop-blur-md ${
-                  isActive ? "ring-2 ring-[#C9A86A] shadow-2xl shadow-[#C9A86A]/20" : ""
+                className={`group relative rounded-[28px] sm:rounded-[32px] bg-white text-[#0A1A3A] overflow-hidden text-left flex flex-col justify-between p-6 sm:p-8 cursor-pointer transition-all duration-300 ${
+                  isActive 
+                    ? "border-2 border-[#C9A86A] shadow-[0_0_40px_rgba(201,168,106,0.5)]" 
+                    : "border-2 border-[#C9A86A]/60 shadow-[0_0_25px_rgba(201,168,106,0.25)] hover:shadow-[0_0_35px_rgba(201,168,106,0.45)]"
                 }`}
               >
-                {/* Línea dorada superior delgada */}
-                <div className={`w-full h-[3px] bg-[#C9A86A] shrink-0 transition-all duration-300 ${
-                  isActive ? "h-[5px]" : "group-hover:h-[5px]"
-                }`} />
-
-                <div className="p-8 pt-6 flex flex-col justify-between flex-1">
+                <div className="flex flex-col justify-between flex-1">
                   <div>
                     <div className="flex justify-between items-center mb-6">
                       {/* Ícono dinámico */}
@@ -156,12 +153,12 @@ export default function Process() {
                           ? "bg-[#C9A86A] text-[#0A1A3A] border-[#C9A86A]" 
                           : "bg-[#FFF9EF] border-[#C9A86A]/30 text-[#8c6f33] group-hover:bg-[#C9A86A] group-hover:text-[#0A1A3A]"
                       }`}>
-                        <IconComponent size={34} />
+                        <IconComponent size={32} />
                       </div>
 
                       {/* Número de Paso */}
-                      <span className={`text-4xl font-black transition-colors duration-300 ${
-                        isActive ? "text-[#C9A86A]" : "text-[#0A1A3A]/10 group-hover:text-[#C9A86A]/30"
+                      <span className={`text-3xl sm:text-4xl font-black transition-colors duration-300 ${
+                        isActive ? "text-[#C9A86A]" : "text-[#0A1A3A]/15 group-hover:text-[#C9A86A]/40"
                       }`}>
                         {step.stepNumber}
                       </span>
@@ -170,15 +167,15 @@ export default function Process() {
                     <span className="text-xs font-bold text-[#8c6f33] uppercase tracking-widest block mb-1">
                       {step.tagline}
                     </span>
-                    <h3 className="text-2xl font-bold text-[#0A1A3A]">
+                    <h3 className="text-xl sm:text-2xl font-bold text-[#0A1A3A]">
                       {step.title}
                     </h3>
-                    <p className="mt-4 text-gray-600 font-light leading-relaxed text-sm">
+                    <p className="mt-3 text-gray-600 font-light leading-relaxed text-xs sm:text-sm">
                       {step.description}
                     </p>
                   </div>
 
-                  {/* Pie de tarjeta con la flecha activa */}
+                  {/* Pie de tarjeta */}
                   <div className="mt-8 pt-4 border-t border-gray-100 flex items-center justify-between text-xs font-semibold text-[#8c6f33]">
                     <span>✓ {step.badge}</span>
                     <span className="transform group-hover:translate-x-1.5 transition-transform duration-300 font-bold">→</span>
@@ -197,7 +194,7 @@ export default function Process() {
 
         {/* Cierre de Manifiesto Breve */}
         <motion.p 
-          className="mt-16 text-base md:text-lg text-[#C9A86A] font-medium tracking-wide max-w-2xl mx-auto italic drop-shadow-md"
+          className="mt-12 sm:mt-16 text-sm sm:text-base md:text-lg text-[#C9A86A] font-medium tracking-wide max-w-2xl mx-auto italic drop-shadow-md px-2"
           variants={itemVariants}
         >
           "Cada proceso de selección es una oportunidad para generar impacto, crear confianza y construir éxito sostenible."

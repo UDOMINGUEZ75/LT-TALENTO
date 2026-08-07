@@ -69,17 +69,17 @@ export default function About() {
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
         {!videoError && (
           <video
-            src="/videos/services.mp4"
+            src="/videos/about.mp4"
             autoPlay
             loop
             muted
             playsInline
             onError={() => setVideoError(true)}
-            className="absolute inset-0 w-full h-full object-cover sm:object-fill min-w-full min-h-full opacity-75"
+            className="absolute inset-0 w-full h-full object-cover opacity-60"
           />
         )}
         {/* Capa de contraste y oscurecimiento uniforme */}
-        <div className="absolute inset-0 w-full h-full bg-[#0A1A3A]/60" />
+        <div className="absolute inset-0 w-full h-full bg-[#0A1A3A]/80" />
       </div>
 
       <motion.div 
@@ -126,32 +126,27 @@ export default function About() {
                 key={pillar.id}
                 whileHover={{ y: -6, scale: 1.01 }}
                 transition={{ type: "spring" as const, stiffness: 300, damping: 20 }}
-                className="group relative rounded-3xl bg-white/95 shadow-2xl hover:shadow-[#C9A86A]/40 overflow-hidden text-left flex flex-col justify-between text-[#0A1A3A] transition-all duration-300 backdrop-blur-md"
+                className="group relative rounded-[28px] sm:rounded-[32px] bg-white text-[#0A1A3A] shadow-[0_0_30px_rgba(201,168,106,0.3)] border-2 border-[#C9A86A] hover:shadow-[0_0_40px_rgba(201,168,106,0.5)] overflow-hidden text-left flex flex-col justify-between p-6 sm:p-8 transition-all duration-300"
               >
-                {/* Línea dorada superior */}
-                <div className="w-full h-[3px] bg-[#C9A86A] shrink-0 group-hover:h-[5px] transition-all duration-300" />
-
-                <div className="p-8 pt-6 flex flex-col justify-between flex-1">
-                  <div>
-                    <div className={`p-3 border rounded-2xl inline-block mb-6 group-hover:bg-[#C9A86A] group-hover:text-[#0A1A3A] group-hover:border-[#C9A86A] transition-colors duration-300 ${pillar.iconBg}`}>
-                      <IconComponent className="transition-colors duration-300" size={34} />
-                    </div>
-                    
-                    <span className="text-xs font-bold text-[#8c6f33] uppercase tracking-widest block mb-1">
-                      {pillar.tag}
-                    </span>
-                    <h3 className="text-2xl font-bold text-[#0A1A3A]">
-                      {pillar.title}
-                    </h3>
-                    <p className="mt-4 text-gray-600 font-light leading-relaxed text-sm">
-                      {pillar.description}
-                    </p>
+                <div>
+                  <div className={`p-3 border rounded-2xl inline-block mb-6 group-hover:bg-[#C9A86A] group-hover:text-[#0A1A3A] group-hover:border-[#C9A86A] transition-colors duration-300 ${pillar.iconBg}`}>
+                    <IconComponent className="transition-colors duration-300" size={34} />
                   </div>
+                  
+                  <span className="text-xs font-bold text-[#8c6f33] uppercase tracking-widest block mb-1">
+                    {pillar.tag}
+                  </span>
+                  <h3 className="text-2xl font-bold text-[#0A1A3A]">
+                    {pillar.title}
+                  </h3>
+                  <p className="mt-4 text-gray-600 font-light leading-relaxed text-sm">
+                    {pillar.description}
+                  </p>
+                </div>
 
-                  {/* Texto inferior destacado y amplio */}
-                  <div className="mt-8 pt-4 border-t border-gray-100 flex items-center justify-start text-sm md:text-base font-bold text-[#8c6f33]">
-                    <span>✓ {pillar.footerText}</span>
-                  </div>
+                {/* Texto inferior destacado y amplio */}
+                <div className="mt-8 pt-4 border-t border-gray-100 flex items-center justify-start text-sm md:text-base font-bold text-[#8c6f33]">
+                  <span>✓ {pillar.footerText}</span>
                 </div>
               </motion.div>
             );
@@ -160,7 +155,7 @@ export default function About() {
 
         {videoError && (
           <div className="mt-8 inline-flex items-center gap-2 bg-red-500/20 border border-red-500/40 px-4 py-2 rounded-xl text-xs text-red-200">
-            <AlertCircle size={14} /> El archivo de video en <code className="text-white">/videos/services.mp4</code> no pudo cargarse.
+            <AlertCircle size={14} /> El archivo de video en <code className="text-white">/videos/about.mp4</code> no pudo cargarse.
           </div>
         )}
 

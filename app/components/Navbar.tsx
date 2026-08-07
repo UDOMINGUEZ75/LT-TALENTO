@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -12,6 +12,7 @@ export default function Navbar() {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("hero");
 
   const primaryNavItems = [
     { name: "Inicio", sectionId: "hero", href: "/" },
@@ -22,13 +23,43 @@ export default function Navbar() {
     { name: "Contacto", sectionId: "contacto", href: "/#contacto" },
   ];
 
+  // DETECTAR LA SECCIÓN ACTIVA SEGÚN EL SCROLL
+  useEffect(() => {
+    if (pathname !== "/") return;
+
+    const sections = primaryNavItems.map((item) => document.getElementById(item.sectionId));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        threshold: 0.3, // Se activa cuando el 30% de la sección es visible
+      }
+    );
+
+    sections.forEach((section) => {
+      if (section) observer.observe(section);
+    });
+
+    return () => {
+      sections.forEach((section) => {
+        if (section) observer.unobserve(section);
+      });
+    };
+  }, [pathname]);
+
   const handleNavigation = (sectionId?: string, href?: string) => {
     setMobileMenuOpen(false);
 
-    // Si estamos en la página principal ("/")
     if (pathname === "/") {
       if (!sectionId || sectionId === "hero") {
         window.scrollTo({ top: 0, behavior: "smooth" });
+        setActiveSection("hero");
         return;
       }
       const element = document.getElementById(sectionId);
@@ -36,7 +67,6 @@ export default function Navbar() {
         element.scrollIntoView({ behavior: "smooth" });
       }
     } else {
-      // Si estamos en otra página, redirigimos a la principal con su respectiva ancla
       router.push(href || "/");
     }
   };
@@ -54,7 +84,7 @@ export default function Navbar() {
               alt="Logo LT Talent Solutions"
               width={160}
               height={50}
-              className="rounded-md cursor-pointer hover:opacity-95 transition-opacity"
+              className="w-auto h-9 sm:h-11 object-contain rounded-md cursor-pointer hover:opacity-95 transition-opacity"
               priority
             />
           </Link>
@@ -71,24 +101,18 @@ export default function Navbar() {
           >
             <nav className="flex items-stretch gap-1 pl-10">
               {primaryNavItems.map((item) => {
-                // Verificamos si esta pestaña está activa visualmente
-                const isActive = pathname === "/" && item.sectionId === "hero"; // Puedes ajustar la lógica activa si lo deseas
+                // Ahora verifica cuál sección está visible en pantalla
+                const isActive = pathname === "/" && activeSection === item.sectionId;
+
                 return (
                   <button
                     key={item.name}
                     onClick={() => handleNavigation(item.sectionId, item.href)}
-                    className={`relative flex items-center px-6 text-sm font-bold transition-all duration-200 cursor-pointer ${
+                    className={`relative flex items-center px-5 xl:px-6 text-sm font-bold transition-all duration-300 cursor-pointer ${
                       isActive
-                        ? "text-[#0A1A3A] bg-white shadow-inner font-black"
-                        : "text-white hover:text-[#C9A86A] hover:bg-white/10"
+                        ? "text-[#C9A86A] bg-white/10 font-black border-b-2 border-[#C9A86A]"
+                        : "text-white hover:text-[#C9A86A] hover:bg-white/5"
                     }`}
-                    style={
-                      isActive
-                        ? {
-                            clipPath: "polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%)",
-                          }
-                        : undefined
-                    }
                   >
                     {item.name}
                   </button>
@@ -113,7 +137,7 @@ export default function Navbar() {
         <div className="flex items-center lg:hidden px-4 bg-[#0A1A3A] text-white">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+            className="p-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer border border-[#C9A86A]/40"
             aria-label="Abrir menú"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -159,8 +183,7 @@ export default function Navbar() {
             className="lg:hidden bg-[#0A1A3A] border-t border-[#C9A86A]/30 text-white overflow-hidden shadow-2xl"
           >
             <div className="p-6 space-y-6">
-              {/* Buscador móvil */}
-              <div className="flex items-center gap-2 bg-white/10 px-4 py-3 rounded-xl border border-white/20">
+              <div className="flex items-center gap-2 bg-white/10 px-4 py-3 rounded-xl border border-[#C9A86A]/40">
                 <Search className="text-[#C9A86A]" size={18} />
                 <input
                   type="text"
@@ -169,24 +192,27 @@ export default function Navbar() {
                 />
               </div>
 
-              {/* Links Principales con Control de Ruta */}
               <div className="space-y-2">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A86A]">
                   Navegación
                 </span>
-                {primaryNavItems.map((item) => (
-                  <button
-                    key={item.name}
-                    onClick={() => handleNavigation(item.sectionId, item.href)}
-                    className="w-full flex items-center justify-between py-2.5 border-b border-white/10 text-base font-semibold text-white hover:text-[#C9A86A] text-left cursor-pointer"
-                  >
-                    <span>{item.name}</span>
-                    <ChevronRight size={16} className="text-gray-400" />
-                  </button>
-                ))}
+                {primaryNavItems.map((item) => {
+                  const isActive = pathname === "/" && activeSection === item.sectionId;
+                  return (
+                    <button
+                      key={item.name}
+                      onClick={() => handleNavigation(item.sectionId, item.href)}
+                      className={`w-full flex items-center justify-between py-2.5 border-b border-white/10 text-base font-semibold text-left cursor-pointer transition-colors ${
+                        isActive ? "text-[#C9A86A]" : "text-white hover:text-[#C9A86A]"
+                      }`}
+                    >
+                      <span>{item.name}</span>
+                      <ChevronRight size={16} className="text-[#C9A86A]" />
+                    </button>
+                  );
+                })}
               </div>
 
-              {/* Acceso Rápido */}
               <div className="space-y-2 pt-2">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A86A]">
                   Acceso Rápido
@@ -195,7 +221,7 @@ export default function Navbar() {
                   <Link
                     href="/candidatos/nuevo"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-colors text-sm font-semibold"
+                    className="flex items-center gap-3 p-3 bg-white/10 rounded-xl hover:bg-white/20 border border-white/10 transition-colors text-sm font-semibold"
                   >
                     <UserCheck className="text-[#C9A86A]" size={18} />
                     <span>Bolsa de Trabajo / Candidatos</span>
@@ -204,7 +230,7 @@ export default function Navbar() {
                   <Link
                     href="/reclutador/registro"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-colors text-sm font-semibold"
+                    className="flex items-center gap-3 p-3 bg-white/10 rounded-xl hover:bg-white/20 border border-white/10 transition-colors text-sm font-semibold"
                   >
                     <Briefcase className="text-[#C9A86A]" size={18} />
                     <span>Registrar Vacante / Empresas</span>
@@ -214,7 +240,7 @@ export default function Navbar() {
                     href="https://wa.me/5216143981235"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-3 bg-[#C9A86A] text-[#0A1A3A] rounded-xl font-bold text-sm"
+                    className="flex items-center gap-3 p-3 bg-[#C9A86A] text-[#0A1A3A] rounded-xl font-bold text-sm shadow-[0_0_20px_rgba(201,168,106,0.3)]"
                   >
                     <PhoneCall size={18} />
                     <span>Contacto WhatsApp</span>
