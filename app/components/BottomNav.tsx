@@ -61,7 +61,7 @@ export default function BottomNav() {
 
   return (
     <>
-      {/* PANEL DESPLEGABLE (BOTTOM SHEET) */}
+      {/* PANEL DESPLEGABLE (BOTTOM SHEET) CON ESPACIO SUFICIENTE */}
       <AnimatePresence>
         {menuOpen && (
           <>
@@ -78,7 +78,7 @@ export default function BottomNav() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 220 }}
-              className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0A1A3A] border-t-2 border-[#C9A86A] rounded-t-[32px] px-5 pt-4 pb-24 text-white shadow-[0_-10px_30px_rgba(0,0,0,0.6)]"
+              className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0A1A3A] border-t-2 border-[#C9A86A] rounded-t-[32px] px-5 pt-4 pb-28 text-white shadow-[0_-10px_30px_rgba(0,0,0,0.6)] max-h-[85vh] overflow-y-auto"
             >
               {/* Tirador */}
               <div className="w-12 h-1.5 bg-gray-500/40 rounded-full mx-auto mb-4" />
@@ -100,7 +100,7 @@ export default function BottomNav() {
                     <button
                       key={item.name}
                       onClick={() => handleNavigation(item.sectionId, item.href)}
-                      className="w-full flex items-center justify-between py-2.5 px-3 rounded-xl text-xs font-semibold text-gray-100 hover:bg-white/10 transition-colors text-left"
+                      className="w-full flex items-center justify-between py-2.5 px-3 rounded-xl text-xs font-semibold text-gray-100 hover:bg-white/10 transition-colors text-left cursor-pointer"
                     >
                       <div className="flex items-center gap-3">
                         <Icon size={18} className="text-[#C9A86A]" />
@@ -112,7 +112,7 @@ export default function BottomNav() {
                 })}
               </div>
 
-              {/* SECCIÓN DE LOS 4 BOTONES (ESTILO IMAGEN) */}
+              {/* SECCIÓN DE LOS 4 BOTONES (ESTILO IMAGEN DE REFERENCIA) */}
               <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/10">
                 {/* Columna Candidatos */}
                 <div className="flex flex-col gap-2">
@@ -155,25 +155,25 @@ export default function BottomNav() {
         )}
       </AnimatePresence>
 
-      {/* BARRA INFERIOR FIJA (Navegación base) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0A1A3A]/95 backdrop-blur-md border-t border-[#C9A86A]/40 px-3 py-2 shadow-[0_-5px_20px_rgba(0,0,0,0.4)]">
-        <div className="flex items-center justify-around">
-          <button onClick={() => handleNavigation("hero", "/")} className="flex flex-col items-center gap-1 p-1 text-gray-300">
+      {/* BARRA INFERIOR FIJA CON SOPORTE PB-SAFE PARA SAFARI EN IPHONE */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0A1A3A]/95 backdrop-blur-md border-t border-[#C9A86A]/40 px-3 pt-2 pb-safe shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
+        <div className="flex items-center justify-around pb-1">
+          <button onClick={() => handleNavigation("hero", "/")} className="flex flex-col items-center gap-1 p-1 text-gray-300 hover:text-[#C9A86A] transition-colors cursor-pointer">
             <Home size={20} className="text-[#C9A86A]" />
             <span className="text-[10px] font-medium">Inicio</span>
           </button>
 
-          <button onClick={() => handleNavigation("vacantes", "/#vacantes")} className="flex flex-col items-center gap-1 p-1 text-gray-300">
+          <button onClick={() => handleNavigation("vacantes", "/#vacantes")} className="flex flex-col items-center gap-1 p-1 text-gray-300 hover:text-[#C9A86A] transition-colors cursor-pointer">
             <Briefcase size={20} className="text-[#C9A86A]" />
             <span className="text-[10px] font-medium">Vacantes</span>
           </button>
 
-          <a href="https://wa.me/5216143981235" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-1 p-1 text-gray-300">
+          <a href="https://wa.me/5216143981235" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-1 p-1 text-gray-300 hover:text-[#C9A86A] transition-colors">
             <MessageCircle size={20} className="text-[#C9A86A]" />
             <span className="text-[10px] font-medium">WhatsApp</span>
           </a>
 
-          <button onClick={() => setMenuOpen(!menuOpen)} className="flex flex-col items-center gap-1 p-1 text-gray-300">
+          <button onClick={() => setMenuOpen(!menuOpen)} className="flex flex-col items-center gap-1 p-1 text-gray-300 hover:text-[#C9A86A] transition-colors cursor-pointer">
             <Menu size={20} className="text-[#C9A86A]" />
             <span className="text-[10px] font-medium">Menú</span>
           </button>
