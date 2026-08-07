@@ -12,11 +12,7 @@ import {
   ChevronRight, 
   Users, 
   Cog, 
-  CheckCircle2,
-  UserPlus,
-  LogIn,
-  Building2,
-  ShieldCheck
+  CheckCircle2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -61,7 +57,7 @@ export default function BottomNav() {
 
   return (
     <>
-      {/* PANEL DESPLEGABLE (BOTTOM SHEET) CON ESPACIO SUFICIENTE */}
+      {/* PANEL DESPLEGABLE (BOTTOM SHEET) */}
       <AnimatePresence>
         {menuOpen && (
           <>
@@ -78,9 +74,8 @@ export default function BottomNav() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 220 }}
-              className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0A1A3A] border-t-2 border-[#C9A86A] rounded-t-[32px] px-5 pt-4 pb-28 text-white shadow-[0_-10px_30px_rgba(0,0,0,0.6)] max-h-[85vh] overflow-y-auto"
+              className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0A1A3A] border-t-2 border-[#C9A86A] rounded-t-[32px] px-5 pt-4 pb-32 text-white shadow-[0_-10px_30px_rgba(0,0,0,0.6)] max-h-[85vh] overflow-y-auto"
             >
-              {/* Tirador */}
               <div className="w-12 h-1.5 bg-gray-500/40 rounded-full mx-auto mb-4" />
 
               <div className="flex items-center justify-between pb-2 border-b border-white/10 mb-4">
@@ -92,7 +87,6 @@ export default function BottomNav() {
                 </button>
               </div>
 
-              {/* LISTA DE ENLACES SUPERIOR */}
               <div className="space-y-1 mb-6">
                 {primaryNavItems.map((item) => {
                   const Icon = item.icon;
@@ -112,9 +106,8 @@ export default function BottomNav() {
                 })}
               </div>
 
-              {/* SECCIÓN DE LOS 4 BOTONES (ESTILO IMAGEN DE REFERENCIA) */}
+              {/* SECCIÓN DE LOS 4 BOTONES DE ACCESO */}
               <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/10">
-                {/* Columna Candidatos */}
                 <div className="flex flex-col gap-2">
                   <Link 
                     href="/candidatos/nuevo" 
@@ -132,7 +125,6 @@ export default function BottomNav() {
                   </Link>
                 </div>
 
-                {/* Columna Empresas */}
                 <div className="flex flex-col gap-2">
                   <Link 
                     href="/reclutador/registro" 
@@ -155,9 +147,9 @@ export default function BottomNav() {
         )}
       </AnimatePresence>
 
-      {/* BARRA INFERIOR FIJA CON SOPORTE PB-SAFE PARA SAFARI EN IPHONE */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0A1A3A]/95 backdrop-blur-md border-t border-[#C9A86A]/40 px-3 pt-2 pb-safe shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
-        <div className="flex items-center justify-around pb-1">
+      {/* BARRA INFERIOR FIJA CON ISLA FLOTANTE DE PROTECCIÓN */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0A1A3A]/95 backdrop-blur-md border-t border-[#C9A86A]/40 px-3 pt-2.5 pb-safari-fix shadow-[0_-8px_25px_rgba(0,0,0,0.6)]">
+        <div className="flex items-center justify-around">
           <button onClick={() => handleNavigation("hero", "/")} className="flex flex-col items-center gap-1 p-1 text-gray-300 hover:text-[#C9A86A] transition-colors cursor-pointer">
             <Home size={20} className="text-[#C9A86A]" />
             <span className="text-[10px] font-medium">Inicio</span>
