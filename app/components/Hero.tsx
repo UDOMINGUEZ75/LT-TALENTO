@@ -1,12 +1,17 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
 import Link from "next/link";
-import { useState } from "react";
 import { AlertCircle } from "lucide-react";
 
 export default function Hero() {
   const [videoError, setVideoError] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -38,19 +43,20 @@ export default function Hero() {
       
       {/* FONDO CINEMATOGRÁFICO DE VIDEO Y EFECTO DE BRILLO */}
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        {!videoError && (
+        {isMounted && !videoError && (
           <video
             src="/videos/inicio.mp4"
             autoPlay
             loop
             muted
             playsInline
+            preload="metadata"
             onError={() => setVideoError(true)}
             className="absolute inset-0 w-full h-full object-cover opacity-75"
           />
         )}
         
-        {/* Capa de brillo central (Radial Gradient) y viñeteado */}
+        {/* Capa de brillo central (Radial Gradient) y viñeteado en los bordes */}
         <div 
           className="absolute inset-0 w-full h-full z-10"
           style={{
@@ -59,7 +65,8 @@ export default function Hero() {
             `
           }}
         />
-        {/* Capa de oscurecimiento uniforme */}
+
+        {/* Capa de oscurecimiento uniforme para legibilidad */}
         <div className="absolute inset-0 w-full h-full bg-[#0A1A3A]/30 z-20" />
       </div>
 
@@ -68,7 +75,7 @@ export default function Hero() {
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: "-50px" }}
       >
         {/* Tagline de Marca */}
         <motion.div variants={itemVariants}>
@@ -108,7 +115,7 @@ export default function Hero() {
           <motion.div
             whileHover={{ y: -6, scale: 1.01 }}
             transition={{ type: "spring", stiffness: 250, damping: 20 }}
-            className="group relative rounded-[28px] sm:rounded-[32px] bg-white p-6 sm:p-8 text-center flex flex-col justify-between items-center text-[#0A1A3A] shadow-[0_0_30px_rgba(201,168,106,0.3)] border-2 border-[#C9A86A] transition-all duration-300"
+            className="group relative rounded-[28px] sm:rounded-[32px] bg-white p-6 sm:p-8 text-center flex flex-col justify-between items-center text-[#0A1A3A] shadow-[0_0_30px_rgba(201,168,106,0.3)] border-2 border-[#C9A86A] hover:shadow-[0_0_40px_rgba(201,168,106,0.5)] transition-all duration-300"
           >
             <div className="w-full space-y-3 mb-6">
               <span className="text-xs font-bold text-[#8c6f33] uppercase tracking-widest block">
@@ -143,7 +150,7 @@ export default function Hero() {
           <motion.div
             whileHover={{ y: -6, scale: 1.01 }}
             transition={{ type: "spring", stiffness: 250, damping: 20 }}
-            className="group relative rounded-[28px] sm:rounded-[32px] bg-white p-6 sm:p-8 text-center flex flex-col justify-between items-center text-[#0A1A3A] shadow-[0_0_30px_rgba(201,168,106,0.3)] border-2 border-[#C9A86A] transition-all duration-300"
+            className="group relative rounded-[28px] sm:rounded-[32px] bg-white p-6 sm:p-8 text-center flex flex-col justify-between items-center text-[#0A1A3A] shadow-[0_0_30px_rgba(201,168,106,0.3)] border-2 border-[#C9A86A] hover:shadow-[0_0_40px_rgba(201,168,106,0.5)] transition-all duration-300"
           >
             <div className="w-full space-y-3 mb-6">
               <span className="text-xs font-bold text-[#8c6f33] uppercase tracking-widest block">

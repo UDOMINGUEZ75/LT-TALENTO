@@ -1,11 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
 import { AlertCircle, MessageCircle } from "lucide-react";
 
 export default function CTA() {
   const [videoError, setVideoError] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -39,13 +44,14 @@ export default function CTA() {
     >
       {/* FONDO CINEMATOGRÁFICO DE VIDEO Y SUPERPOSICIÓN */}
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        {!videoError && (
+        {isMounted && !videoError && (
           <video
             src="/videos/contacto.mp4"
             autoPlay
             loop
             muted
             playsInline
+            preload="metadata"
             onError={() => setVideoError(true)}
             className="absolute inset-0 w-full h-full object-cover opacity-70"
           />
@@ -54,19 +60,21 @@ export default function CTA() {
         <div className="absolute inset-0 w-full h-full bg-[#0A1A3A]/70" />
       </div>
 
-      {/* Resplandor ambiental dinámico de fondo */}
-      <motion.div 
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.15, 0.28, 0.15],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] sm:w-[650px] h-[320px] sm:h-[450px] bg-[#C9A86A] rounded-full blur-[120px] md:blur-[140px] pointer-events-none z-0" 
-      />
+      {/* Resplandor ambiental dinámico de fondo (Solo si está montado) */}
+      {isMounted && (
+        <motion.div 
+          animate={{
+            scale: [1, 1.15, 1],
+            opacity: [0.15, 0.25, 0.15],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[650px] h-[300px] sm:h-[450px] bg-[#C9A86A] rounded-full blur-[100px] md:blur-[140px] pointer-events-none z-0" 
+        />
+      )}
 
       <motion.div 
         className="max-w-4xl mx-auto relative z-10 py-6 sm:py-10 bg-transparent border-0 shadow-none"
@@ -82,7 +90,7 @@ export default function CTA() {
           </span>
         </motion.div>
 
-        {/* Título Principal Tipográfico Nítido */}
+        {/* Título Principal */}
         <motion.h2 
           className="text-3xl sm:text-5xl md:text-6xl font-black text-white leading-tight tracking-tight drop-shadow-md"
           variants={itemVariants}
@@ -93,7 +101,7 @@ export default function CTA() {
           </span>
         </motion.h2>
 
-        {/* Descripción con Tono de Marca */}
+        {/* Descripción */}
         <motion.p 
           className="mt-6 text-sm sm:text-lg md:text-xl text-gray-100 max-w-2xl mx-auto leading-relaxed font-light drop-shadow px-2"
           variants={itemVariants}
@@ -101,7 +109,7 @@ export default function CTA() {
           Conectamos a las empresas con las personas que generan resultados. Platiquemos sobre cómo podemos impulsar juntos el desarrollo y futuro de tu organización.
         </motion.p>
 
-        {/* Botón de Acción Principal Interactivo */}
+        {/* Botón de Acción WhatsApp */}
         <motion.div variants={itemVariants}>
           <motion.a
             href="https://wa.me/5216143981235"
@@ -124,7 +132,7 @@ export default function CTA() {
           </motion.a>
         </motion.div>
 
-        {/* Nota Ágil y Cercana */}
+        {/* Nota */}
         <motion.p 
           className="mt-5 text-xs sm:text-sm text-gray-300 font-light"
           variants={itemVariants}

@@ -23,38 +23,42 @@ export default function Navbar() {
     { name: "Contacto", sectionId: "contacto", href: "/#contacto" },
   ];
 
-  // DETECTAR LA SECCIÓN ACTIVA SEGÚN EL SCROLL
+  // OBSERVADOR SEGURO PARA DISPOSITIVOS MÓVILES
   useEffect(() => {
-    if (pathname !== "/") return;
+    if (typeof window === "undefined" || pathname !== "/") return;
 
-    const sections = primaryNavItems.map((item) => document.getElementById(item.sectionId));
+    const observers: IntersectionObserver[] = [];
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      {
-        threshold: 0.3, // Se activa cuando el 30% de la sección es visible
-      }
-    );
-
-    sections.forEach((section) => {
-      if (section) observer.observe(section);
-    });
+    const timeoutId = setTimeout(() => {
+      primaryNavItems.forEach((item) => {
+        const element = document.getElementById(item.sectionId);
+        if (element) {
+          const observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  setActiveSection(item.sectionId);
+                }
+              });
+            },
+            { threshold: 0.2 }
+          );
+          observer.observe(element);
+          observers.push(observer);
+        }
+      });
+    }, 200);
 
     return () => {
-      sections.forEach((section) => {
-        if (section) observer.unobserve(section);
-      });
+      clearTimeout(timeoutId);
+      observers.forEach((obs) => obs.disconnect());
     };
   }, [pathname]);
 
   const handleNavigation = (sectionId?: string, href?: string) => {
     setMobileMenuOpen(false);
+
+    if (typeof window === "undefined") return;
 
     if (pathname === "/") {
       if (!sectionId || sectionId === "hero") {
@@ -90,9 +94,8 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* NAVEGACIÓN PRINCIPAL (Barra azul inclinada) */}
+        {/* NAVEGACIÓN DESKTOP */}
         <div className="hidden lg:flex items-stretch justify-end flex-1 pl-6 relative">
-          
           <div 
             className="w-full bg-[#0A1A3A] flex items-stretch justify-end pr-6"
             style={{
@@ -101,7 +104,6 @@ export default function Navbar() {
           >
             <nav className="flex items-stretch gap-1 pl-10">
               {primaryNavItems.map((item) => {
-                // Ahora verifica cuál sección está visible en pantalla
                 const isActive = pathname === "/" && activeSection === item.sectionId;
 
                 return (
@@ -120,7 +122,7 @@ export default function Navbar() {
               })}
             </nav>
 
-            {/* BOTÓN DE BÚSQUEDA */}
+            {/* BOTÓN BÚSQUEDA */}
             <div className="flex items-center pl-4 border-l border-white/20 my-auto ml-4">
               <button
                 onClick={() => setSearchOpen(!searchOpen)}
@@ -145,7 +147,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* DESPLEGABLE DE BÚSQUEDA */}
+      {/* DESPLEGABLE BÚSQUEDA DESKTOP */}
       <AnimatePresence>
         {searchOpen && (
           <motion.div
@@ -173,7 +175,7 @@ export default function Navbar() {
         )}
       </AnimatePresence>
 
-      {/* MENÚ MÓVIL */}
+      {/* DESPLEGABLE MÓVIL */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div

@@ -1,14 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, ClipboardCheck, CheckCircle, AlertCircle } from "lucide-react";
 import { motion, Variants } from "framer-motion";
 
 export default function Process() {
   const [activeStep, setActiveStep] = useState<number>(3);
   const [videoError, setVideoError] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Variantes para la animación al hacer scroll estilo Apple
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
@@ -72,13 +76,14 @@ export default function Process() {
       
       {/* FONDO CINEMATOGRÁFICO DE VIDEO Y SUPERPOSICIÓN */}
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        {!videoError && (
+        {isMounted && !videoError && (
           <video
             src="/videos/process.mp4"
             autoPlay
             loop
             muted
             playsInline
+            preload="metadata"
             onError={() => setVideoError(true)}
             className="absolute inset-0 w-full h-full object-cover opacity-60"
           />
@@ -92,7 +97,7 @@ export default function Process() {
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: "-50px" }}
       >
 
         {/* Tagline superior */}
@@ -123,7 +128,7 @@ export default function Process() {
           que generan resultados e impulsan la transformación de las organizaciones.
         </motion.p>
 
-        {/* Tarjetas de Pasos (Pintadas limpias sin franjas cortadas) */}
+        {/* Tarjetas de Pasos */}
         <motion.div 
           className="mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8"
           variants={itemVariants}

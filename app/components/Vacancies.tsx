@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { MapPin, DollarSign, Clock, ArrowRight } from "lucide-react";
 
 interface Job {
@@ -18,12 +17,15 @@ export default function Vacancies() {
   const router = useRouter();
   const [allVacancies, setAllVacancies] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
 
   // Estados para los filtros
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("Todas");
 
   useEffect(() => {
+    setIsMounted(true);
+
     async function loadVacancies() {
       try {
         const res = await fetch("/api/vacantes", { cache: "no-store" });
@@ -77,22 +79,38 @@ export default function Vacancies() {
     });
   }, [allVacancies, searchTerm, selectedLocation]);
 
+  // MANEJO SEGURO DE ALMACENAMIENTO PARA NAVEGADORES MÓVILES
   const handlePostularseClick = (
     e: React.MouseEvent<HTMLDivElement | HTMLAnchorElement>,
     jobId: number
   ) => {
-    const isLoggedIn = sessionStorage.getItem("candidateLoggedIn");
+    e.preventDefault();
+
+    let isLoggedIn = false;
+
+    try {
+      if (typeof window !== "undefined" && window.sessionStorage) {
+        isLoggedIn = !!sessionStorage.getItem("candidateLoggedIn");
+      }
+    } catch (err) {
+      console.warn("sessionStorage no está disponible:", err);
+    }
 
     if (!isLoggedIn) {
-      e.preventDefault();
-      localStorage.setItem("redirectAfterLogin", `/candidatos/postular/${jobId}`);
+      try {
+        if (typeof window !== "undefined" && window.localStorage) {
+          localStorage.setItem("redirectAfterLogin", `/candidatos/postular/${jobId}`);
+        }
+      } catch (err) {
+        console.warn("localStorage no está disponible:", err);
+      }
       router.push("/candidatos/acceso-vacante");
     } else {
       router.push(`/candidatos/postular/${jobId}`);
     }
   };
 
-  if (loading) {
+  if (loading || !isMounted) {
     return (
       <section id="vacantes" className="relative w-full pt-32 pb-24 bg-[#0A1A3A] text-white text-center px-4 sm:px-6 lg:px-8">
         <div className="text-center py-16 text-[#C9A86A] text-sm font-medium">
@@ -106,11 +124,11 @@ export default function Vacancies() {
     <section id="vacantes" className="relative w-full pt-32 pb-24 bg-[#0A1A3A] text-white px-4 sm:px-6 lg:px-8 overflow-hidden">
       
       {/* Resplandor ambiental de fondo */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#C9A86A]/5 rounded-full blur-[120px] pointer-events-none z-0" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] sm:w-[600px] h-[320px] sm:h-[400px] bg-[#C9A86A]/5 rounded-full blur-[100px] md:blur-[120px] pointer-events-none z-0" />
 
       <div className="max-w-6xl mx-auto relative z-10">
         
-        {/* Encabezado limpio y proporcionado */}
+        {/* Encabezado */}
         <div className="text-center mb-10 space-y-2">
           <span className="inline-block px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-[#0A1A3A] bg-[#C9A86A] rounded-full shadow-md border border-[#C9A86A]/40">
             Bolsa de Trabajo
@@ -171,7 +189,7 @@ export default function Vacancies() {
                     {v.title}
                   </h3>
 
-                  {/* Etiquetas de Ubicación, Salario y Tipo */}
+                  {/* Etiquetas */}
                   <div className="space-y-2 text-xs text-gray-600 pt-1">
                     <div className="flex items-center gap-2">
                       <span className="w-6 h-6 rounded-full bg-[#0A1A3A]/5 text-[#0A1A3A] flex items-center justify-center shrink-0">
@@ -201,7 +219,7 @@ export default function Vacancies() {
                   </p>
                 </div>
 
-                {/* Pie de tarjeta con botón circular interactivo */}
+                {/* Pie de tarjeta */}
                 <div className="pt-4 mt-4 border-t border-gray-100 flex items-center justify-between">
                   <span className="text-[11px] font-semibold text-gray-400 group-hover:text-[#0A1A3A] transition-colors">
                     Ver detalles y postularse

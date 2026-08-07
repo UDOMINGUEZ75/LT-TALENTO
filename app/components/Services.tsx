@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Heart, Handshake, TrendingUp, AlertCircle } from "lucide-react";
 import { motion, Variants } from "framer-motion";
 
@@ -34,8 +34,14 @@ const pillarsData = [
   },
 ];
 
-export default function About() {
+export default function Services() {
   const [videoError, setVideoError] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Asegura que el componente solo renderice elementos pesados en el cliente
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -63,17 +69,18 @@ export default function About() {
   };
 
   return (
-    <section id="nosotros" className="relative w-full py-28 bg-[#0A1A3A] text-white px-4 sm:px-6 md:px-8 overflow-hidden">
+    <section id="servicios" className="relative w-full py-28 bg-[#0A1A3A] text-white px-4 sm:px-6 md:px-8 overflow-hidden">
       
       {/* FONDO CINEMATOGRÁFICO AJUSTADO DE ANCHO Y ALTO COMPLETO */}
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        {!videoError && (
+        {isMounted && !videoError && (
           <video
             src="/videos/about.mp4"
             autoPlay
             loop
             muted
             playsInline
+            preload="metadata"
             onError={() => setVideoError(true)}
             className="absolute inset-0 w-full h-full object-cover opacity-60"
           />
