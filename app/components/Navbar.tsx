@@ -13,6 +13,11 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const primaryNavItems = [
     { name: "Inicio", sectionId: "hero", href: "/" },
@@ -25,35 +30,39 @@ export default function Navbar() {
 
   // OBSERVADOR SEGURO PARA DISPOSITIVOS MÓVILES
   useEffect(() => {
-    if (typeof window === "undefined" || pathname !== "/") return;
+    if (!isMounted || typeof window === "undefined" || pathname !== "/") return;
 
     const observers: IntersectionObserver[] = [];
 
     const timeoutId = setTimeout(() => {
       primaryNavItems.forEach((item) => {
         const element = document.getElementById(item.sectionId);
-        if (element) {
-          const observer = new IntersectionObserver(
-            (entries) => {
-              entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                  setActiveSection(item.sectionId);
-                }
-              });
-            },
-            { threshold: 0.2 }
-          );
-          observer.observe(element);
-          observers.push(observer);
+        if (element && "IntersectionObserver" in window) {
+          try {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                entries.forEach((entry) => {
+                  if (entry.isIntersecting) {
+                    setActiveSection(item.sectionId);
+                  }
+                });
+              },
+              { threshold: 0.2 }
+            );
+            observer.observe(element);
+            observers.push(observer);
+          } catch (err) {
+            console.warn("IntersectionObserver no disponible:", err);
+          }
         }
       });
-    }, 200);
+    }, 300);
 
     return () => {
       clearTimeout(timeoutId);
       observers.forEach((obs) => obs.disconnect());
     };
-  }, [pathname]);
+  }, [pathname, isMounted]);
 
   const handleNavigation = (sectionId?: string, href?: string) => {
     setMobileMenuOpen(false);
@@ -149,7 +158,7 @@ export default function Navbar() {
 
       {/* DESPLEGABLE BÚSQUEDA DESKTOP */}
       <AnimatePresence>
-        {searchOpen && (
+        {isMounted && searchOpen && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -177,7 +186,7 @@ export default function Navbar() {
 
       {/* DESPLEGABLE MÓVIL */}
       <AnimatePresence>
-        {mobileMenuOpen && (
+        {isMounted && mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
