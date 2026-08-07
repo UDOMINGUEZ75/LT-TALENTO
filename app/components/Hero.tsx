@@ -18,30 +18,29 @@ export default function Hero() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.18,
-        delayChildren: 0.1,
+        staggerChildren: 0.12,
+        delayChildren: 0.05,
       },
     },
   };
 
   const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 30, scale: 0.98 },
+    hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
       y: 0,
-      scale: 1,
       transition: {
         type: "spring",
-        stiffness: 90,
-        damping: 18,
+        stiffness: 100,
+        damping: 15,
       },
     },
   };
 
   return (
-    <section id="hero" className="relative w-full pt-32 pb-24 bg-[#0A1A3A] text-white px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <section id="hero" className="relative w-full pt-20 sm:pt-32 pb-16 sm:pb-24 bg-[#0A1A3A] text-white px-4 sm:px-6 lg:px-8 overflow-hidden">
       
-      {/* FONDO CINEMATOGRÁFICO DE VIDEO MÁS VISIBLE Y LUMINOSO */}
+      {/* FONDO CINEMATOGRÁFICO DE VIDEO Y EFECTO DE BALANCE */}
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
         {isMounted && !videoError && (
           <video
@@ -52,94 +51,94 @@ export default function Hero() {
             playsInline
             preload="metadata"
             onError={() => setVideoError(true)}
-            className="absolute inset-0 w-full h-full object-cover opacity-95 transition-opacity duration-500"
+            className="absolute inset-0 w-full h-full object-cover opacity-85"
           />
         )}
         
-        {/* Capa de brillo central aclara el video al centro y viñetea suavemente las orillas */}
+        {/* Capa de contraste equilibrado */}
         <div 
           className="absolute inset-0 w-full h-full z-10"
           style={{
             background: `
-              radial-gradient(circle at center, rgba(10, 26, 58, 0.15) 0%, rgba(10, 26, 58, 0.5) 60%, rgba(10, 26, 58, 0.85) 100%)
+              radial-gradient(circle at center, rgba(10, 26, 58, 0.35) 0%, rgba(10, 26, 58, 0.75) 65%, rgba(10, 26, 58, 0.95) 100%)
             `
           }}
         />
 
-        {/* Capa ultra-ligera de balance (solo 10% de oscurecimiento) */}
-        <div className="absolute inset-0 w-full h-full bg-[#0A1A3A]/10 z-20" />
+        <div className="absolute inset-0 w-full h-full bg-[#0A1A3A]/20 z-20" />
       </div>
 
       <motion.div 
-        className="max-w-6xl mx-auto text-center relative z-30"
+        className="max-w-5xl mx-auto text-center relative z-30 pt-4 sm:pt-0"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-50px" }}
+        viewport={{ once: true, margin: "-30px" }}
       >
-        {/* Tagline de Marca */}
+        {/* Tagline de Marca Compacto */}
         <motion.div variants={itemVariants}>
-          <span className="inline-block px-4 py-1.5 mb-4 text-xs font-bold uppercase tracking-widest text-[#0A1A3A] bg-[#C9A86A] rounded-full shadow-lg border border-[#C9A86A]/40">
-            Atracción y Gestión Estratégica de Talento
+          <span className="inline-block px-3 py-1 mb-3 text-[10px] sm:text-xs font-extrabold uppercase tracking-widest text-[#0A1A3A] bg-[#C9A86A] rounded-full shadow-md">
+            Atracción y Gestión Estratégica
           </span>
         </motion.div>
 
-        {/* Título Principal con Sombra de Alta Definición para Garantizar Lectura */}
+        {/* Título Principal Proporcionado */}
         <motion.h1 
-          className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.85)]"
+          className="text-2xl sm:text-5xl md:text-6xl font-black tracking-tight text-white drop-shadow-md leading-tight"
           variants={itemVariants}
         >
           LT <span className="text-[#C9A86A]">Talent Solutions</span>
         </motion.h1>
 
-        {/* Subtítulo / Manifiesto */}
+        {/* Subtítulo / Manifiesto Estilizado */}
         <motion.p 
-          className="mt-4 text-sm sm:text-base md:text-lg text-white max-w-2xl mx-auto leading-relaxed font-light drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]"
+          className="mt-3 text-xs sm:text-base md:text-lg text-gray-100 max-w-2xl mx-auto leading-relaxed font-light drop-shadow"
           variants={itemVariants}
         >
           Conectamos talento. <span className="text-[#C9A86A] font-semibold">Transformamos futuros.</span>
         </motion.p>
+        
         <motion.p 
-          className="mt-2 text-xs sm:text-sm text-gray-200 max-w-xl mx-auto font-light px-2 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]"
+          className="mt-1.5 text-[11px] sm:text-sm text-gray-300 max-w-lg mx-auto font-light px-2"
           variants={itemVariants}
         >
-          Construimos relaciones de valor que impulsan el crecimiento de profesionales y organizaciones extraordinarias.
+          Relaciones de valor que impulsan a profesionales y organizaciones extraordinarias.
         </motion.p>
 
-        {/* Tarjetas de Acceso con Ligera Traslucidez */}
+        {/* TARJETAS DE ACCESO COMPACTAS ESTILO APP */}
         <motion.div 
-          className="mt-10 sm:mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto"
+          className="mt-6 sm:mt-12 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 max-w-3xl mx-auto text-left"
           variants={itemVariants}
         >
           {/* Tarjeta Profesionales */}
           <motion.div
-            whileHover={{ y: -6, scale: 1.01 }}
+            whileHover={{ y: -4 }}
             transition={{ type: "spring", stiffness: 250, damping: 20 }}
-            className="group relative rounded-[28px] sm:rounded-[32px] bg-white/95 backdrop-blur-md p-6 sm:p-8 text-center flex flex-col justify-between items-center text-[#0A1A3A] shadow-[0_0_35px_rgba(0,0,0,0.4)] border-2 border-[#C9A86A] hover:shadow-[0_0_45px_rgba(201,168,106,0.6)] transition-all duration-300"
+            className="group relative rounded-2xl sm:rounded-[32px] bg-white p-5 sm:p-8 text-center sm:text-left flex flex-col justify-between items-center sm:items-start text-[#0A1A3A] shadow-lg border-2 border-[#C9A86A]/70"
           >
-            <div className="w-full space-y-3 mb-6">
-              <span className="text-xs font-bold text-[#8c6f33] uppercase tracking-widest block">
+            <div className="w-full space-y-1.5 mb-4">
+              <span className="text-[10px] font-bold text-[#8c6f33] uppercase tracking-widest block">
                 PARA PROFESIONALES
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0A1A3A] tracking-tight leading-tight">
+              <h2 className="text-lg sm:text-2xl font-extrabold text-[#0A1A3A] tracking-tight">
                 Impulsa tu Desarrollo
               </h2>
-              <p className="text-gray-600 text-xs sm:text-sm font-light max-w-xs mx-auto leading-relaxed">
-                Descubre oportunidades estratégicas y conecta con empresas que valoran tu potencial.
+              <p className="text-gray-600 text-xs font-light leading-relaxed">
+                Descubre oportunidades estratégicas y conecta con grandes empresas.
               </p>
             </div>
 
-            <div className="w-full flex flex-col gap-3 pt-4 border-t border-gray-100">
+            <div className="w-full flex flex-col gap-2 pt-3 border-t border-gray-100">
               <Link
                 href="/candidatos/nuevo"
-                className="w-full py-3 px-4 bg-[#C9A86A] hover:bg-[#b89555] text-[#0A1A3A] font-bold rounded-2xl shadow-md transition-all duration-200 text-xs sm:text-sm text-center"
+                className="w-full py-2.5 px-4 bg-[#C9A86A] hover:bg-[#b89555] text-[#0A1A3A] font-bold rounded-xl shadow-sm transition-all text-xs text-center"
               >
                 Registrar Perfil Profesional
               </Link>
 
               <Link
                 href="/candidate/login"
-                className="w-full py-3 px-4 bg-gray-50 hover:bg-gray-100 text-[#0A1A3A] font-medium rounded-2xl transition-all duration-200 text-xs sm:text-sm border border-gray-200 text-center shadow-sm"
+                className="w-full py-2.5 px-4 bg-gray-50 hover:bg-gray-100 text-[#0A1A3A] font-medium rounded-xl transition-all text-xs border border-gray-200 text-center"
               >
                 Acceso a Mi Cuenta
               </Link>
@@ -148,33 +147,33 @@ export default function Hero() {
 
           {/* Tarjeta Organizaciones */}
           <motion.div
-            whileHover={{ y: -6, scale: 1.01 }}
+            whileHover={{ y: -4 }}
             transition={{ type: "spring", stiffness: 250, damping: 20 }}
-            className="group relative rounded-[28px] sm:rounded-[32px] bg-white/95 backdrop-blur-md p-6 sm:p-8 text-center flex flex-col justify-between items-center text-[#0A1A3A] shadow-[0_0_35px_rgba(0,0,0,0.4)] border-2 border-[#C9A86A] hover:shadow-[0_0_45px_rgba(201,168,106,0.6)] transition-all duration-300"
+            className="group relative rounded-2xl sm:rounded-[32px] bg-white p-5 sm:p-8 text-center sm:text-left flex flex-col justify-between items-center sm:items-start text-[#0A1A3A] shadow-lg border-2 border-[#C9A86A]/70"
           >
-            <div className="w-full space-y-3 mb-6">
-              <span className="text-xs font-bold text-[#8c6f33] uppercase tracking-widest block">
+            <div className="w-full space-y-1.5 mb-4">
+              <span className="text-[10px] font-bold text-[#8c6f33] uppercase tracking-widest block">
                 PARA ORGANIZACIONES
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0A1A3A] tracking-tight leading-tight">
+              <h2 className="text-lg sm:text-2xl font-extrabold text-[#0A1A3A] tracking-tight">
                 Conecta con Talento Ideal
               </h2>
-              <p className="text-gray-600 text-xs sm:text-sm font-light max-w-xs mx-auto leading-relaxed">
-                Encuentra a las personas que generan resultados e impulsan el crecimiento de tu empresa.
+              <p className="text-gray-600 text-xs font-light leading-relaxed">
+                Encuentra al equipo clave para acelerar los resultados de tu empresa.
               </p>
             </div>
 
-            <div className="w-full flex flex-col gap-3 pt-4 border-t border-gray-100">
+            <div className="w-full flex flex-col gap-2 pt-3 border-t border-gray-100">
               <Link
                 href="/reclutador/registro"
-                className="w-full py-3 px-4 bg-[#C9A86A] hover:bg-[#b89555] text-[#0A1A3A] font-bold rounded-2xl shadow-md transition-all duration-200 text-xs sm:text-sm text-center"
+                className="w-full py-2.5 px-4 bg-[#C9A86A] hover:bg-[#b89555] text-[#0A1A3A] font-bold rounded-xl shadow-sm transition-all text-xs text-center"
               >
                 Registrar Empresa / Cuenta
               </Link>
 
               <Link
                 href="/reclutador/login"
-                className="w-full py-3 px-4 bg-gray-50 hover:bg-gray-100 text-[#0A1A3A] font-medium rounded-2xl transition-all duration-200 text-xs sm:text-sm border border-gray-200 text-center shadow-sm"
+                className="w-full py-2.5 px-4 bg-gray-50 hover:bg-gray-100 text-[#0A1A3A] font-medium rounded-xl transition-all text-xs border border-gray-200 text-center"
               >
                 Portal Corporativo
               </Link>
@@ -183,8 +182,8 @@ export default function Hero() {
         </motion.div>
 
         {videoError && (
-          <div className="mt-8 inline-flex items-center gap-2 bg-red-500/20 border border-red-500/40 px-4 py-2 rounded-xl text-xs text-red-200">
-            <AlertCircle size={14} /> El archivo de video en <code className="text-white">/videos/inicio.mp4</code> no pudo cargarse.
+          <div className="mt-6 inline-flex items-center gap-2 bg-red-500/20 border border-red-500/40 px-3 py-1.5 rounded-lg text-xs text-red-200">
+            <AlertCircle size={12} /> El video de inicio no pudo cargarse.
           </div>
         )}
       </motion.div>
