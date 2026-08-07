@@ -28,10 +28,22 @@ export default function Vacancies() {
 
     async function loadVacancies() {
       try {
-        const res = await fetch("/api/vacantes", { cache: "no-store" });
-        const data = await res.json();
+        const res = await fetch("/api/vacantes", {
+          cache: "no-store",
+          headers: {
+            Accept: "application/json",
+          },
+        });
 
-        if (res.ok) {
+        if (!res.ok) {
+          console.warn(`Respuesta no exitosa de la API: ${res.status}`);
+          setAllVacancies([]);
+          return;
+        }
+
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await res.json();
           const lista = Array.isArray(data)
             ? data
             : data.vacancies || data.jobs || data.data || [];
@@ -40,12 +52,13 @@ export default function Vacancies() {
           setAllVacancies([]);
         }
       } catch (err) {
-        console.error("Error al obtener vacantes:", err);
+        console.error("Error al cargar vacantes en el cliente:", err);
         setAllVacancies([]);
       } finally {
         setLoading(false);
       }
     }
+
     loadVacancies();
   }, []);
 
@@ -79,7 +92,7 @@ export default function Vacancies() {
     });
   }, [allVacancies, searchTerm, selectedLocation]);
 
-  // MANEJO SEGURO DE ALMACENAMIENTO PARA NAVEGADORES MÓVILES
+  // Manejo de clic con protección contra restricciones de privacidad en móviles
   const handlePostularseClick = (
     e: React.MouseEvent<HTMLDivElement | HTMLAnchorElement>,
     jobId: number
@@ -93,7 +106,7 @@ export default function Vacancies() {
         isLoggedIn = !!sessionStorage.getItem("candidateLoggedIn");
       }
     } catch (err) {
-      console.warn("sessionStorage no está disponible:", err);
+      console.warn("Acceso a sessionStorage restringido:", err);
     }
 
     if (!isLoggedIn) {
@@ -102,7 +115,7 @@ export default function Vacancies() {
           localStorage.setItem("redirectAfterLogin", `/candidatos/postular/${jobId}`);
         }
       } catch (err) {
-        console.warn("localStorage no está disponible:", err);
+        console.warn("Acceso a localStorage restringido:", err);
       }
       router.push("/candidatos/acceso-vacante");
     } else {
@@ -141,7 +154,7 @@ export default function Vacancies() {
           </p>
         </div>
 
-        {/* Sección de Filtros Compacta */}
+        {/* Sección de Filtros */}
         <div className="bg-white p-4 sm:p-6 rounded-2xl border border-gray-200 shadow-xl mb-12 grid grid-cols-1 md:grid-cols-2 gap-4 items-center text-gray-900 max-w-3xl mx-auto">
           <div>
             <label className="block text-[11px] font-bold text-[#0A1A3A] mb-1 uppercase tracking-wider">
@@ -174,7 +187,7 @@ export default function Vacancies() {
           </div>
         </div>
 
-        {/* Cuadrícula de Vacantes con Borde Brillante Dorado */}
+        {/* Lista de Vacantes */}
         {filteredVacancies.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {filteredVacancies.map((v) => (
@@ -184,12 +197,10 @@ export default function Vacancies() {
                 className="group p-6 rounded-[28px] sm:rounded-[32px] bg-white text-gray-900 shadow-[0_0_30px_rgba(201,168,106,0.25)] border-2 border-[#C9A86A] hover:shadow-[0_0_40px_rgba(201,168,106,0.45)] flex flex-col justify-between w-full min-h-[360px] transition-all duration-300 cursor-pointer relative"
               >
                 <div className="space-y-3">
-                  {/* Título de la Vacante */}
                   <h3 className="text-lg font-extrabold text-[#0A1A3A] group-hover:text-[#8c6f33] transition-colors line-clamp-2 leading-snug">
                     {v.title}
                   </h3>
 
-                  {/* Etiquetas */}
                   <div className="space-y-2 text-xs text-gray-600 pt-1">
                     <div className="flex items-center gap-2">
                       <span className="w-6 h-6 rounded-full bg-[#0A1A3A]/5 text-[#0A1A3A] flex items-center justify-center shrink-0">
@@ -213,13 +224,11 @@ export default function Vacancies() {
                     </div>
                   </div>
 
-                  {/* Descripción corta */}
                   <p className="text-xs text-gray-500 line-clamp-3 leading-relaxed pt-1 font-light">
                     {v.description}
                   </p>
                 </div>
 
-                {/* Pie de tarjeta */}
                 <div className="pt-4 mt-4 border-t border-gray-100 flex items-center justify-between">
                   <span className="text-[11px] font-semibold text-gray-400 group-hover:text-[#0A1A3A] transition-colors">
                     Ver detalles y postularse
