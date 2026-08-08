@@ -1,4 +1,3 @@
-/* STREAMING_CHUNK:Upgrading Hero component for greater scale and presence... */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -41,7 +40,8 @@ export default function Hero() {
   return (
     <section 
       id="hero" 
-      className="relative z-10 w-full min-h-[90vh] flex items-center justify-center pt-28 sm:pt-36 pb-20 sm:pb-28 bg-[#0A1A3A] text-white px-4 sm:px-6 lg:px-8 overflow-hidden"
+      /* Redujimos el padding top (pt) y el min-h para subir el contenido */
+      className="relative z-10 w-full min-h-[85vh] flex items-center justify-center pt-16 sm:pt-20 pb-16 sm:pb-20 bg-[#0A1A3A] text-white px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
       {/* FONDO CINEMATOGRÁFICO DE VIDEO */}
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
@@ -185,7 +185,7 @@ export default function Hero() {
 
         {videoError && (
           <div className="mt-6 inline-flex items-center gap-2 bg-red-500/20 border border-red-500/40 px-4 py-2 rounded-xl text-xs text-red-200">
-            <AlertCircle size={14} /> El video de inicio no pudo cargars.
+            <AlertCircle size={14} /> El video de inicio no pudo cargarse.
           </div>
         )}
       </motion.div>

@@ -1,4 +1,3 @@
-/* STREAMING_CHUNK:Initializing WhatsAppChatbotWidget component... */
 "use client";
 
 import { useState, useRef, useEffect } from "react";
@@ -18,7 +17,7 @@ export default function WhatsAppChatbotWidget() {
     {
       id: "1",
       sender: "bot",
-      text: "¡Hola! 🌟 Bienvenido a **LT Talent Solutions**. Soy tu asesor comercial impulsado por Gemini AI. ¿Cómo podemos transformar el futuro de tu equipo hoy?",
+      text: "¡Hola! 🌟 Bienvenido a **LT Talent Solutions**. Soy tu asesor virtual inteligente. ¿Cómo podemos transformar el futuro de tu equipo hoy?",
       options: [
         { label: "💼 Contratar Servicio de Reclutamiento", action: "contratar" },
         { label: "🚀 Consultar Paquetes y Cotización", action: "costos" },
@@ -40,7 +39,6 @@ export default function WhatsAppChatbotWidget() {
     scrollToBottom();
   }, [messages, isTyping]);
 
-  /* STREAMING_CHUNK:Defining Gemini API communication handler... */
   const sendToGeminiAPI = async (userPrompt: string) => {
     setIsTyping(true);
     try {
@@ -57,7 +55,7 @@ export default function WhatsAppChatbotWidget() {
         text: data.text || "Conversemos directamente por WhatsApp para brindarte una solución a la medida.",
         options: [
           { label: "💬 Conectar con Ventas por WhatsApp", action: "whatsapp_directo" },
-          { label: "📋 Registrar mi Vacante", action: "ir_registro" },
+          { label: "📋 Registrar mi Vacante", action: "pregunta_registro" }, // Redirige a la nueva pregunta
         ],
       };
 
@@ -77,7 +75,6 @@ export default function WhatsAppChatbotWidget() {
     }
   };
 
-  /* STREAMING_CHUNK:Defining option click handler... */
   const handleOptionClick = (action: string, label: string) => {
     const userMsg: Message = { id: Date.now().toString(), sender: "user", text: label };
     setMessages((prev) => [...prev, userMsg]);
@@ -90,11 +87,27 @@ export default function WhatsAppChatbotWidget() {
         {
           id: (Date.now() + 1).toString(),
           sender: "bot",
-          text: "¡Excelente! Te he conectado con nuestro canal directo de WhatsApp. Un asesor de ventas te atenderá al instante. 🚀",
+          text: "¡Excelente! Te he conectado con nuestro canal directo de WhatsApp. Un asesor te atenderá al instante. 🚀",
+        },
+      ]);
+    } else if (action === "pregunta_registro") {
+      // NUEVO FLUJO: Pregunta si es nuevo o ya tiene cuenta
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          sender: "bot",
+          text: "Para continuar, ¿ya cuentas con un perfil de empresa corporativo o eres nuevo en LT Talent Solutions?",
+          options: [
+            { label: "🆕 Soy Nueva Empresa (Crear Cuenta)", action: "ir_registro" },
+            { label: "🔑 Ya estoy registrado (Iniciar Sesión)", action: "ir_login_empresa" },
+          ],
         },
       ]);
     } else if (action === "ir_registro") {
       window.location.href = "/reclutador/registro";
+    } else if (action === "ir_login_empresa") {
+      window.location.href = "/reclutador/login";
     } else if (action === "candidato") {
       setMessages((prev) => [
         ...prev,
@@ -115,7 +128,6 @@ export default function WhatsAppChatbotWidget() {
     }
   };
 
-  /* STREAMING_CHUNK:Defining message submission handler... */
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputVal.trim()) return;
@@ -128,9 +140,8 @@ export default function WhatsAppChatbotWidget() {
     sendToGeminiAPI(userText);
   };
 
-  /* STREAMING_CHUNK:Rendering the UI component... */
   return (
-    <div className="fixed bottom-6 right-6 z-50 font-sans">
+    <div className="fixed bottom-6 right-6 z-[999999] font-sans">
       {/* BOTÓN FLOTANTE */}
       <AnimatePresence>
         {!isOpen && (
@@ -142,14 +153,14 @@ export default function WhatsAppChatbotWidget() {
             whileTap={{ scale: 0.92 }}
             onClick={() => setIsOpen(true)}
             className="relative bg-[#25D366] hover:bg-[#20ba5a] text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition-all cursor-pointer group"
-            aria-label="Abrir Asistente Comercial AI"
+            aria-label="Abrir Asistente Comercial"
           >
             <MessageCircle size={30} className="fill-current text-white" />
             <span className="absolute -top-1 -right-1 bg-[#C9A86A] text-[#0A1A3A] font-extrabold text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow-md animate-pulse">
-              AI
+              1
             </span>
             <span className="absolute right-full mr-3 bg-[#0A1A3A] text-white text-xs font-semibold px-3 py-1.5 rounded-xl shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              Asistente Gemini AI • ¿Contratar Reclutamiento? 💬
+              Asesor Virtual • ¿Contratar Reclutamiento? 💬
             </span>
           </motion.button>
         )}
@@ -169,14 +180,15 @@ export default function WhatsAppChatbotWidget() {
             <div className="bg-[#0A1A3A] text-white p-4 px-5 flex items-center justify-between border-b border-[#C9A86A]/40">
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#C9A86A] to-[#f3e5ab] flex items-center justify-center text-[#0A1A3A] font-black shadow-md">
-                    LT
+                  {/* AQUÍ ESTÁ TU LOGO */}
+                  <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center overflow-hidden shadow-md">
+                    <img src="/logo.png" alt="LT Logo" className="w-full h-full object-contain p-1" />
                   </div>
                   <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-[#0A1A3A] rounded-full" />
                 </div>
                 <div>
                   <h3 className="font-extrabold text-sm tracking-tight flex items-center gap-1.5">
-                    LT Asesor Gemini AI <Sparkles size={14} className="text-[#C9A86A]" />
+                    LT Asesor Virtual <Sparkles size={14} className="text-[#C9A86A]" />
                   </h3>
                   <p className="text-[11px] text-gray-300 font-light">
                     Construyendo el futuro • Ventas de Reclutamiento
@@ -229,7 +241,7 @@ export default function WhatsAppChatbotWidget() {
               {isTyping && (
                 <div className="flex items-center gap-2 text-gray-500 text-xs bg-white p-3 rounded-2xl w-fit border border-gray-100 shadow-xs">
                   <Sparkles size={14} className="text-[#C9A86A] animate-spin" />
-                  <span>Gemini AI analizando estrategia comercial...</span>
+                  <span>Analizando tu solicitud...</span>
                 </div>
               )}
               <div ref={messagesEndRef} />
@@ -254,7 +266,7 @@ export default function WhatsAppChatbotWidget() {
                 type="text"
                 value={inputVal}
                 onChange={(e) => setInputVal(e.target.value)}
-                placeholder="Pregúntale a Gemini sobre contratación o vacantes..."
+                placeholder="Escribe tu duda sobre contratación o vacantes..."
                 className="flex-1 bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-[#0A1A3A] placeholder-gray-400 focus:outline-none focus:border-[#C9A86A] transition-colors"
               />
               <button
