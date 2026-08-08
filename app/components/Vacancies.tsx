@@ -1,4 +1,4 @@
-/* STREAMING_CHUNK:Refactoring Vacancies component to handle long salary texts cleanly... */
+/* STREAMING_CHUNK:Corrigiendo orden visual: Título principal arriba y Salario debajo... */
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
@@ -20,7 +20,6 @@ export default function Vacancies() {
   const [loading, setLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Estados para filtros
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("Todas");
 
@@ -132,12 +131,10 @@ export default function Vacancies() {
   return (
     <section id="vacantes" className="relative w-full pt-24 sm:pt-32 pb-20 sm:pb-24 bg-[#0A1A3A] text-white px-4 sm:px-6 lg:px-8 overflow-hidden">
       
-      {/* Fondo sutil */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[600px] h-[300px] sm:h-[400px] bg-[#C9A86A]/5 rounded-full blur-[90px] md:blur-[120px] pointer-events-none z-0" />
 
       <div className="max-w-6xl mx-auto relative z-10">
         
-        {/* Encabezado Adaptado */}
         <div className="text-center mb-6 sm:mb-10 space-y-2">
           <span className="inline-block px-3.5 py-1 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#0A1A3A] bg-[#C9A86A] rounded-full shadow-md">
             Bolsa de Trabajo
@@ -150,11 +147,9 @@ export default function Vacancies() {
           </p>
         </div>
 
-        {/* BUSCADOR ESTILO MOBILE APP / DESKTOP */}
         <div className="bg-white p-3.5 sm:p-6 rounded-2xl sm:rounded-3xl border border-gray-200 shadow-xl mb-6 sm:mb-12 max-w-3xl mx-auto text-gray-900">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
             
-            {/* Campo Búsqueda */}
             <div className="relative">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
               <input
@@ -166,7 +161,6 @@ export default function Vacancies() {
               />
             </div>
 
-            {/* Seleccionar Ubicación */}
             <div className="relative">
               <SlidersHorizontal className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
               <select
@@ -185,7 +179,6 @@ export default function Vacancies() {
           </div>
         </div>
 
-        {/* LISTADO DE VACANTES: VISTA TARJETAS TIPO OCC EN MÓVIL / GRID EN DESKTOP */}
         {filteredVacancies.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-8">
             {filteredVacancies.map((v) => (
@@ -202,12 +195,13 @@ export default function Vacancies() {
                 "
               >
                 <div>
-                  {/* CORRECCIÓN DE SALARIO: Diseño vertical flexible que acomoda textos largos sin sobreponerse */}
-                  <div className="flex flex-col gap-2 mb-3">
-                    <h3 className="text-base sm:text-lg font-extrabold text-[#0A1A3A] group-hover:text-[#8c6f33] transition-colors leading-snug line-clamp-2">
+                  {/* ORDEN CORRECTO: Título arriba, Salario debajo */}
+                  <div className="flex flex-col gap-2.5 mb-3">
+                    <h3 className="text-base sm:text-lg font-extrabold text-[#0A1A3A] group-hover:text-[#8c6f33] transition-colors leading-snug">
                       {v.title}
                     </h3>
-                    {/* Badge de salario mejorado para textos largos y múltiples líneas */}
+                    
+                    {/* Badge de salario bien estructurado debajo del título */}
                     <div className="w-full bg-[#FFF9EF] px-3 py-2 rounded-xl border border-[#C9A86A]/40">
                       <span className="block text-[11px] sm:text-xs font-semibold text-[#8c6f33] leading-relaxed break-words">
                         {v.salary || "Atractivo"}
@@ -215,7 +209,6 @@ export default function Vacancies() {
                     </div>
                   </div>
 
-                  {/* Chips de Ubicación y Jornada */}
                   <div className="flex flex-wrap items-center gap-2 text-[11px] text-gray-600 mb-3">
                     <span className="inline-flex items-center gap-1 bg-gray-100 px-2.5 py-0.5 rounded-md">
                       <MapPin size={12} className="text-[#0A1A3A]" />
@@ -227,13 +220,11 @@ export default function Vacancies() {
                     </span>
                   </div>
 
-                  {/* Descripción Breve */}
                   <p className="text-xs text-gray-500 line-clamp-2 sm:line-clamp-3 leading-relaxed font-light mb-4">
                     {v.description}
                   </p>
                 </div>
 
-                {/* Pie de tarjeta */}
                 <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
                   <span className="text-[11px] font-bold text-[#0A1A3A] group-hover:text-[#8c6f33]">
                     Ver detalle de vacante
