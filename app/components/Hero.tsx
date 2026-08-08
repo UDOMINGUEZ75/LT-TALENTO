@@ -185,7 +185,7 @@ export default function Hero() {
 
         {videoError && (
           <div className="mt-6 inline-flex items-center gap-2 bg-red-500/20 border border-red-500/40 px-4 py-2 rounded-xl text-xs text-red-200">
-            <AlertCircle size={14} /> El video de inicio no pudo cargarse.
+            <AlertCircle size={14} /> El video de inicio no pudo cargars.
           </div>
         )}
       </motion.div>
