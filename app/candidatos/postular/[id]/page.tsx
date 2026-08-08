@@ -133,106 +133,82 @@ function PostularContent() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0A1A3A] text-white pb-20">
+    <main className="min-h-screen bg-[#0A1A3A] text-white pb-32">
       <Navbar />
 
-      <div className="max-w-4xl mx-auto pt-24 sm:pt-28 px-4 sm:px-6">
+      <div className="max-w-3xl mx-auto pt-24 sm:pt-28 px-4 sm:px-6">
         
-        {/* Tarjeta Maestra con Cabecera Azul */}
-        <div className="bg-white text-gray-900 rounded-[32px] shadow-2xl overflow-hidden border border-[#C9A86A]/40">
+        {/* BOTONES FLOTANTES SUPERIORES (Siempre visibles al lado superior de la tarjeta) */}
+        <div className="mb-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#11254d] p-4 rounded-2xl border border-[#C9A86A]/40 shadow-xl">
+          <div className="text-center sm:text-left">
+            <span className="text-[10px] font-bold text-[#C9A86A] uppercase tracking-wider block">Acción Rápida</span>
+            <span className="text-xs font-medium text-gray-200">Postúlate o regresa al listado general</span>
+          </div>
+
+          <div className="flex items-center gap-2.5 w-full sm:w-auto">
+            {postulado ? (
+              <span className="px-4 py-2 bg-emerald-500 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md">
+                <CheckCircle2 size={15} /> ¡Postulado con éxito!
+              </span>
+            ) : (
+              <button
+                onClick={handlePostularseFinal}
+                disabled={submitting}
+                className="flex-1 sm:flex-initial py-2.5 px-5 bg-[#C9A86A] text-[#0A1A3A] font-extrabold rounded-xl hover:bg-[#b89555] transition text-xs uppercase tracking-wider shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+              >
+                {submitting ? "Procesando..." : <>Confirmar Postulación <ArrowRight size={14} /></>}
+              </button>
+            )}
+
+            <Link
+              href="/vacantes"
+              className="py-2.5 px-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition text-xs uppercase tracking-wider text-center border border-white/20"
+            >
+              Volver
+            </Link>
+          </div>
+        </div>
+
+        {/* Tarjeta con la Información */}
+        <div className="bg-white text-gray-900 rounded-[32px] shadow-2xl border border-[#C9A86A]/40 overflow-hidden">
           
-          {/* Cabecera Azul Marino con el texto dorado arriba como título */}
-          <div className="bg-[#0A1A3A] px-6 py-10 sm:px-10 text-center border-b border-[#C9A86A]/30 text-white">
-            <h1 className="text-xl sm:text-2xl font-black tracking-wider text-[#C9A86A] uppercase mb-3">
+          <div className="bg-[#0A1A3A] px-6 py-8 text-center border-b border-[#C9A86A]/30 text-white">
+            <h1 className="text-[10px] sm:text-xs font-black tracking-widest text-[#C9A86A] uppercase mb-2">
               Oportunidad Profesional • Detalle de Vacante
             </h1>
-            <p className="text-2xl sm:text-4xl font-black tracking-tight text-white">
+            <p className="text-xl sm:text-2xl font-bold tracking-tight text-white leading-snug">
               {job?.title}
             </p>
           </div>
 
-          <div className="p-6 sm:p-10 space-y-8 bg-gray-50/50">
+          <div className="p-6 sm:p-8 space-y-6 bg-gray-50/50">
             
             {errorMsg && (
-              <div className="p-3.5 bg-red-50 border-2 border-red-300 text-red-700 rounded-2xl text-center text-xs font-bold">
+              <div className="p-3 bg-red-50 border-2 border-red-300 text-red-700 rounded-2xl text-center text-xs font-bold">
                 {errorMsg}
               </div>
             )}
 
-            {/* Etiquetas de Ubicación y Compensación */}
-            <div className="flex flex-wrap gap-3 text-xs font-bold justify-center sm:justify-start">
-              <span className="bg-white px-4 py-2.5 rounded-xl border border-gray-200 text-gray-700 flex items-center gap-2 shadow-sm">
+            <div className="flex flex-wrap gap-3 text-xs font-bold justify-center">
+              <span className="bg-white px-4 py-2.5 rounded-xl border border-gray-200 text-gray-700 flex items-center gap-2 shadow-xs">
                 <MapPin size={15} className="text-[#C9A86A]" />
                 <span className="text-[#8c6f33]">Ubicación:</span> {job?.location || "Presencial"}
               </span>
-              <span className="bg-[#C9A86A]/10 px-4 py-2.5 rounded-xl border border-[#C9A86A]/30 text-[#0A1A3A] flex items-center gap-2 shadow-sm">
+              <span className="bg-[#C9A86A]/10 px-4 py-2.5 rounded-xl border border-[#C9A86A]/30 text-[#0A1A3A] flex items-center gap-2 shadow-xs">
                 <DollarSign size={15} className="text-[#C9A86A]" />
                 <span className="font-extrabold">Compensación:</span> {job?.salary || "Sueldo competitivo"}
               </span>
             </div>
 
-            {/* Descripción */}
-            <div className="space-y-3">
-              <h2 className="text-xs font-extrabold text-[#0A1A3A] uppercase tracking-wider">
+            <div className="space-y-2">
+              <h2 className="text-xs font-extrabold text-[#0A1A3A] uppercase tracking-wider text-center sm:text-left">
                 Descripción completa y requisitos del puesto
               </h2>
-              <div className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200 shadow-sm">
+              <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-xs">
                 <div className="text-gray-700 text-xs sm:text-sm font-light leading-relaxed space-y-2 whitespace-pre-line">
                   {job?.description}
                 </div>
               </div>
-            </div>
-
-            {/* Sección de Botones */}
-            <div className="pt-2">
-              {postulado ? (
-                <div className="p-6 sm:p-8 bg-emerald-50 border-2 border-emerald-300 rounded-2xl text-center shadow-lg space-y-4">
-                  <div>
-                    <CheckCircle2 size={36} className="mx-auto text-emerald-600 mb-2" />
-                    <h3 className="text-base sm:text-lg font-extrabold text-emerald-900 mb-1">¡Postulación enviada correctamente!</h3>
-                    <p className="text-xs sm:text-sm text-emerald-700 font-light">Su perfil ha sido registrado con éxito en este proceso. El equipo de reclutamiento se pondrá en contacto con usted.</p>
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-                    <Link
-                      href="/vacantes"
-                      className="px-6 py-3.5 bg-[#0A1A3A] text-[#C9A86A] font-extrabold rounded-xl hover:bg-[#122b5c] transition text-xs uppercase tracking-wider text-center shadow-md"
-                    >
-                      Ver más vacantes
-                    </Link>
-                    <Link
-                      href={`/candidatos/dashboard?id=${localStorage.getItem("candidateId") || ""}`}
-                      className="px-6 py-3.5 bg-white border border-gray-300 text-[#0A1A3A] font-extrabold rounded-xl hover:bg-gray-100 transition text-xs uppercase tracking-wider text-center shadow-md"
-                    >
-                      Ir a Mi Panel
-                    </Link>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <button
-                    onClick={handlePostularseFinal}
-                    disabled={submitting}
-                    className="flex-1 py-4 px-8 bg-[#C9A86A] text-[#0A1A3A] font-extrabold rounded-xl hover:bg-[#b89555] active:scale-[0.99] transition-all duration-200 text-xs sm:text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                  >
-                    {submitting ? (
-                      "Procesando postulación..."
-                    ) : (
-                      <>
-                        Confirmar postulación
-                        <ArrowRight size={16} />
-                      </>
-                    )}
-                  </button>
-
-                  <Link
-                    href="/vacantes"
-                    className="px-6 py-4 bg-gray-100 text-gray-700 border border-gray-300 font-bold rounded-xl hover:bg-gray-200 transition text-xs sm:text-sm uppercase tracking-wider text-center shadow-sm flex items-center justify-center"
-                  >
-                    Volver a vacantes
-                  </Link>
-                </div>
-              )}
             </div>
 
           </div>

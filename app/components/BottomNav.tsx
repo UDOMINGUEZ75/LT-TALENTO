@@ -16,7 +16,8 @@ import {
   FileText,
   User,
   PlusCircle,
-  Bot
+  Bot,
+  ArrowLeft
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -37,34 +38,52 @@ export default function BottomNav() {
 
   const isCandidateArea = pathname.startsWith("/candidatos");
   const isRecruiterArea = pathname.startsWith("/reclutador");
+  const isVacantesPage = pathname === "/vacantes";
+  const isPostularPage = pathname.includes("/candidatos/postular");
 
   let bottomNavItems: Array<{
     name: string;
     href?: string;
     sectionId?: string;
     icon: any;
-    type: "link" | "scroll" | "external" | "action" | "chat";
+    type: "link" | "scroll" | "external" | "action";
   }> = [];
 
-  if (isCandidateArea && id) {
+  if (isPostularPage) {
+    // Menú específico cuando estás viendo o confirmando una postulación
+    bottomNavItems = [
+      { name: "Inicio", href: "/", icon: Home, type: "link" },
+      { name: "Vacantes", href: "/vacantes", icon: Briefcase, type: "link" },
+      { name: "Asistente", href: "https://wa.me/5216143981235", icon: Bot, type: "external" },
+      { name: "Volver", href: "/vacantes", icon: ArrowLeft, type: "link" },
+    ];
+  } else if (isVacantesPage) {
+    // Menú específico cuando estás en el listado de vacantes
+    bottomNavItems = [
+      { name: "Inicio", href: "/", icon: Home, type: "link" },
+      { name: "Acceso", href: "/candidatos/acceso-vacante", icon: User, type: "link" },
+      { name: "Asistente", href: "https://wa.me/5216143981235", icon: Bot, type: "external" },
+      { name: "Menú", icon: Menu, type: "action" },
+    ];
+  } else if (isCandidateArea && id) {
     bottomNavItems = [
       { name: "Inicio", href: `/candidatos/dashboard?id=${id}`, icon: Home, type: "link" },
       { name: "Vacantes", href: "/vacantes", icon: Briefcase, type: "link" },
-      { name: "Chat", icon: Bot, type: "chat" },
+      { name: "Asistente", href: "https://wa.me/5216143981235", icon: Bot, type: "external" },
       { name: "Perfil", href: `/candidatos/actualizar/${id}`, icon: User, type: "link" },
     ];
   } else if (isRecruiterArea && id) {
     bottomNavItems = [
       { name: "Inicio", href: `/reclutador/dashboard?id=${id}`, icon: Home, type: "link" },
       { name: "Crear", href: `/reclutador/vacantes/nueva?id=${id}`, icon: PlusCircle, type: "link" },
-      { name: "Chat", icon: Bot, type: "chat" },
+      { name: "Asistente", href: "https://wa.me/5216143981235", icon: Bot, type: "external" },
       { name: "Mis Vacantes", href: `/reclutador/mis-vacantes?id=${id}`, icon: Briefcase, type: "link" },
     ];
   } else {
     bottomNavItems = [
       { name: "Inicio", sectionId: "hero", href: "/", icon: Home, type: "scroll" },
       { name: "Vacantes", sectionId: "vacantes", href: "/vacantes", icon: Briefcase, type: "scroll" },
-      { name: "Chat IA", icon: Bot, type: "chat" },
+      { name: "Asistente IA", href: "https://wa.me/5216143981235", icon: Bot, type: "external" },
       { name: "Menú", icon: Menu, type: "action" },
     ];
   }
@@ -74,13 +93,19 @@ export default function BottomNav() {
     { name: "Quiénes Somos", sectionId: "nosotros", href: "/#nosotros", icon: Users },
     { name: "Servicios", sectionId: "servicios", href: "/#servicios", icon: Cog },
     { name: "Proceso", sectionId: "proceso", href: "/#proceso", icon: CheckCircle2 },
-    { name: "Vacantes", sectionId: "vacantes", href: "/#vacantes", icon: Briefcase },
+    { name: "Vacantes", sectionId: "vacantes", href: "/vacantes", icon: Briefcase },
+    { name: "Acceso Candidatos", href: "/candidatos/acceso-vacante", icon: User },
     { name: "Contacto", sectionId: "contacto", href: "/#contacto", icon: MessageCircle },
   ];
 
   const handleNavigation = (sectionId?: string, href?: string) => {
     setMenuOpen(false);
     if (typeof window === "undefined") return;
+
+    if (href && href.startsWith("/")) {
+      router.push(href);
+      return;
+    }
 
     if (pathname === "/") {
       if (!sectionId || sectionId === "hero") {
@@ -93,15 +118,6 @@ export default function BottomNav() {
       }
     } else {
       router.push(href || "/");
-    }
-  };
-
-  const handleOpenChat = () => {
-    const chatWidgetButton = document.querySelector(".fixed.bottom-6.right-6 button, [aria-label*='chat'], [class*='chatbot'] button") as HTMLButtonElement;
-    if (chatWidgetButton) {
-      chatWidgetButton.click();
-    } else {
-      window.open("https://wa.me/5216143981235", "_blank");
     }
   };
 
@@ -148,7 +164,6 @@ export default function BottomNav() {
         )}
       </AnimatePresence>
 
-      {/* BARRA INFERIOR FIJA CON POSICIONAMIENTO ABSOLUTO AL BORDE INFERIOR */}
       <nav 
         style={{ WebkitTransform: "translate3d(0,0,0)" }}
         className="md:hidden fixed bottom-0 left-0 right-0 z-[999] transform-gpu will-change-transform bg-[#0A1A3A] border-t border-[#C9A86A]/40 px-3 pt-2 pb-3 shadow-[0_-8px_25px_rgba(0,0,0,0.8)]"
@@ -176,14 +191,14 @@ export default function BottomNav() {
               );
             }
 
-            if (item.type === "chat") {
+            if (item.type === "external" && item.href) {
               return (
-                <button key={index} onClick={handleOpenChat} className="flex flex-col items-center gap-1 p-1 text-[#C9A86A] hover:text-white transition-colors cursor-pointer">
+                <a key={index} href={item.href} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-1 p-1 text-[#C9A86A] hover:text-white transition-colors">
                   <div className="w-8 h-8 rounded-full bg-[#C9A86A] text-[#0A1A3A] flex items-center justify-center shadow-md">
                     <Icon size={16} />
                   </div>
-                  <span className="text-[10px] font-bold">Asistente IA</span>
-                </button>
+                  <span className="text-[10px] font-bold">{item.name}</span>
+                </a>
               );
             }
 
