@@ -180,59 +180,67 @@ export default function Vacancies() {
 
         {filteredVacancies.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-8">
-            {filteredVacancies.map((v) => (
-              <div
-                key={v.id}
-                onClick={(e) => handlePostularseClick(e, v.id)}
-                className="
-                  group relative bg-white text-gray-900 
-                  rounded-2xl sm:rounded-[32px] p-4 sm:p-6 
-                  border border-[#C9A86A]/60 sm:border-2 sm:border-[#C9A86A] 
-                  shadow-md sm:shadow-[0_0_30px_rgba(201,168,106,0.25)] 
-                  hover:shadow-lg transition-all duration-200 
-                  cursor-pointer flex flex-col justify-between
-                "
-              >
-                <div>
-                  {/* DISEÑO CORRECTO: Título grande arriba, caja de salario debajo sin estorbar */}
-                  <div className="space-y-2 mb-3">
-                    <h3 className="text-base sm:text-lg font-extrabold text-[#0A1A3A] group-hover:text-[#8c6f33] transition-colors leading-snug">
-                      {v.title}
-                    </h3>
-                    
-                    <div className="w-full bg-[#FFF9EF] px-3 py-2 rounded-xl border border-[#C9A86A]/40 shadow-sm">
-                      <span className="block text-[11px] sm:text-xs font-semibold text-[#8c6f33] leading-relaxed break-words">
-                        {v.salary || "Atractivo"}
+            {filteredVacancies.map((v) => {
+              // DETECCIÓN INTELIGENTE: Si el título parece una descripción larga de pago, lo movemos al salario
+              const isTitleLongSalary = v.title && (v.title.toLowerCase().includes("pago semanal") || v.title.length > 40);
+              const displayTitle = isTitleLongSalary ? (v.salary || "Vacante Disponible") : v.title;
+              const displaySalary = isTitleLongSalary ? v.title : (v.salary || "Atractivo esquema de compensación");
+
+              return (
+                <div
+                  key={v.id}
+                  onClick={(e) => handlePostularseClick(e, v.id)}
+                  className="
+                    group relative bg-white text-gray-900 
+                    rounded-2xl sm:rounded-[32px] p-4 sm:p-6 
+                    border border-[#C9A86A]/60 sm:border-2 sm:border-[#C9A86A] 
+                    shadow-md sm:shadow-[0_0_30px_rgba(201,168,106,0.25)] 
+                    hover:shadow-lg transition-all duration-200 
+                    cursor-pointer flex flex-col justify-between
+                  "
+                >
+                  <div>
+                    {/* TÍTULO SIEMPRE GRANDE Y DESTACADO ARRIBA */}
+                    <div className="space-y-2 mb-3">
+                      <h3 className="text-base sm:text-lg font-extrabold text-[#0A1A3A] group-hover:text-[#8c6f33] transition-colors leading-snug">
+                        {displayTitle}
+                      </h3>
+                      
+                      {/* CAJA DE SALARIO DEBAJO */}
+                      <div className="w-full bg-[#FFF9EF] px-3 py-2 rounded-xl border border-[#C9A86A]/40 shadow-sm">
+                        <span className="block text-[11px] sm:text-xs font-semibold text-[#8c6f33] leading-relaxed break-words">
+                          {displaySalary}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2 text-[11px] text-gray-600 mb-3">
+                      <span className="inline-flex items-center gap-1 bg-gray-100 px-2.5 py-0.5 rounded-md">
+                        <MapPin size={12} className="text-[#0A1A3A]" />
+                        {v.location || "Presencial"}
+                      </span>
+                      <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-md">
+                        <Clock size={12} />
+                        Tiempo Completo
                       </span>
                     </div>
+
+                    <p className="text-xs text-gray-500 line-clamp-2 sm:line-clamp-3 leading-relaxed font-light mb-4">
+                      {v.description}
+                    </p>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-2 text-[11px] text-gray-600 mb-3">
-                    <span className="inline-flex items-center gap-1 bg-gray-100 px-2.5 py-0.5 rounded-md">
-                      <MapPin size={12} className="text-[#0A1A3A]" />
-                      {v.location || "Presencial"}
+                  <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-[#0A1A3A] group-hover:text-[#8c6f33]">
+                      Ver detalle de vacante
                     </span>
-                    <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-md">
-                      <Clock size={12} />
-                      Tiempo Completo
-                    </span>
-                  </div>
-
-                  <p className="text-xs text-gray-500 line-clamp-2 sm:line-clamp-3 leading-relaxed font-light mb-4">
-                    {v.description}
-                  </p>
-                </div>
-
-                <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-[#0A1A3A] group-hover:text-[#8c6f33]">
-                    Ver detalle de vacante
-                  </span>
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#0A1A3A] text-white flex items-center justify-center group-hover:bg-[#C9A86A] group-hover:text-[#0A1A3A] transition-colors shadow-sm shrink-0">
-                    <ArrowRight size={14} className="sm:w-4 sm:h-4" />
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#0A1A3A] text-white flex items-center justify-center group-hover:bg-[#C9A86A] group-hover:text-[#0A1A3A] transition-colors shadow-sm shrink-0">
+                      <ArrowRight size={14} className="sm:w-4 sm:h-4" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="text-center py-8 bg-white/5 rounded-2xl border border-white/10 max-w-md mx-auto">
