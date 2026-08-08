@@ -31,6 +31,13 @@ export default function WhatsAppChatbotWidget() {
 
   const WHATSAPP_NUMBER = "5216143981235";
 
+  // ESCUCHA EL EVENTO GLOBAL DESDE LA BOTTOMNAV PARA ABRIR EL CHAT
+  useEffect(() => {
+    const handleOpenEvent = () => setIsOpen(true);
+    window.addEventListener("open-ai-chatbot", handleOpenEvent);
+    return () => window.removeEventListener("open-ai-chatbot", handleOpenEvent);
+  }, []);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -155,7 +162,6 @@ export default function WhatsAppChatbotWidget() {
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
             className="w-[90vw] sm:w-[380px] h-[500px] bg-white rounded-[28px] shadow-2xl border border-gray-100 flex flex-col overflow-hidden"
           >
-            {/* Cabecera limpia y elegante */}
             <div className="bg-[#0A1A3A] text-white p-4 px-5 flex items-center justify-between border-b border-[#C9A86A]/30">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-[#C9A86A] font-bold">
@@ -178,7 +184,6 @@ export default function WhatsAppChatbotWidget() {
               </button>
             </div>
 
-            {/* Contenedor de mensajes fluido */}
             <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-[#F8FAFC]">
               {messages.map((msg) => (
                 <div key={msg.id} className={`flex flex-col ${msg.sender === "user" ? "items-end" : "items-start"}`}>
@@ -210,7 +215,6 @@ export default function WhatsAppChatbotWidget() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Barra de entrada limpia */}
             <form onSubmit={handleSendMessage} className="p-3 bg-white border-t border-gray-100 flex items-center gap-2">
               <input
                 type="text"
