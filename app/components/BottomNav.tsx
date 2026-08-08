@@ -40,18 +40,10 @@ export default function BottomNav() {
   const isCandidateArea = pathname.startsWith("/candidatos");
   const isRecruiterArea = pathname.startsWith("/reclutador");
 
-  // FUNCIÓN CORREGIDA: Activa el botón flotante del Chatbot IA de forma directa
+  // FUNCIÓN INFALIBLE: Dispara un evento global para abrir el Chatbot IA interno
   const handleOpenAI = () => {
     if (typeof window === "undefined") return;
-    
-    // Buscamos directamente el botón flotante del widget en la esquina inferior derecha
-    const floatingButton = document.querySelector("div.fixed.bottom-6.right-6 button") as HTMLButtonElement;
-    if (floatingButton) {
-      floatingButton.click();
-    } else {
-      // Si por alguna razón no se encuentra, abrimos una alternativa o WhatsApp directo
-      window.open("https://wa.me/5216143981235", "_blank");
-    }
+    window.dispatchEvent(new CustomEvent("open-ai-chatbot"));
   };
 
   let bottomNavItems: Array<{
@@ -175,7 +167,6 @@ export default function BottomNav() {
         )}
       </AnimatePresence>
 
-      {/* BARRA INFERIOR PEGADA AL BORDE ABSOLUTO INCLUYENDO EL ÁREA SEGURA DEL CELULAR */}
       <nav 
         style={{ 
           WebkitTransform: "translate3d(0,0,0)",
