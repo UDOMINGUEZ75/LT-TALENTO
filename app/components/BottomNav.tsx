@@ -13,7 +13,6 @@ import {
   Users, 
   Cog, 
   CheckCircle2,
-  FileText,
   User,
   PlusCircle,
   Bot,
@@ -41,49 +40,59 @@ export default function BottomNav() {
   const isVacantesPage = pathname === "/vacantes";
   const isPostularPage = pathname.includes("/candidatos/postular");
 
+  // Función para abrir el Chatbot / Asistente de IA interno de la página
+  const handleOpenAI = () => {
+    if (typeof window === "undefined") return;
+    const aiButton = document.querySelector(".fixed.bottom-6.right-6 button, [aria-label*='chat'], [class*='chatbot'] button") as HTMLButtonElement;
+    if (aiButton) {
+      aiButton.click();
+    } else {
+      window.open("https://wa.me/5216143981235", "_blank");
+    }
+  };
+
   let bottomNavItems: Array<{
     name: string;
     href?: string;
     sectionId?: string;
     icon: any;
-    type: "link" | "scroll" | "external" | "action";
+    type: "link" | "scroll" | "ai" | "action";
   }> = [];
 
+  // Configuración de elementos adaptada dinámicamente a la ruta actual
   if (isPostularPage) {
-    // Menú específico cuando estás viendo o confirmando una postulación
     bottomNavItems = [
       { name: "Inicio", href: "/", icon: Home, type: "link" },
       { name: "Vacantes", href: "/vacantes", icon: Briefcase, type: "link" },
-      { name: "Asistente", href: "https://wa.me/5216143981235", icon: Bot, type: "external" },
+      { name: "IA", icon: Bot, type: "ai" },
       { name: "Volver", href: "/vacantes", icon: ArrowLeft, type: "link" },
     ];
   } else if (isVacantesPage) {
-    // Menú específico cuando estás en el listado de vacantes
     bottomNavItems = [
       { name: "Inicio", href: "/", icon: Home, type: "link" },
-      { name: "Acceso", href: "/candidatos/acceso-vacante", icon: User, type: "link" },
-      { name: "Asistente", href: "https://wa.me/5216143981235", icon: Bot, type: "external" },
+      { name: "Vacantes", href: "/vacantes", icon: Briefcase, type: "link" },
+      { name: "IA", icon: Bot, type: "ai" },
       { name: "Menú", icon: Menu, type: "action" },
     ];
   } else if (isCandidateArea && id) {
     bottomNavItems = [
       { name: "Inicio", href: `/candidatos/dashboard?id=${id}`, icon: Home, type: "link" },
       { name: "Vacantes", href: "/vacantes", icon: Briefcase, type: "link" },
-      { name: "Asistente", href: "https://wa.me/5216143981235", icon: Bot, type: "external" },
+      { name: "IA", icon: Bot, type: "ai" },
       { name: "Perfil", href: `/candidatos/actualizar/${id}`, icon: User, type: "link" },
     ];
   } else if (isRecruiterArea && id) {
     bottomNavItems = [
       { name: "Inicio", href: `/reclutador/dashboard?id=${id}`, icon: Home, type: "link" },
       { name: "Crear", href: `/reclutador/vacantes/nueva?id=${id}`, icon: PlusCircle, type: "link" },
-      { name: "Asistente", href: "https://wa.me/5216143981235", icon: Bot, type: "external" },
+      { name: "IA", icon: Bot, type: "ai" },
       { name: "Mis Vacantes", href: `/reclutador/mis-vacantes?id=${id}`, icon: Briefcase, type: "link" },
     ];
   } else {
     bottomNavItems = [
       { name: "Inicio", sectionId: "hero", href: "/", icon: Home, type: "scroll" },
       { name: "Vacantes", sectionId: "vacantes", href: "/vacantes", icon: Briefcase, type: "scroll" },
-      { name: "Asistente IA", href: "https://wa.me/5216143981235", icon: Bot, type: "external" },
+      { name: "Asistente IA", icon: Bot, type: "ai" },
       { name: "Menú", icon: Menu, type: "action" },
     ];
   }
@@ -191,14 +200,14 @@ export default function BottomNav() {
               );
             }
 
-            if (item.type === "external" && item.href) {
+            if (item.type === "ai") {
               return (
-                <a key={index} href={item.href} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-1 p-1 text-[#C9A86A] hover:text-white transition-colors">
+                <button key={index} onClick={handleOpenAI} className="flex flex-col items-center gap-1 p-1 text-[#C9A86A] hover:text-white transition-colors cursor-pointer">
                   <div className="w-8 h-8 rounded-full bg-[#C9A86A] text-[#0A1A3A] flex items-center justify-center shadow-md">
                     <Icon size={16} />
                   </div>
                   <span className="text-[10px] font-bold">{item.name}</span>
-                </a>
+                </button>
               );
             }
 
