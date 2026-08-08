@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { MapPin, Clock, ArrowRight, Search, SlidersHorizontal } from "lucide-react";
+import { MapPin, Clock, ArrowRight, Search, SlidersHorizontal, X } from "lucide-react";
 
 interface Job {
   id: number;
@@ -21,6 +21,8 @@ export default function Vacancies() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("Todas");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsMounted(true);
@@ -56,6 +58,15 @@ export default function Vacancies() {
     }
 
     loadVacancies();
+
+    // Cerrar sugerencias al hacer clic fuera del buscador
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const locations = useMemo(() => {
@@ -69,6 +80,17 @@ export default function Vacancies() {
       .replace(/[\u0300-\u036f]/g, "")
       .toLowerCase();
   };
+
+  // Sugerencias de autocompletado basadas en el texto escrito
+  const searchSuggestions = useMemo(() => {
+    if (!searchTerm.trim()) return [];
+    const normalizedQuery = normalizeText(searchTerm);
+    const matches = allVacancies.filter((v) =>
+      normalizeText(v.title || "").includes(normalizedQuery)
+    );
+    // Retornar títulos únicos
+    return Array.from(new Set(matches.map((v) => v.title))).slice(0, 5);
+  }, [searchTerm, allVacancies]);
 
   const filteredVacancies = useMemo(() => {
     const normalizedSearch = normalizeText(searchTerm);
@@ -143,25 +165,63 @@ export default function Vacancies() {
           </p>
         </div>
 
-        <form onSubmit={(e) => e.preventDefault()} className="bg-white p-3.5 sm:p-6 rounded-2xl sm:rounded-3xl border border-gray-200 shadow-xl mb-6 sm:mb-12 max-w-3xl mx-auto text-gray-900">
+        {/* Formulario con Autocompletado */}
+        <form onSubmit={(e) => e.preventDefault()} className="bg-white p-3.5 sm:p-6 rounded-2xl sm:rounded-3xl border border-gray-200 shadow-xl mb-6 sm:mb-12 max-w-3xl mx-auto text-gray-900 relative">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
             
-            <div className="relative">
+            {/* Input con Autocompletado */}
+            <div className="relative" ref={searchContainerRef}>
               <label htmlFor="vacancies-search-input" className="sr-only">
                 Buscar por puesto, habilidad o área
               </label>
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 z-10" size={16} />
               <input
                 id="vacancies-search-input"
                 name="searchTerm"
                 type="text"
                 placeholder="Puesto, habilidad o área..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-xs sm:text-sm focus:outline-none focus:border-[#C9A86A] transition"
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setShowSuggestions(true);
+                }}
+                onFocus={() => setShowSuggestions(true)}
+                className="w-full pl-10 pr-9 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-xs sm:text-sm focus:outline-none focus:border-[#C9A86A] transition"
               />
+              {searchTerm && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchTerm("");
+                    setShowSuggestions(false);
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                >
+                  <X size={14} />
+                </button>
+              )}
+
+              {/* Menú desplegable de Autocompletado */}
+              {showSuggestions && searchSuggestions.length > 0 && (
+                <ul className="absolute left-0 right-0 top-full mt-1.5 bg-white border border-gray-200 rounded-xl shadow-2xl z-50 overflow-hidden text-xs sm:text-sm divide-y divide-gray-100">
+                  {searchSuggestions.map((title, idx) => (
+                    <li
+                      key={idx}
+                      onClick={() => {
+                        setSearchTerm(title);
+                        setShowSuggestions(false);
+                      }}
+                      className="px-4 py-2.5 hover:bg-[#FFF9EF] hover:text-[#8c6f33] cursor-pointer transition-colors flex items-center gap-2 font-medium text-gray-800"
+                    >
+                      <Search size={13} className="text-[#C9A86A] shrink-0" />
+                      <span className="truncate">{title}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
+            {/* Selector de Ciudad */}
             <div className="relative">
               <label htmlFor="vacancies-location-select" className="sr-only">
                 Filtrar por ciudad

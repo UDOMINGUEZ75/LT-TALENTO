@@ -1,4 +1,5 @@
 import "./globals.css";
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Navbar from "./components/Navbar";
 import CookieConsent from "./components/CookieConsent";
@@ -22,7 +23,11 @@ export default function RootLayout({
           <Navbar />
           <main className="flex-grow">{children}</main>
           <CookieConsent />
-          <BottomNav />
+          
+          {/* Envuelto en Suspense para evitar errores de renderizado en Next.js */}
+          <Suspense fallback={null}>
+            <BottomNav />
+          </Suspense>
         </div>
 
         <div className="fixed bottom-6 right-6 z-[999999]">

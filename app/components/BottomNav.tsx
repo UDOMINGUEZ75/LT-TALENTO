@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { 
   Home, 
   Briefcase, 
@@ -12,13 +12,19 @@ import {
   ChevronRight, 
   Users, 
   Cog, 
-  CheckCircle2
+  CheckCircle2,
+  FileText,
+  User,
+  PlusCircle
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function BottomNav() {
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id") || "";
+
   const [isMounted, setIsMounted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -27,6 +33,34 @@ export default function BottomNav() {
   }, []);
 
   if (!isMounted) return null;
+
+  const isCandidateArea = pathname.startsWith("/candidatos");
+  const isRecruiterArea = pathname.startsWith("/reclutador");
+
+  let bottomNavItems = [];
+
+  if (isCandidateArea && id) {
+    bottomNavItems = [
+      { name: "Inicio", href: `/candidatos/dashboard?id=${id}`, icon: Home, type: "link" },
+      { name: "Vacantes", href: "/vacantes", icon: Briefcase, type: "link" },
+      { name: "Postulaciones", href: `/candidatos/postulaciones?id=${id}`, icon: FileText, type: "link" },
+      { name: "Perfil", href: `/candidatos/actualizar/${id}`, icon: User, type: "link" },
+    ];
+  } else if (isRecruiterArea && id) {
+    bottomNavItems = [
+      { name: "Inicio", href: `/reclutador/dashboard?id=${id}`, icon: Home, type: "link" },
+      { name: "Crear", href: `/reclutador/vacantes/nueva?id=${id}`, icon: PlusCircle, type: "link" },
+      { name: "Candidatos", href: `/reclutador/candidatos?id=${id}`, icon: Users, type: "link" },
+      { name: "Mis Vacantes", href: `/reclutador/mis-vacantes?id=${id}`, icon: Briefcase, type: "link" },
+    ];
+  } else {
+    bottomNavItems = [
+      { name: "Inicio", sectionId: "hero", href: "/", icon: Home, type: "scroll" },
+      { name: "Vacantes", sectionId: "vacantes", href: "/vacantes", icon: Briefcase, type: "scroll" },
+      { name: "WhatsApp", href: "https://wa.me/5216143981235", icon: MessageCircle, type: "external" },
+      { name: "Menú", action: "toggleMenu", icon: Menu, type: "action" },
+    ];
+  }
 
   const primaryNavItems = [
     { name: "Inicio", sectionId: "hero", href: "/", icon: Home },
@@ -57,7 +91,6 @@ export default function BottomNav() {
 
   return (
     <>
-      {/* PANEL DESPLEGABLE (BOTTOM SHEET) */}
       <AnimatePresence>
         {menuOpen && (
           <>
@@ -106,7 +139,6 @@ export default function BottomNav() {
                 })}
               </div>
 
-              {/* SECCIÓN DE LOS 4 BOTONES DE ACCESO */}
               <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/10">
                 <div className="flex flex-col gap-2">
                   <Link 
@@ -147,31 +179,73 @@ export default function BottomNav() {
         )}
       </AnimatePresence>
 
-      {/* BARRA INFERIOR FIJA CON RENDERIZADO POR GPU EN SAFARI */}
       <nav 
         style={{ WebkitTransform: "translate3d(0,0,0)" }}
-        className="md:hidden fixed bottom-0 left-0 right-0 z-50 transform-gpu will-change-transform bg-[#0A1A3A] border-t border-[#C9A86A]/40 px-3 pt-2.5 pb-safari-fix shadow-[0_-8px_25px_rgba(0,0,0,0.6)]"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-50 transform-gpu will-change-transform bg-[#0A1A3A] border-t border-[#C9A86A]/40 px-3 pt-2.5 pb-3 shadow-[0_-8px_25px_rgba(0,0,0,0.6)]"
       >
         <div className="flex items-center justify-around">
-          <button onClick={() => handleNavigation("hero", "/")} className="flex flex-col items-center gap-1 p-1 text-gray-300 hover:text-[#C9A86A] transition-colors cursor-pointer">
-            <Home size={20} className="text-[#C9A86A]" />
-            <span className="text-[10px] font-medium">Inicio</span>
-          </button>
+          {bottomNavItems.map((item, index) => {
+            const Icon = item.icon;
 
-          <button onClick={() => handleNavigation("vacantes", "/#vacantes")} className="flex flex-col items-center gap-1 p-1 text-gray-300 hover:text-[#C9A86A] transition-colors cursor-pointer">
-            <Briefcase size={20} className="text-[#C9A86A]" />
-            <span className="text-[10px] font-medium">Vacantes</span>
-          </button>
+            if (item.type === "link") {
+              const isActive = pathname === item.href.split("?")[0];
+              return (
+                <Link
+                  key={index}
+                  href={item.href}
+                  className={`flex flex-col items-center gap-1 p-1 transition-colors ${
+                    isActive ? "text-[#C9A86A] font-bold" : "text-gray-300 hover:text-[#C9A86A]"
+                  }`}
+                >
+                  <Icon size={20} className={isActive ? "text-[#C9A86A]" : "text-gray-300"} />
+                  <span className="text-[10px] font-medium">{item.name}</span>
+                </Link>
+              );
+            }
 
-          <a href="https://wa.me/5216143981235" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-1 p-1 text-gray-300 hover:text-[#C9A86A] transition-colors">
-            <MessageCircle size={20} className="text-[#C9A86A]" />
-            <span className="text-[10px] font-medium">WhatsApp</span>
-          </a>
+            if (item.type === "scroll") {
+              return (
+                <button
+                  key={index}
+                  onClick={() => handleNavigation(item.sectionId, item.href)}
+                  className="flex flex-col items-center gap-1 p-1 text-gray-300 hover:text-[#C9A86A] transition-colors cursor-pointer"
+                >
+                  <Icon size={20} className="text-[#C9A86A]" />
+                  <span className="text-[10px] font-medium">{item.name}</span>
+                </button>
+              );
+            }
 
-          <button onClick={() => setMenuOpen(!menuOpen)} className="flex flex-col items-center gap-1 p-1 text-gray-300 hover:text-[#C9A86A] transition-colors cursor-pointer">
-            <Menu size={20} className="text-[#C9A86A]" />
-            <span className="text-[10px] font-medium">Menú</span>
-          </button>
+            if (item.type === "external") {
+              return (
+                <a
+                  key={index}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center gap-1 p-1 text-gray-300 hover:text-[#C9A86A] transition-colors"
+                >
+                  <Icon size={20} className="text-[#C9A86A]" />
+                  <span className="text-[10px] font-medium">{item.name}</span>
+                </a>
+              );
+            }
+
+            if (item.type === "action") {
+              return (
+                <button
+                  key={index}
+                  onClick={() => setMenuOpen(!menuOpen)}
+                  className="flex flex-col items-center gap-1 p-1 text-gray-300 hover:text-[#C9A86A] transition-colors cursor-pointer"
+                >
+                  <Icon size={20} className="text-[#C9A86A]" />
+                  <span className="text-[10px] font-medium">{item.name}</span>
+                </button>
+              );
+            }
+
+            return null;
+          })}
         </div>
       </nav>
     </>
