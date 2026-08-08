@@ -35,18 +35,21 @@ export default function BottomNav() {
 
   if (!isMounted) return null;
 
-  const isCandidateArea = pathname.startsWith("/candidatos");
-  const isRecruiterArea = pathname.startsWith("/reclutador");
   const isVacantesPage = pathname === "/vacantes";
   const isPostularPage = pathname.includes("/candidatos/postular");
+  const isCandidateArea = pathname.startsWith("/candidatos");
+  const isRecruiterArea = pathname.startsWith("/reclutador");
 
-  // Función para abrir el Chatbot / Asistente de IA interno de la página
+  // FUNCIÓN CORREGIDA: Activa el botón flotante del Chatbot IA de forma directa
   const handleOpenAI = () => {
     if (typeof window === "undefined") return;
-    const aiButton = document.querySelector(".fixed.bottom-6.right-6 button, [aria-label*='chat'], [class*='chatbot'] button") as HTMLButtonElement;
-    if (aiButton) {
-      aiButton.click();
+    
+    // Buscamos directamente el botón flotante del widget en la esquina inferior derecha
+    const floatingButton = document.querySelector("div.fixed.bottom-6.right-6 button") as HTMLButtonElement;
+    if (floatingButton) {
+      floatingButton.click();
     } else {
+      // Si por alguna razón no se encuentra, abrimos una alternativa o WhatsApp directo
       window.open("https://wa.me/5216143981235", "_blank");
     }
   };
@@ -59,7 +62,6 @@ export default function BottomNav() {
     type: "link" | "scroll" | "ai" | "action";
   }> = [];
 
-  // Configuración de elementos adaptada dinámicamente a la ruta actual
   if (isPostularPage) {
     bottomNavItems = [
       { name: "Inicio", href: "/", icon: Home, type: "link" },
@@ -173,9 +175,13 @@ export default function BottomNav() {
         )}
       </AnimatePresence>
 
+      {/* BARRA INFERIOR PEGADA AL BORDE ABSOLUTO INCLUYENDO EL ÁREA SEGURA DEL CELULAR */}
       <nav 
-        style={{ WebkitTransform: "translate3d(0,0,0)" }}
-        className="md:hidden fixed bottom-0 left-0 right-0 z-[999] transform-gpu will-change-transform bg-[#0A1A3A] border-t border-[#C9A86A]/40 px-3 pt-2 pb-3 shadow-[0_-8px_25px_rgba(0,0,0,0.8)]"
+        style={{ 
+          WebkitTransform: "translate3d(0,0,0)",
+          paddingBottom: "env(safe-area-inset-bottom, 12px)" 
+        }}
+        className="md:hidden fixed bottom-0 left-0 right-0 z-[999] transform-gpu will-change-transform bg-[#0A1A3A] border-t border-[#C9A86A]/40 px-3 pt-2 shadow-[0_-8px_25px_rgba(0,0,0,0.9)]"
       >
         <div className="flex items-center justify-around">
           {bottomNavItems.map((item, index) => {
