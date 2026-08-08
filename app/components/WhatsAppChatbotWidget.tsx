@@ -55,7 +55,7 @@ export default function WhatsAppChatbotWidget() {
         text: data.text || "Conversemos directamente por WhatsApp para brindarte una solución a la medida.",
         options: [
           { label: "💬 Conectar con Ventas por WhatsApp", action: "whatsapp_directo" },
-          { label: "📋 Registrar mi Vacante", action: "pregunta_registro" }, // Redirige a la nueva pregunta
+          { label: "📋 Registrar mi Vacante", action: "pregunta_registro" },
         ],
       };
 
@@ -91,7 +91,6 @@ export default function WhatsAppChatbotWidget() {
         },
       ]);
     } else if (action === "pregunta_registro") {
-      // NUEVO FLUJO: Pregunta si es nuevo o ya tiene cuenta
       setMessages((prev) => [
         ...prev,
         {
@@ -142,7 +141,6 @@ export default function WhatsAppChatbotWidget() {
 
   return (
     <div className="fixed bottom-6 right-6 z-[999999] font-sans">
-      {/* BOTÓN FLOTANTE */}
       <AnimatePresence>
         {!isOpen && (
           <motion.button
@@ -166,7 +164,6 @@ export default function WhatsAppChatbotWidget() {
         )}
       </AnimatePresence>
 
-      {/* VENTANA DE CHAT */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -176,13 +173,12 @@ export default function WhatsAppChatbotWidget() {
             transition={{ type: "spring", stiffness: 250, damping: 22 }}
             className="w-[90vw] sm:w-[400px] h-[560px] bg-white rounded-3xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden"
           >
-            {/* ENCABEZADO */}
             <div className="bg-[#0A1A3A] text-white p-4 px-5 flex items-center justify-between border-b border-[#C9A86A]/40">
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  {/* AQUÍ ESTÁ TU LOGO */}
+                  {/* AQUÍ ESTÁ LA RUTA CORRECTA A TU IMAGEN */}
                   <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center overflow-hidden shadow-md">
-                    <img src="/logo.png" alt="LT Logo" className="w-full h-full object-contain p-1" />
+                    <img src="/images/LTTALENTO.png" alt="LT Talento Logo" className="w-full h-full object-contain p-1" />
                   </div>
                   <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-[#0A1A3A] rounded-full" />
                 </div>
@@ -204,7 +200,6 @@ export default function WhatsAppChatbotWidget() {
               </button>
             </div>
 
-            {/* CUERPO DE MENSAJES */}
             <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-50/60">
               {messages.map((msg) => (
                 <div
@@ -247,7 +242,6 @@ export default function WhatsAppChatbotWidget() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* ACCESO DIRECTO WHATSAPP EN PIE DE CHAT */}
             <div className="px-4 py-2 bg-[#FFF9EF] border-t border-[#C9A86A]/20 flex items-center justify-between">
               <span className="text-[11px] font-bold text-[#8c6f33]">¿Atención comercial urgente?</span>
               <a
@@ -260,7 +254,6 @@ export default function WhatsAppChatbotWidget() {
               </a>
             </div>
 
-            {/* INPUT DE MENSAJE */}
             <form onSubmit={handleSendMessage} className="p-3 bg-white border-t border-gray-200 flex items-center gap-2">
               <input
                 type="text"
