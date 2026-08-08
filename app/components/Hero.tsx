@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
 import Link from "next/link";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, ArrowRight } from "lucide-react";
 
 export default function Hero() {
   const [videoError, setVideoError] = useState(false);
@@ -40,8 +40,7 @@ export default function Hero() {
   return (
     <section 
       id="hero" 
-      /* Redujimos el padding top (pt) y el min-h para subir el contenido */
-      className="relative z-10 w-full min-h-[85vh] flex items-center justify-center pt-16 sm:pt-20 pb-16 sm:pb-20 bg-[#0A1A3A] text-white px-4 sm:px-6 lg:px-8 overflow-hidden"
+      className="relative z-10 w-full min-h-[85vh] flex items-center justify-center pt-24 sm:pt-28 pb-16 sm:pb-20 bg-[#0A1A3A] text-white px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
       {/* FONDO CINEMATOGRÁFICO DE VIDEO */}
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
@@ -79,14 +78,14 @@ export default function Hero() {
       >
         {/* Tagline de Marca Ampliado */}
         <motion.div variants={itemVariants}>
-          <span className="inline-block px-4 py-1.5 mb-4 text-xs sm:text-sm font-extrabold uppercase tracking-widest text-[#0A1A3A] bg-[#C9A86A] rounded-full shadow-lg">
+          <span className="inline-block px-4 py-1.5 mb-4 text-xs sm:text-sm font-bold uppercase tracking-widest text-[#0A1A3A] bg-[#C9A86A] rounded-full shadow-lg">
             Atracción y Gestión Estratégica de Talento
           </span>
         </motion.div>
 
         {/* Título Principal Impactante */}
         <motion.h1 
-          className="text-3xl sm:text-6xl md:text-7xl font-black tracking-tight text-white drop-shadow-lg leading-tight mb-4"
+          className="text-3xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white drop-shadow-lg leading-tight mb-4"
           variants={itemVariants}
         >
           LT <span className="text-[#C9A86A]">Talent Solutions</span>
@@ -94,10 +93,10 @@ export default function Hero() {
 
         {/* Subtítulo / Manifiesto de Gran Escala */}
         <motion.p 
-          className="text-base sm:text-2xl text-gray-100 max-w-2xl mx-auto font-medium drop-shadow mb-3"
+          className="text-base sm:text-2xl text-gray-100 max-w-2xl mx-auto font-normal drop-shadow mb-3"
           variants={itemVariants}
         >
-          Conectamos talento. <span className="text-[#C9A86A] font-bold">Transformamos futuros.</span>
+          Conectamos talento. <span className="text-[#C9A86A] font-semibold">Transformamos futuros.</span>
         </motion.p>
         
         <motion.p 
@@ -107,78 +106,86 @@ export default function Hero() {
           Relaciones de valor que impulsan el crecimiento de profesionales extraordinarios y organizaciones líderes.
         </motion.p>
 
-        {/* TARJETAS DE ACCESO AMPLIADAS Y LLAMATIVAS */}
+        {/* TARJETAS DE ACCESO CON CABECERA AZUL Y ESTILO INSTITUCIONAL */}
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-3xl mx-auto text-left"
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto text-left"
           variants={itemVariants}
         >
           {/* Tarjeta Profesionales */}
           <motion.div
-            whileHover={{ y: -5, scale: 1.02 }}
+            whileHover={{ y: -5, scale: 1.01 }}
             transition={{ type: "spring", stiffness: 250, damping: 20 }}
-            className="group relative rounded-3xl bg-white p-6 sm:p-8 text-center sm:text-left flex flex-col justify-between items-center sm:items-start text-[#0A1A3A] shadow-2xl border-2 border-[#C9A86A]"
+            className="bg-white rounded-[32px] shadow-2xl overflow-hidden border-2 border-[#C9A86A] flex flex-col justify-between text-gray-900"
           >
-            <div className="w-full space-y-2 mb-6">
-              <span className="text-[10px] sm:text-xs font-black text-[#8c6f33] uppercase tracking-widest block">
-                PARA PROFESIONALES
+            {/* Cabecera Azul Marino */}
+            <div className="bg-[#0A1A3A] px-6 py-8 text-center border-b border-[#C9A86A]/30 text-white">
+              <span className="inline-block px-3.5 py-1 mb-2 text-[10px] font-bold uppercase tracking-widest text-[#0A1A3A] bg-[#C9A86A] rounded-full shadow-md">
+                Para Profesionales
               </span>
-              <h2 className="text-xl sm:text-2xl font-black text-[#0A1A3A] tracking-tight">
+              <h2 className="text-lg sm:text-xl font-bold tracking-tight text-white">
                 Impulsa tu Desarrollo
               </h2>
-              <p className="text-gray-600 text-xs sm:text-sm font-light leading-relaxed">
-                Descubre oportunidades estratégicas y conecta con las empresas más importantes.
-              </p>
             </div>
+            
+            <div className="p-6 sm:p-8 flex flex-col justify-between flex-1 space-y-6">
+              <p className="text-gray-600 text-xs sm:text-sm font-light leading-relaxed text-center sm:text-left">
+                Descubre oportunidades estratégicas y conecta con las empresas más importantes de la industria.
+              </p>
 
-            <div className="w-full flex flex-col gap-2.5 pt-4 border-t border-gray-100">
-              <Link
-                href="/candidatos/nuevo"
-                className="w-full py-3 px-4 bg-[#C9A86A] hover:bg-[#b89555] text-[#0A1A3A] font-extrabold rounded-xl shadow-md transition-all text-xs sm:text-sm text-center"
-              >
-                Registrar Perfil Profesional
-              </Link>
+              <div className="w-full flex flex-col gap-3 pt-4 border-t border-gray-100">
+                <Link
+                  href="/candidatos/nuevo"
+                  className="w-full py-3.5 px-4 bg-[#C9A86A] hover:bg-[#b89555] text-[#0A1A3A] font-bold rounded-xl shadow-md transition-all text-xs sm:text-sm text-center flex items-center justify-center gap-2"
+                >
+                  Registrar Perfil Profesional <ArrowRight size={16} />
+                </Link>
 
-              <Link
-                href="/candidate/login"
-                className="w-full py-3 px-4 bg-gray-50 hover:bg-gray-100 text-[#0A1A3A] font-semibold rounded-xl transition-all text-xs sm:text-sm border border-gray-200 text-center"
-              >
-                Acceso a Mi Cuenta
-              </Link>
+                <Link
+                  href="/candidate/login"
+                  className="w-full py-3 px-4 bg-gray-50 hover:bg-gray-100 text-[#0A1A3A] font-medium rounded-xl transition-all text-xs sm:text-sm border border-gray-200 text-center"
+                >
+                  Acceso a Mi Cuenta
+                </Link>
+              </div>
             </div>
           </motion.div>
 
           {/* Tarjeta Organizaciones */}
           <motion.div
-            whileHover={{ y: -5, scale: 1.02 }}
+            whileHover={{ y: -5, scale: 1.01 }}
             transition={{ type: "spring", stiffness: 250, damping: 20 }}
-            className="group relative rounded-3xl bg-white p-6 sm:p-8 text-center sm:text-left flex flex-col justify-between items-center sm:items-start text-[#0A1A3A] shadow-2xl border-2 border-[#C9A86A]"
+            className="bg-white rounded-[32px] shadow-2xl overflow-hidden border-2 border-[#C9A86A] flex flex-col justify-between text-gray-900"
           >
-            <div className="w-full space-y-2 mb-6">
-              <span className="text-[10px] sm:text-xs font-black text-[#8c6f33] uppercase tracking-widest block">
-                PARA ORGANIZACIONES
+            {/* Cabecera Azul Marino */}
+            <div className="bg-[#0A1A3A] px-6 py-8 text-center border-b border-[#C9A86A]/30 text-white">
+              <span className="inline-block px-3.5 py-1 mb-2 text-[10px] font-bold uppercase tracking-widest text-[#0A1A3A] bg-[#C9A86A] rounded-full shadow-md">
+                Para Organizaciones
               </span>
-              <h2 className="text-xl sm:text-2xl font-black text-[#0A1A3A] tracking-tight">
+              <h2 className="text-lg sm:text-xl font-bold tracking-tight text-white">
                 Conecta con Talento Ideal
               </h2>
-              <p className="text-gray-600 text-xs sm:text-sm font-light leading-relaxed">
-                Encuentra al equipo clave para acelerar los resultados y la visión de tu empresa.
-              </p>
             </div>
 
-            <div className="w-full flex flex-col gap-2.5 pt-4 border-t border-gray-100">
-              <Link
-                href="/reclutador/registro"
-                className="w-full py-3 px-4 bg-[#C9A86A] hover:bg-[#b89555] text-[#0A1A3A] font-extrabold rounded-xl shadow-md transition-all text-xs sm:text-sm text-center"
-              >
-                Registrar Empresa / Cuenta
-              </Link>
+            <div className="p-6 sm:p-8 flex flex-col justify-between flex-1 space-y-6">
+              <p className="text-gray-600 text-xs sm:text-sm font-light leading-relaxed text-center sm:text-left">
+                Encuentra al equipo clave para acelerar los resultados operativos y la visión estratégica de tu empresa.
+              </p>
 
-              <Link
-                href="/reclutador/login"
-                className="w-full py-3 px-4 bg-gray-50 hover:bg-gray-100 text-[#0A1A3A] font-semibold rounded-xl transition-all text-xs sm:text-sm border border-gray-200 text-center"
-              >
-                Portal Corporativo
-              </Link>
+              <div className="w-full flex flex-col gap-3 pt-4 border-t border-gray-100">
+                <Link
+                  href="/reclutador/registro"
+                  className="w-full py-3.5 px-4 bg-[#C9A86A] hover:bg-[#b89555] text-[#0A1A3A] font-bold rounded-xl shadow-md transition-all text-xs sm:text-sm text-center flex items-center justify-center gap-2"
+                >
+                  Registrar Empresa / Cuenta <ArrowRight size={16} />
+                </Link>
+
+                <Link
+                  href="/reclutador/login"
+                  className="w-full py-3 px-4 bg-gray-50 hover:bg-gray-100 text-[#0A1A3A] font-medium rounded-xl transition-all text-xs sm:text-sm border border-gray-200 text-center"
+                >
+                  Portal Corporativo
+                </Link>
+              </div>
             </div>
           </motion.div>
         </motion.div>

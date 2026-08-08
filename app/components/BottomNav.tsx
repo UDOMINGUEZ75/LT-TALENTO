@@ -15,7 +15,8 @@ import {
   CheckCircle2,
   FileText,
   User,
-  PlusCircle
+  PlusCircle,
+  Bot
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -42,28 +43,28 @@ export default function BottomNav() {
     href?: string;
     sectionId?: string;
     icon: any;
-    type: "link" | "scroll" | "external" | "action";
+    type: "link" | "scroll" | "external" | "action" | "chat";
   }> = [];
 
   if (isCandidateArea && id) {
     bottomNavItems = [
       { name: "Inicio", href: `/candidatos/dashboard?id=${id}`, icon: Home, type: "link" },
       { name: "Vacantes", href: "/vacantes", icon: Briefcase, type: "link" },
-      { name: "Postulaciones", href: `/candidatos/postulaciones?id=${id}`, icon: FileText, type: "link" },
+      { name: "Chat", icon: Bot, type: "chat" },
       { name: "Perfil", href: `/candidatos/actualizar/${id}`, icon: User, type: "link" },
     ];
   } else if (isRecruiterArea && id) {
     bottomNavItems = [
       { name: "Inicio", href: `/reclutador/dashboard?id=${id}`, icon: Home, type: "link" },
       { name: "Crear", href: `/reclutador/vacantes/nueva?id=${id}`, icon: PlusCircle, type: "link" },
-      { name: "Candidatos", href: `/reclutador/candidatos?id=${id}`, icon: Users, type: "link" },
+      { name: "Chat", icon: Bot, type: "chat" },
       { name: "Mis Vacantes", href: `/reclutador/mis-vacantes?id=${id}`, icon: Briefcase, type: "link" },
     ];
   } else {
     bottomNavItems = [
       { name: "Inicio", sectionId: "hero", href: "/", icon: Home, type: "scroll" },
       { name: "Vacantes", sectionId: "vacantes", href: "/vacantes", icon: Briefcase, type: "scroll" },
-      { name: "WhatsApp", href: "https://wa.me/5216143981235", icon: MessageCircle, type: "external" },
+      { name: "Chat IA", icon: Bot, type: "chat" },
       { name: "Menú", icon: Menu, type: "action" },
     ];
   }
@@ -92,6 +93,18 @@ export default function BottomNav() {
       }
     } else {
       router.push(href || "/");
+    }
+  };
+
+  // Función para abrir el widget de chat automáticamente al tocar el botón de la barra
+  const handleOpenChat = () => {
+    // Buscamos el botón flotante del widget de chatbot en el DOM y hacemos clic en él
+    const chatWidgetButton = document.querySelector(".fixed.bottom-6.right-6 button, [aria-label*='chat'], [class*='chatbot'] button") as HTMLButtonElement;
+    if (chatWidgetButton) {
+      chatWidgetButton.click();
+    } else {
+      // Alternativa si el selector varía: abrir vía WhatsApp o enlace directo
+      window.open("https://wa.me/5216143981235", "_blank");
     }
   };
 
@@ -222,18 +235,18 @@ export default function BottomNav() {
               );
             }
 
-            if (item.type === "external" && item.href) {
+            if (item.type === "chat") {
               return (
-                <a
+                <button
                   key={index}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex flex-col items-center gap-1 p-1 text-gray-300 hover:text-[#C9A86A] transition-colors"
+                  onClick={handleOpenChat}
+                  className="flex flex-col items-center gap-1 p-1 text-[#C9A86A] hover:text-white transition-colors cursor-pointer"
                 >
-                  <Icon size={20} className="text-[#C9A86A]" />
-                  <span className="text-[10px] font-medium">{item.name}</span>
-                </a>
+                  <div className="w-9 h-9 rounded-full bg-[#C9A86A] text-[#0A1A3A] flex items-center justify-center shadow-md">
+                    <Icon size={18} />
+                  </div>
+                  <span className="text-[10px] font-bold">Asistente IA</span>
+                </button>
               );
             }
 
