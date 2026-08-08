@@ -37,7 +37,13 @@ export default function BottomNav() {
   const isCandidateArea = pathname.startsWith("/candidatos");
   const isRecruiterArea = pathname.startsWith("/reclutador");
 
-  let bottomNavItems = [];
+  let bottomNavItems: Array<{
+    name: string;
+    href?: string;
+    sectionId?: string;
+    icon: any;
+    type: "link" | "scroll" | "external" | "action";
+  }> = [];
 
   if (isCandidateArea && id) {
     bottomNavItems = [
@@ -58,7 +64,7 @@ export default function BottomNav() {
       { name: "Inicio", sectionId: "hero", href: "/", icon: Home, type: "scroll" },
       { name: "Vacantes", sectionId: "vacantes", href: "/vacantes", icon: Briefcase, type: "scroll" },
       { name: "WhatsApp", href: "https://wa.me/5216143981235", icon: MessageCircle, type: "external" },
-      { name: "Menú", action: "toggleMenu", icon: Menu, type: "action" },
+      { name: "Menú", icon: Menu, type: "action" },
     ];
   }
 
@@ -187,7 +193,7 @@ export default function BottomNav() {
           {bottomNavItems.map((item, index) => {
             const Icon = item.icon;
 
-            if (item.type === "link") {
+            if (item.type === "link" && item.href) {
               const isActive = pathname === item.href.split("?")[0];
               return (
                 <Link
@@ -216,7 +222,7 @@ export default function BottomNav() {
               );
             }
 
-            if (item.type === "external") {
+            if (item.type === "external" && item.href) {
               return (
                 <a
                   key={index}
