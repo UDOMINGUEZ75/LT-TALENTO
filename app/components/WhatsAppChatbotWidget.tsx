@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Sparkles, ArrowRight, UserCheck, Briefcase } from "lucide-react";
+import { MessageCircle, X, Send, Sparkles, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Message {
@@ -31,11 +31,17 @@ export default function WhatsAppChatbotWidget() {
 
   const WHATSAPP_NUMBER = "5216143981235";
 
-  // ESCUCHA EL EVENTO GLOBAL DESDE LA BOTTOMNAV PARA ABRIR EL CHAT
+  // EXPONEMOS UNA FUNCIÓN GLOBAL NATIVA PARA ABRIR EL CHAT DESDE CUALQUIER PARTE
   useEffect(() => {
+    (window as any).openAIChatbot = () => setIsOpen(true);
+    
     const handleOpenEvent = () => setIsOpen(true);
     window.addEventListener("open-ai-chatbot", handleOpenEvent);
-    return () => window.removeEventListener("open-ai-chatbot", handleOpenEvent);
+    
+    return () => {
+      delete (window as any).openAIChatbot;
+      window.removeEventListener("open-ai-chatbot", handleOpenEvent);
+    };
   }, []);
 
   const scrollToBottom = () => {
@@ -119,7 +125,7 @@ export default function WhatsAppChatbotWidget() {
         {
           id: (Date.now() + 1).toString(),
           sender: "bot",
-          text: "Muchas gracias por compartirnos tu mensaje. Para darte una atención más ágil y cercana, te invitamos a explorar nuestras opciones directas:",
+          text: "Muchas gracias por compartirnos tu mensaje. Para darte una atención más ágil y cercana, te invitamos a explorar nuestras opciones:",
           options: [
             { label: "📋 Ver Vacantes", action: "ver_vacantes" },
             { label: "💬 Continuar en WhatsApp", action: "whatsapp_directo" },

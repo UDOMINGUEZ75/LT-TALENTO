@@ -40,19 +40,16 @@ export default function BottomNav() {
   const isCandidateArea = pathname.startsWith("/candidatos");
   const isRecruiterArea = pathname.startsWith("/reclutador");
 
-  // ACCIÓN DIRECTA Y LIMPIA: Simula el clic en el botón flotante del widget de chat de forma nativa
+  // LLAMADA DIRECTA Y SEGURA A LA FUNCIÓN GLOBAL DEL CHAT
   const handleOpenAI = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (typeof window === "undefined") return;
 
-    // Buscamos directamente el botón flotante del chat en el DOM
-    const chatButton = document.querySelector("div.fixed.bottom-6.right-6 button") as HTMLButtonElement;
-    if (chatButton) {
-      chatButton.click();
+    if (typeof (window as any).openAIChatbot === "function") {
+      (window as any).openAIChatbot();
     } else {
-      // Si por alguna razón no se encuentra en la vista actual, disparamos el evento global como respaldo
       window.dispatchEvent(new CustomEvent("open-ai-chatbot"));
     }
   };
