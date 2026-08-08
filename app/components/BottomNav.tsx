@@ -96,14 +96,11 @@ export default function BottomNav() {
     }
   };
 
-  // Función para abrir el widget de chat automáticamente al tocar el botón de la barra
   const handleOpenChat = () => {
-    // Buscamos el botón flotante del widget de chatbot en el DOM y hacemos clic en él
     const chatWidgetButton = document.querySelector(".fixed.bottom-6.right-6 button, [aria-label*='chat'], [class*='chatbot'] button") as HTMLButtonElement;
     if (chatWidgetButton) {
       chatWidgetButton.click();
     } else {
-      // Alternativa si el selector varía: abrir vía WhatsApp o enlace directo
       window.open("https://wa.me/5216143981235", "_blank");
     }
   };
@@ -113,41 +110,30 @@ export default function BottomNav() {
       <AnimatePresence>
         {menuOpen && (
           <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setMenuOpen(false)}
-              className="md:hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }} 
+              onClick={() => setMenuOpen(false)} 
+              className="md:hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50" 
             />
-
-            <motion.div
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 220 }}
-              className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0A1A3A] border-t-2 border-[#C9A86A] rounded-t-[32px] px-5 pt-4 pb-32 text-white shadow-[0_-10px_30px_rgba(0,0,0,0.6)] max-h-[85vh] overflow-y-auto"
+            <motion.div 
+              initial={{ y: "100%" }} 
+              animate={{ y: 0 }} 
+              exit={{ y: "100%" }} 
+              transition={{ type: "spring", damping: 25, stiffness: 220 }} 
+              className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0A1A3A] border-t-2 border-[#C9A86A] rounded-t-[32px] px-5 pt-4 pb-28 text-white shadow-[0_-10px_30px_rgba(0,0,0,0.6)] max-h-[85vh] overflow-y-auto"
             >
               <div className="w-12 h-1.5 bg-gray-500/40 rounded-full mx-auto mb-4" />
-
               <div className="flex items-center justify-between pb-2 border-b border-white/10 mb-4">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A86A]">
-                  Menú Principal
-                </span>
-                <button onClick={() => setMenuOpen(false)} className="p-1.5 rounded-full bg-white/10 text-gray-300">
-                  <X size={18} />
-                </button>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A86A]">Menú Principal</span>
+                <button onClick={() => setMenuOpen(false)} className="p-1.5 rounded-full bg-white/10 text-gray-300"><X size={18} /></button>
               </div>
-
               <div className="space-y-1 mb-6">
                 {primaryNavItems.map((item) => {
                   const Icon = item.icon;
                   return (
-                    <button
-                      key={item.name}
-                      onClick={() => handleNavigation(item.sectionId, item.href)}
-                      className="w-full flex items-center justify-between py-2.5 px-3 rounded-xl text-xs font-semibold text-gray-100 hover:bg-white/10 transition-colors text-left cursor-pointer"
-                    >
+                    <button key={item.name} onClick={() => handleNavigation(item.sectionId, item.href)} className="w-full flex items-center justify-between py-2.5 px-3 rounded-xl text-xs font-semibold text-gray-100 hover:bg-white/10 transition-colors text-left cursor-pointer">
                       <div className="flex items-center gap-3">
                         <Icon size={18} className="text-[#C9A86A]" />
                         <span>{item.name}</span>
@@ -157,50 +143,15 @@ export default function BottomNav() {
                   );
                 })}
               </div>
-
-              <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/10">
-                <div className="flex flex-col gap-2">
-                  <Link 
-                    href="/candidatos/nuevo" 
-                    onClick={() => setMenuOpen(false)}
-                    className="py-3 px-2 bg-[#C9A86A] text-[#0A1A3A] font-black rounded-xl text-[9px] uppercase text-center shadow-md leading-tight flex items-center justify-center min-h-[44px]"
-                  >
-                    Registrar Perfil Profesional
-                  </Link>
-                  <Link 
-                    href="/candidate/login" 
-                    onClick={() => setMenuOpen(false)}
-                    className="py-3 px-2 bg-white text-[#0A1A3A] font-black rounded-xl text-[9px] uppercase text-center shadow-md leading-tight flex items-center justify-center min-h-[44px]"
-                  >
-                    Acceso a Mi Cuenta
-                  </Link>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <Link 
-                    href="/reclutador/registro" 
-                    onClick={() => setMenuOpen(false)}
-                    className="py-3 px-2 bg-[#C9A86A] text-[#0A1A3A] font-black rounded-xl text-[9px] uppercase text-center shadow-md leading-tight flex items-center justify-center min-h-[44px]"
-                  >
-                    Registrar Empresa / Cuenta
-                  </Link>
-                  <Link 
-                    href="/reclutador/login" 
-                    onClick={() => setMenuOpen(false)}
-                    className="py-3 px-2 bg-white text-[#0A1A3A] font-black rounded-xl text-[9px] uppercase text-center shadow-md leading-tight flex items-center justify-center min-h-[44px]"
-                  >
-                    Portal Corporativo
-                  </Link>
-                </div>
-              </div>
             </motion.div>
           </>
         )}
       </AnimatePresence>
 
+      {/* BARRA INFERIOR FIJA CON POSICIONAMIENTO ABSOLUTO AL BORDE INFERIOR */}
       <nav 
         style={{ WebkitTransform: "translate3d(0,0,0)" }}
-        className="md:hidden fixed bottom-0 left-0 right-0 z-50 transform-gpu will-change-transform bg-[#0A1A3A] border-t border-[#C9A86A]/40 px-3 pt-2.5 pb-3 shadow-[0_-8px_25px_rgba(0,0,0,0.6)]"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-[999] transform-gpu will-change-transform bg-[#0A1A3A] border-t border-[#C9A86A]/40 px-3 pt-2 pb-3 shadow-[0_-8px_25px_rgba(0,0,0,0.8)]"
       >
         <div className="flex items-center justify-around">
           {bottomNavItems.map((item, index) => {
@@ -209,13 +160,7 @@ export default function BottomNav() {
             if (item.type === "link" && item.href) {
               const isActive = pathname === item.href.split("?")[0];
               return (
-                <Link
-                  key={index}
-                  href={item.href}
-                  className={`flex flex-col items-center gap-1 p-1 transition-colors ${
-                    isActive ? "text-[#C9A86A] font-bold" : "text-gray-300 hover:text-[#C9A86A]"
-                  }`}
-                >
+                <Link key={index} href={item.href} className={`flex flex-col items-center gap-1 p-1 transition-colors ${isActive ? "text-[#C9A86A] font-bold" : "text-gray-300 hover:text-[#C9A86A]"}`}>
                   <Icon size={20} className={isActive ? "text-[#C9A86A]" : "text-gray-300"} />
                   <span className="text-[10px] font-medium">{item.name}</span>
                 </Link>
@@ -224,11 +169,7 @@ export default function BottomNav() {
 
             if (item.type === "scroll") {
               return (
-                <button
-                  key={index}
-                  onClick={() => handleNavigation(item.sectionId, item.href)}
-                  className="flex flex-col items-center gap-1 p-1 text-gray-300 hover:text-[#C9A86A] transition-colors cursor-pointer"
-                >
+                <button key={index} onClick={() => handleNavigation(item.sectionId, item.href)} className="flex flex-col items-center gap-1 p-1 text-gray-300 hover:text-[#C9A86A] transition-colors cursor-pointer">
                   <Icon size={20} className="text-[#C9A86A]" />
                   <span className="text-[10px] font-medium">{item.name}</span>
                 </button>
@@ -237,13 +178,9 @@ export default function BottomNav() {
 
             if (item.type === "chat") {
               return (
-                <button
-                  key={index}
-                  onClick={handleOpenChat}
-                  className="flex flex-col items-center gap-1 p-1 text-[#C9A86A] hover:text-white transition-colors cursor-pointer"
-                >
-                  <div className="w-9 h-9 rounded-full bg-[#C9A86A] text-[#0A1A3A] flex items-center justify-center shadow-md">
-                    <Icon size={18} />
+                <button key={index} onClick={handleOpenChat} className="flex flex-col items-center gap-1 p-1 text-[#C9A86A] hover:text-white transition-colors cursor-pointer">
+                  <div className="w-8 h-8 rounded-full bg-[#C9A86A] text-[#0A1A3A] flex items-center justify-center shadow-md">
+                    <Icon size={16} />
                   </div>
                   <span className="text-[10px] font-bold">Asistente IA</span>
                 </button>
@@ -252,11 +189,7 @@ export default function BottomNav() {
 
             if (item.type === "action") {
               return (
-                <button
-                  key={index}
-                  onClick={() => setMenuOpen(!menuOpen)}
-                  className="flex flex-col items-center gap-1 p-1 text-gray-300 hover:text-[#C9A86A] transition-colors cursor-pointer"
-                >
+                <button key={index} onClick={() => setMenuOpen(!menuOpen)} className="flex flex-col items-center gap-1 p-1 text-gray-300 hover:text-[#C9A86A] transition-colors cursor-pointer">
                   <Icon size={20} className="text-[#C9A86A]" />
                   <span className="text-[10px] font-medium">{item.name}</span>
                 </button>
