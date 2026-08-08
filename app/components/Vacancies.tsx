@@ -129,9 +129,9 @@ export default function Vacancies() {
 
   return (
     <section id="vacantes" className="relative w-full pt-24 sm:pt-32 pb-20 sm:pb-24 bg-[#0A1A3A] text-white px-4 sm:px-6 lg:px-8 overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[600px] h-[300px] sm:h-[400px] bg-[#C9A86A]/5 rounded-full blur-[90px] md:blur-[120px] pointer-events-none z-0" />
-
       <div className="max-w-6xl mx-auto relative z-10">
+        
+        {/* Encabezado */}
         <div className="text-center mb-6 sm:mb-10 space-y-2">
           <span className="inline-block px-3.5 py-1 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#0A1A3A] bg-[#C9A86A] rounded-full shadow-md">
             Bolsa de Trabajo
@@ -144,6 +144,7 @@ export default function Vacancies() {
           </p>
         </div>
 
+        {/* Buscador */}
         <div className="bg-white p-3.5 sm:p-6 rounded-2xl sm:rounded-3xl border border-gray-200 shadow-xl mb-6 sm:mb-12 max-w-3xl mx-auto text-gray-900">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
             <div className="relative">
@@ -174,27 +175,29 @@ export default function Vacancies() {
           </div>
         </div>
 
+        {/* Grid Vacantes */}
         {filteredVacancies.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredVacancies.map((v) => (
               <div
                 key={v.id}
                 onClick={(e) => handlePostularseClick(e, v.id)}
-                className="group relative bg-white text-gray-900 rounded-2xl sm:rounded-[32px] p-4 sm:p-6 border border-[#C9A86A]/60 sm:border-2 sm:border-[#C9A86A] shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer flex flex-col justify-between overflow-hidden"
+                className="group relative bg-white text-gray-900 rounded-2xl p-5 sm:p-6 border-2 border-[#C9A86A] shadow-md hover:shadow-xl transition-all cursor-pointer flex flex-col justify-between overflow-hidden"
               >
                 <div>
-                  <div className="flex flex-col gap-2 mb-3">
-                    <h3 className="text-base sm:text-lg font-extrabold text-[#0A1A3A] group-hover:text-[#8c6f33] transition-colors leading-snug">
-                      {v.title}
-                    </h3>
-                    
-                    <div className="w-full bg-[#FFF9EF] px-3 py-2 rounded-xl border border-[#C9A86A]/40">
-                      <span className="block text-[11px] sm:text-xs font-semibold text-[#8c6f33] leading-relaxed break-words">
-                        {v.salary || "Atractivo"}
-                      </span>
-                    </div>
+                  {/* Título en bloque completo arriba */}
+                  <h3 className="text-base sm:text-lg font-extrabold text-[#0A1A3A] leading-snug mb-3 group-hover:text-[#8c6f33] transition-colors">
+                    {v.title}
+                  </h3>
+
+                  {/* Badge de Salario: bloque separado con wrap completo */}
+                  <div className="w-full bg-[#FFF9EF] px-3 py-2 rounded-xl border border-[#C9A86A]/40 mb-3">
+                    <span className="block text-xs font-semibold text-[#8c6f33] leading-relaxed break-words whitespace-normal">
+                      {v.salary || "Atractivo"}
+                    </span>
                   </div>
 
+                  {/* Ubicación y Tipo */}
                   <div className="flex flex-wrap items-center gap-2 text-[11px] text-gray-600 mb-3">
                     <span className="inline-flex items-center gap-1 bg-gray-100 px-2.5 py-0.5 rounded-md">
                       <MapPin size={12} className="text-[#0A1A3A]" />
@@ -206,17 +209,19 @@ export default function Vacancies() {
                     </span>
                   </div>
 
-                  <p className="text-xs text-gray-500 line-clamp-2 sm:line-clamp-3 leading-relaxed font-light mb-4">
+                  {/* Descripción */}
+                  <p className="text-xs text-gray-500 line-clamp-3 leading-relaxed font-light mb-4">
                     {v.description}
                   </p>
                 </div>
 
+                {/* Footer */}
                 <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-[#0A1A3A] group-hover:text-[#8c6f33]">
+                  <span className="text-xs font-bold text-[#0A1A3A] group-hover:text-[#8c6f33]">
                     Ver detalle de vacante
                   </span>
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#0A1A3A] text-white flex items-center justify-center group-hover:bg-[#C9A86A] group-hover:text-[#0A1A3A] transition-colors shadow-sm shrink-0">
-                    <ArrowRight size={14} className="sm:w-4 sm:h-4" />
+                  <div className="w-8 h-8 rounded-full bg-[#0A1A3A] text-white flex items-center justify-center group-hover:bg-[#C9A86A] group-hover:text-[#0A1A3A] transition-colors shrink-0">
+                    <ArrowRight size={14} />
                   </div>
                 </div>
               </div>
@@ -225,10 +230,11 @@ export default function Vacancies() {
         ) : (
           <div className="text-center py-8 bg-white/5 rounded-2xl border border-white/10 max-w-md mx-auto">
             <p className="text-gray-300 text-xs font-light">
-              No hay vacantes disponibles que coincidan con los filtros.
+              No hay vacantes disponibles.
             </p>
           </div>
         )}
+
       </div>
     </section>
   );
