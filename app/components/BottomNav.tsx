@@ -6,7 +6,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { 
   Home, 
   Briefcase, 
-  MessageCircle, 
   Menu, 
   X, 
   ChevronRight, 
@@ -16,7 +15,8 @@ import {
   User,
   PlusCircle,
   Bot,
-  ArrowLeft
+  ArrowLeft,
+  MessageCircle
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -40,10 +40,21 @@ export default function BottomNav() {
   const isCandidateArea = pathname.startsWith("/candidatos");
   const isRecruiterArea = pathname.startsWith("/reclutador");
 
-  // FUNCIÓN INFALIBLE: Dispara un evento global para abrir el Chatbot IA interno
-  const handleOpenAI = () => {
+  // ACCIÓN DIRECTA Y LIMPIA: Simula el clic en el botón flotante del widget de chat de forma nativa
+  const handleOpenAI = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (typeof window === "undefined") return;
-    window.dispatchEvent(new CustomEvent("open-ai-chatbot"));
+
+    // Buscamos directamente el botón flotante del chat en el DOM
+    const chatButton = document.querySelector("div.fixed.bottom-6.right-6 button") as HTMLButtonElement;
+    if (chatButton) {
+      chatButton.click();
+    } else {
+      // Si por alguna razón no se encuentra en la vista actual, disparamos el evento global como respaldo
+      window.dispatchEvent(new CustomEvent("open-ai-chatbot"));
+    }
   };
 
   let bottomNavItems: Array<{
@@ -199,7 +210,12 @@ export default function BottomNav() {
 
             if (item.type === "ai") {
               return (
-                <button key={index} onClick={handleOpenAI} className="flex flex-col items-center gap-1 p-1 text-[#C9A86A] hover:text-white transition-colors cursor-pointer">
+                <button 
+                  key={index} 
+                  onClick={handleOpenAI} 
+                  type="button"
+                  className="flex flex-col items-center gap-1 p-1 text-[#C9A86A] hover:text-white transition-colors cursor-pointer"
+                >
                   <div className="w-8 h-8 rounded-full bg-[#C9A86A] text-[#0A1A3A] flex items-center justify-center shadow-md">
                     <Icon size={16} />
                   </div>
