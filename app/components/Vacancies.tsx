@@ -1,9 +1,8 @@
-/* STREAMING_CHUNK:Corrigiendo orden visual: Título principal arriba y Salario debajo... */
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { MapPin, DollarSign, Clock, ArrowRight, Search, SlidersHorizontal } from "lucide-react";
+import { MapPin, Clock, ArrowRight, Search, SlidersHorizontal } from "lucide-react";
 
 interface Job {
   id: number;
@@ -195,14 +194,13 @@ export default function Vacancies() {
                 "
               >
                 <div>
-                  {/* ORDEN CORRECTO: Título arriba, Salario debajo */}
-                  <div className="flex flex-col gap-2.5 mb-3">
+                  {/* DISEÑO CORRECTO: Título grande arriba, caja de salario debajo sin estorbar */}
+                  <div className="space-y-2 mb-3">
                     <h3 className="text-base sm:text-lg font-extrabold text-[#0A1A3A] group-hover:text-[#8c6f33] transition-colors leading-snug">
                       {v.title}
                     </h3>
                     
-                    {/* Badge de salario bien estructurado debajo del título */}
-                    <div className="w-full bg-[#FFF9EF] px-3 py-2 rounded-xl border border-[#C9A86A]/40">
+                    <div className="w-full bg-[#FFF9EF] px-3 py-2 rounded-xl border border-[#C9A86A]/40 shadow-sm">
                       <span className="block text-[11px] sm:text-xs font-semibold text-[#8c6f33] leading-relaxed break-words">
                         {v.salary || "Atractivo"}
                       </span>
