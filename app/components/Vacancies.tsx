@@ -1,3 +1,4 @@
+/* STREAMING_CHUNK:Refactoring Vacancies component to handle long salary texts cleanly... */
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
@@ -201,15 +202,17 @@ export default function Vacancies() {
                 "
               >
                 <div>
-                  {/* CORRECCIÓN DE SALARIO: Encabezado adaptable (se apila en celular si el texto es largo) */}
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1.5 sm:gap-2 mb-2.5">
+                  {/* CORRECCIÓN DE SALARIO: Diseño vertical flexible que acomoda textos largos sin sobreponerse */}
+                  <div className="flex flex-col gap-2 mb-3">
                     <h3 className="text-base sm:text-lg font-extrabold text-[#0A1A3A] group-hover:text-[#8c6f33] transition-colors leading-snug line-clamp-2">
                       {v.title}
                     </h3>
-                    {/* El badge del salario ahora se ajusta solo y nunca se amontona */}
-                    <span className="inline-block self-start sm:self-auto shrink-0 text-[11px] font-bold text-[#8c6f33] bg-[#FFF9EF] px-2.5 py-1 rounded-full border border-[#C9A86A]/30 whitespace-normal sm:whitespace-nowrap">
-                      {v.salary || "Atractivo"}
-                    </span>
+                    {/* Badge de salario mejorado para textos largos y múltiples líneas */}
+                    <div className="w-full bg-[#FFF9EF] px-3 py-2 rounded-xl border border-[#C9A86A]/40">
+                      <span className="block text-[11px] sm:text-xs font-semibold text-[#8c6f33] leading-relaxed break-words">
+                        {v.salary || "Atractivo"}
+                      </span>
+                    </div>
                   </div>
 
                   {/* Chips de Ubicación y Jornada */}
